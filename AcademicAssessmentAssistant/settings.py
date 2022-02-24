@@ -83,9 +83,9 @@ WSGI_APPLICATION = 'AcademicAssessmentAssistant.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres', #Change to match local 
-        'USER': 'user', #Change to match local
-        'PASSWORD' : 'password', #Change to match local
+        'NAME': 'postgres',  
+        'USER': 'user', 
+        'PASSWORD' : 'password', 
         'HOST' : '18.221.82.10',
         'PORT' : '5432',
     }
