@@ -1,11 +1,14 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import MakereportsAssessment
+from .models import MakereportsSloinreport
 # Create your views here.
 
-def index(response):
-        # MakereportsSloinreport.objects.all()
-        return HttpResponse("Hello World! Patrik was here (x)")
-
-def table_home_view(response):
-        return HttpResponse("changed view...")
+def index(request):
+        # 
+        slo_report = MakereportsSloinreport.objects.all()
+        slo_report = slo_report[0:10]
+        return render(
+                request, 
+                'table_home_page.html',
+                {'slosInReport':slo_report},
+        )
