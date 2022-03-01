@@ -1,5 +1,5 @@
 Academic Assessment Assistant Enhancements Project
-Project Information:
+#Project Information:
 The UNO Academic Assessment Committee coordinates degree program assessment activities aimed at improving the student learning experience in all academic programs across the university. This initiative collects data from academic departments regarding student learning outcomes and the programs' progress towards achieving those outcomes. Each department reports their own set of metrics. A mechanism is needed to further process this data to produce actionable analytics. The ability to produce useful analytics can enhance faculty buy-in to the assessment process.
 
 A previous capstone team has implemented a Django application, which is being deployed this spring. We are implementing a stand-alone complementary application which enhances the original with new functionality such as smart-assistant feedback and historical report generating.
