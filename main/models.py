@@ -222,6 +222,9 @@ class MakereportsCollege(models.Model):
     class Meta:
         managed = False
         db_table = 'makeReports_college'
+    
+    def __str__(self):
+        return self.name
 
 
 class MakereportsDataadditionalinformation(models.Model):
@@ -255,6 +258,9 @@ class MakereportsDegreeprogram(models.Model):
     class Meta:
         managed = False
         db_table = 'makeReports_degreeprogram'
+    
+    def __str__(self):
+        return self.name
 
 
 class MakereportsDepartment(models.Model):
@@ -265,6 +271,9 @@ class MakereportsDepartment(models.Model):
     class Meta:
         managed = False
         db_table = 'makeReports_department'
+
+    def __str__(self):
+        return self.name
 
 
 class MakereportsGradedrubric(models.Model):
@@ -339,6 +348,9 @@ class MakereportsReport(models.Model):
     class Meta:
         managed = False
         db_table = 'makeReports_report'
+
+    def __str__(self):
+        return f"{self.author}-{self.degreeprogram}-{self.year}"
 
 
 class MakereportsReportsupplement(models.Model):
@@ -424,6 +436,9 @@ class MakereportsSloinreport(models.Model):
     class Meta:
         managed = False
         db_table = 'makeReports_sloinreport'
+
+    def __str__(self):
+        return f"{self.date}-{self.goaltext[0:20]}"
 
 
 class MakereportsSlostatus(models.Model):
