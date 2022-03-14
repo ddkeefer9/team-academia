@@ -1,3 +1,46 @@
 from django.contrib import admin
+from .models import *
 
 # Register your models here.
+
+admin.site.register([
+    AuthGroup,
+    AuthGroupPermissions,
+    AuthPermission,
+    AuthUser,
+    AuthUserGroups,
+    AuthUserUserPermissions,
+    DjangoAdminLog,
+    DjangoContentType,
+    DjangoMigrations,
+    DjangoSession,
+    DjangoSummernoteAttachment,
+    MakereportsAnnouncement,
+    MakereportsAssessment,
+    MakereportsAssessmentaggregate,
+    MakereportsAssessmentdata,
+    MakereportsAssessmentsupplement,
+    MakereportsAssessmentversion,
+    MakereportsAssessmentversionSupplements,
+    MakereportsCollege,
+    MakereportsDataadditionalinformation,
+    MakereportsDecisionsactions,
+    MakereportsDegreeprogram,
+    MakereportsDepartment,
+    MakereportsGradedrubric,
+    MakereportsGradedrubricitem,
+    MakereportsGradgoal,
+    MakereportsGraph,
+    MakereportsProfile,
+    MakereportsReport,
+    MakereportsReportsupplement,
+    MakereportsRequiredfieldsetting,
+    MakereportsResultcommunicate,
+    MakereportsRubric,
+    MakereportsRubricitem,
+    MakereportsSlo,
+    MakereportsSloGradgoals,
+    MakereportsSloinreport,
+    MakereportsSlostatus,
+    MakereportsSlostostakeholder
+])
