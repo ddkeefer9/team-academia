@@ -1,3 +1,8 @@
+{% load bootstrap4 %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.27/bootstrap-native-v4.min.js"></script>
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+{% bootstrap_messages %}
 <!DOCTYPE html>
 <html>
 <style>
@@ -6,7 +11,7 @@ table, th, td {
 }
 </style>
 <body>
-
+<!-- 
 <table style="width:100%">
 
   <tr>
@@ -30,5 +35,26 @@ table, th, td {
 </tbody>
  
 </table>
+-->
+<h3>Academic Smart Assistant</h3>
+<div class="col-2">
+  <h4>Department</h4>
+  <select name="department" class="form-control col-9" title="" required id="id_department">
+  <option value="" selected>---------</option></select>
+  <br>
+  <h4>Degree Program</h4>
+  <select name="degree-program" class="form-control col-9" title="" required id="id_degree-program">
+  <option value="" selected>---------</option></select>
+  <br>
+  <ul class="list-group">  
+    {% buttons %}
+    <a type="button" class="btn btn-primary" href="#">View Historical Data</a>
+    <br><br>
+    <a type="button" class="btn btn-primary" href="#">Feedback Smart Assistant</a>
+    {% endbuttons %}
+  </ul>
+</div>
+
+
 </body>
 </html>
