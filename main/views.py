@@ -12,3 +12,8 @@ def index(request):
                 'home/home_page.html',
                 {'slosInReport':slo_report},
         )
+def smartAssistant(request):
+        return render(
+                request, 
+                'smart_assistant/smart_assistant.html',
+        )

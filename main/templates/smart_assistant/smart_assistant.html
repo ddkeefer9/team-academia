@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.27/bootstrap-native-v4.min.js"></script>
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+{% bootstrap_messages %}
+{% block content %}
+
+<div class="container-md" style="padding-top: 30px;">
+
+
+    <h3>Feedback Smart Assistant</h3>
+    <div class="p-2">
+        <table style="width:100%">
+
+            <tr>
+                <th>SLO</th>
+                <th>Smart Assistant</th>
+            </tr>
+        
+            <tr>
+                <td>SLO TExt</td>
+                <td>Feedback on SLO</td>
+            </tr>
+       
+        </table>
+    </div>
+  
+  </div>
+
+{% endblock %}
