@@ -9,6 +9,6 @@ def index(request):
         slo_report = slo_report[0:10]
         return render(
                 request, 
-                'table_home_page.html',
+                'home/home_page.html',
                 {'slosInReport':slo_report},
         )

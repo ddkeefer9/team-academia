@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	{% block scripts %}{% endblock %}
+	{% load static %}
+	<title>Academic Assessment Reports</title>
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	{# Load the tag library #}
+
+	{# Load CSS and JavaScript #}
+	{% load bootstrap4 %}
+	
+	<style>
+	.btn {
+		margin: 5px 5px 5px 5px;
+	}
+	</style>
+	{% block styles %}{% endblock %}
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.27/bootstrap-native-v4.min.js"></script>
+	{% bootstrap_css %}
+	<style>
+		.form-control{
+			height:100%;
+		}
+		</style>
+</head>
+<body>
+	<div id="header-wrapper">
+		<header id="main-header">
+			<div id="header" class ="container">
+				<div id="logo">
+				<!--<h1>Academic Assessment</h1>-->
+				</div>
+			</div>	
+		</header>
+			<div id="menu" class="container-flex">
+				{% include 'navbar.html' %}
+			</div>
+	</div>
+	<div id="banner">
+	<div id="wrapper2" style="padding:0 19px">
+
+	{# Display django.contrib.messages as Bootstrap alerts #}
+	{% bootstrap_messages %}
+	<!--{% include 'navbar.html' %}-->
+	{% block content %}
+		<p>ERROR block content not included</p>
+	{% endblock %}
+	{% block endscripts %}{% endblock %}
+	</div>
+	</div>
+	<footer id="main-footer" style="padding:9px">
+		<p></p>
+	</footer>
+
+</body>
+</html>
