@@ -15,3 +15,8 @@ def index(request):
                 {'showDepartments':departments,
                 'showDegrees':degreePrograms},
         )
+def smartAssistant(request):
+        return render(
+                request, 
+                'smart_assistant/smart_assistant.html',
+        )        
