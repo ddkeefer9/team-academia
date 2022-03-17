@@ -1,14 +1,14 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import MakereportsSloinreport
+from .models import MakereportsDegreeprogram
 # Create your views here.
 
 def index(request):
         # 
-        slo_report = MakereportsSloinreport.objects.all()
-        slo_report = slo_report[0:10]
+        degreePrograms = MakereportsDegreeprogram.objects.all()
         return render(
                 request, 
                 'home/home_page.html',
-                {'slosInReport':slo_report},
+                {'showdegrees':degreePrograms},
         )
