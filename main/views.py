@@ -19,4 +19,13 @@ def smartAssistant(request):
         return render(
                 request, 
                 'smart_assistant/smart_assistant.html',
-        )        
+        )
+
+def sendDegrees(request):
+        degreePrograms = MakereportsDegreeprogram.objects.filter(department=request.GET.get("department"))
+        print(degreePrograms)
+        return render(
+                request,
+                'home/degreeDropdown.html',
+                {'degrees':degreePrograms},
+        )
