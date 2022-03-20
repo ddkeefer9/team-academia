@@ -1,10 +1,14 @@
 {% extends 'base.html' %}
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% endblock %}
 {% load bootstrap4 %}
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.27/bootstrap-native-v4.min.js"></script>
 {% bootstrap_css %}
 {% bootstrap_javascript jquery='full' %}
 {% bootstrap_messages %}
 {% block content %}
+
 
 <style>
 table, th, td {
@@ -45,11 +49,14 @@ table, th, td {
   <div class="p-2">
     <h4>Department</h4>
     <select name="department" class="form-control col-9" title="" required id="id_department">
-    <option value="" selected>---------</option></select>
+    {% for departments in showDepartments %}
+    <option value="{{ departments.pk }}" selected>{{ departments.name}}</option>
+    {% endfor %}
+    </select>
     <br>
     <h4>Degree Program</h4>
     <select name="degree-program" class="form-control col-9" title="" required id="id_degree-program">
-    {% for degreePrograms in showdegrees %}
+    {% for degreePrograms in showDegrees %}
     <option value="" selected>{{ degreePrograms.name}}</option>
     {% endfor %}
     </select>
@@ -64,4 +71,22 @@ table, th, td {
   </div>
 
 </div>
+{% endblock %}
+{% block endscripts %}
+<script>
+  var dept = $("#id_department")
+  dept.change(function () {
+     // var degreeName = dept[0].options[dept[0].selectedIndex].text;
+      var degreeName = dept.val()
+      $.ajax({
+        url: "/degreeDropdown",
+        data: {
+          'department': degreeName
+        },
+        success: function (data) {
+          $("#id_degree-program").html(data);
+        }
+      });
+    });
+</script>
 {% endblock %}

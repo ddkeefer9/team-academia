@@ -86,7 +86,7 @@ WSGI_APPLICATION = 'AcademicAssessmentAssistant.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',  
+        'NAME': 'aac',  
         'USER': 'postgres', 
         'PASSWORD' : 'password', 
         #'HOST' : '18.221.82.10',
