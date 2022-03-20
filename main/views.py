@@ -67,3 +67,11 @@ def pdfGen(request):
 
         # Return file to download to the user.
         return FileResponse(buf, as_attachment=True, filename="DefaultReport.pdf")
+def sendDegrees(request):
+        degreePrograms = MakereportsDegreeprogram.objects.filter(department=request.GET.get("department"))
+        print(degreePrograms)
+        return render(
+                request,
+                'home/degreeDropdown.html',
+                {'degrees':degreePrograms},
+        )
