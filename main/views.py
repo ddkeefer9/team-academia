@@ -1,10 +1,9 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import FileResponse, HttpResponse
 from .models import \
         MakereportsReport, MakereportsSloinreport, MakereportsDegreeprogram, MakereportsDepartment, MakereportsSlostatus, \
         MakereportsSlostatus 
 from AcademicAssessmentAssistant.settings import BASE_DIR
-
 # Report Gen Imports
 from django.http import FileResponse
 import io
@@ -14,7 +13,7 @@ from reportlab.lib.units import inch
 from reportlab.platypus import Paragraph, Frame, PageBreak
 from reportlab.platypus.tableofcontents import TableOfContents
 from reportlab.lib.pagesizes import letter
-from .util.pdfgenhelpers import pdfGenHelper
+from .util.pdfgenhelpers import PDFGenHelpers as pg
 # Create your views here.
 
 def index(request):
@@ -33,50 +32,38 @@ def smartAssistant(request):
         )
 
 def pdfGen(request):
-        dpqs, sirqs, sirsqs = pdfGenHelper(1)
-        print(sirsqs)
-        # Constants for width and height to refer to later.
+        ## DB query to retrieve usable info for this generated PDF
+        dprqs, sirqs, sirsqs = pg.pdfGenQuery(1)
+
+        ## Generate the plot
+        if any((dprqs, sirqs, sirsqs)):
+                plot = pg.pdfGenPlotting(dprqs, sirqs, sirsqs)
+
+        ## PDF generation nonsense
         PAGE_WIDTH, PAGE_HEIGHT = letter
         buf = io.BytesIO()
         c = canvas.Canvas(buf, pagesize=letter)
         c.setTitle("DefaultReport")
         styles = getSampleStyleSheet()
-        styleN = styles['Normal']
-        styleH = styles['Heading2']
-        story = []
-
-        # add some flowables
-        story.append(Paragraph("Historical Data Report from YEAR to YEAR for PROGRAM", styleH))
         f = Frame(inch, inch, 7*inch, 9*inch, showBoundary=0)
+        styleN = styles['Normal']
+        styleH1 = styles['Heading1']
+        styleH2 = styles['Heading2']
+        story = []
+        story.append(Paragraph("Historical Data Report from YEAR to YEAR for PROGRAM", styleH2))
         f.addFromList(story, c)
         c.showPage()
         story.clear()
         toc = TableOfContents()
-        PS = ParagraphStyle
-        toc.levelStyles = [
-                PS(fontName='Helvetica', fontSize=14, name='TOCHeading1',
-                leftIndent=20, firstLineIndent=-20, spaceBefore=5, leading=16),
-                PS(fontSize=12, name='TOCHeading2',
-                leftIndent=40, firstLineIndent=-20, spaceBefore=0, leading=12),
-                PS(fontSize=10, name='TOCHeading3',
-                leftIndent=60, firstLineIndent=-20, spaceBefore=0, leading=12),
-                PS(fontSize=10, name='TOCHeading4',
-                leftIndent=100, firstLineIndent=-20, spaceBefore=0, leading=12),
-        ]
-        # toc.addEntry(1, "Testing for the use of the table of contents", 1)
-        toc.addEntry(0, "Test", 1, toc.levelStyles[0])
         story.append(toc)
-        f = Frame(inch, inch, 7*inch, 9*inch, showBoundary=0)
+        f.addFromList(story, c)
+        c.showPage()
+        story.clear()
+        story.append(Paragraph(f"Percentage of Targets the {dprqs[0].degreeprogram.name} Degree Program Meets", styleH1))
+        c.drawInlineImage(str(BASE_DIR) + "/main/static/testfig.png", inch, inch, width=400, height=300)
         f.addFromList(story, c)
         c.save()
         buf.seek(0)
-        return FileResponse(buf, as_attachment=True, filename="DefaultReport.pdf")
 
-def pdfGenHelper(degreeprogram_id):
-        # Degree program queryset.
-        dpqs = MakereportsReport.objects.filter(degreeprogram=degreeprogram_id)
-        # SLOs in report queryset.
-        sirqs = MakereportsSloinreport.objects.filter(report__in=dpqs)
-        # SLOs in report status queryset. 
-        sirsqs = MakereportsSlostatus.objects.filter(sloir__in=sirqs)
-        return dpqs, sirqs, sirsqs
+        # Return file to download to the user.
+        return FileResponse(buf, as_attachment=True, filename="DefaultReport.pdf")
