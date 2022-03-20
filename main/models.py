@@ -247,6 +247,17 @@ class MakereportsDecisionsactions(models.Model):
 
 
 class MakereportsDegreeprogram(models.Model):
+    """
+    Notes on the usage of this table:
+        The degreeprogram table contains information regarding a degree program at UNO.
+        name: The name of the degree program.
+        level: The level of the degree program (UG for undergraduate for example)
+        cycle: Their reporting cycle.
+        department: The department that coordinates this degree program
+        startingyear: The starting year of their current reporting cycle.
+        active: A boolean of whether the program is active or inactive
+        accredited: A boolean of whether this program is accredited or not.
+    """
     name = models.CharField(max_length=100)
     level = models.CharField(max_length=75)
     cycle = models.IntegerField(blank=True, null=True)
@@ -329,6 +340,26 @@ class MakereportsProfile(models.Model):
 
 
 class MakereportsReport(models.Model):
+    """
+    Notes on the usage of this table:
+        The reports table contains high-level information regarding a report generated for a degree program.
+        author: This is the author of the report
+        section1comment:
+        section2comment:
+        section3comment:
+        section4comment:
+        submitted: Boolean of whether the report has been submitted for review or not.
+        degreeprogram: The degree program this report is for.
+        rubric: A foreign key to the rubric this report is utilizing.
+        year: The year this report was submitted.
+        returned: Whether the report has been returned from review.
+        date_range_of_reported_data: A CharField formatting the range of years this report covers.
+        numberofslos: The number of SLOs this report contains
+        accreditorestslos: I have no clue. (*)
+        accreditorrevslos: I have no clue. (*)
+    Future Work:
+        Variables denoted with (*) need to be inquired about to the sponsor.
+    """
     author = models.CharField(max_length=100)
     section1comment = models.CharField(db_column='section1Comment', max_length=2000, blank=True, null=True)  # Field name made lowercase.
     section2comment = models.CharField(db_column='section2Comment', max_length=2000, blank=True, null=True)  # Field name made lowercase.
@@ -406,6 +437,22 @@ class MakereportsRubricitem(models.Model):
 
 
 class MakereportsSlo(models.Model):
+    """
+    Notes on the Usage of this table:
+        MakereportsSlo contains additional information on the SLO itself.
+        Blooms: The blooms taxonomy that the SLO is assessing
+        Numberofuses: The number of times the SLO has been used (*)
+    Definition for Blooms Abbreviations
+        EV: Evaluation
+        SN: Synthesis
+        AN: Analysis
+        AP: Application
+        CO: Comprehension
+        KN: Knowledge
+    Future Work:
+        Number of uses is ambiguous as we already have info with the SLOinreport regarding the number of assesses.
+        Not sure exactly what "uses" means.
+    """
     blooms = models.CharField(max_length=50)
     numberofuses = models.IntegerField(db_column='numberOfUses')  # Field name made lowercase.
 
@@ -425,6 +472,18 @@ class MakereportsSloGradgoals(models.Model):
 
 
 class MakereportsSloinreport(models.Model):
+    """
+    Notes on the Usage of this table:
+        Sloinreport contains information regarding the used SLO in a report.
+        report: A foreign key that creates a relation to the MakereportReport that this SLO is being used within.
+        slo: A foreign key that denotes the MakereportsSlo, which itself contains additional information about the SLO (More info is in "MakerportsSlo" docstring)
+        date: A date, that I am assuming relates to when this SLO was added to a report. (*)
+        goaltext: The goal of the SLO.
+        number: A number that has no meaning, it might relate to the range of years this SLO is applied to (2 for 2 years, 3 for 3 years, etc.) (*)
+        numberofassess: The number of times this SLO has been used for an assessment, this is also a guess (*)
+    Future Work:
+        Variables marked with (*) could be inquired about to our sponsor.
+    """
     report = models.ForeignKey(MakereportsReport, models.DO_NOTHING)
     slo = models.ForeignKey(MakereportsSlo, models.DO_NOTHING)
     changedfromprior = models.BooleanField(db_column='changedFromPrior')  # Field name made lowercase.
@@ -442,6 +501,13 @@ class MakereportsSloinreport(models.Model):
 
 
 class MakereportsSlostatus(models.Model):
+    """
+    Notes on the Usage of this table:
+        Slostatus contains information regarding if the SLO is not met, also contains a foreign key to the Sloinreport.
+        status: The status of the SLO, this can be Met, Partially Met, Not Met, or Unknown.
+        sloir: This is a foreign key to the SLO in report that this status is referring to.
+        override: This is a mechanism to allow the overriding of the Slostatus if needed.
+    """
     status = models.CharField(max_length=50)
     sloir = models.OneToOneField(MakereportsSloinreport, models.DO_NOTHING, db_column='sloIR_id')  # Field name made lowercase.
     override = models.BooleanField()

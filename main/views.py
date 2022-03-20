@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import MakereportsSloinreport
-from .models import MakereportsDegreeprogram
-from .models import MakereportsDepartment
+from .models import \
+        MakereportsReport, MakereportsSloinreport, MakereportsDegreeprogram, MakereportsDepartment, MakereportsSlostatus, \
+        MakereportsSlostatus 
 from AcademicAssessmentAssistant.settings import BASE_DIR
 
 # Report Gen Imports
@@ -14,6 +14,7 @@ from reportlab.lib.units import inch
 from reportlab.platypus import Paragraph, Frame, PageBreak
 from reportlab.platypus.tableofcontents import TableOfContents
 from reportlab.lib.pagesizes import letter
+from .util.pdfgenhelpers import pdfGenHelper
 # Create your views here.
 
 def index(request):
@@ -32,6 +33,8 @@ def smartAssistant(request):
         )
 
 def pdfGen(request):
+        dpqs, sirqs, sirsqs = pdfGenHelper(1)
+        print(sirsqs)
         # Constants for width and height to refer to later.
         PAGE_WIDTH, PAGE_HEIGHT = letter
         buf = io.BytesIO()
@@ -62,7 +65,6 @@ def pdfGen(request):
         ]
         # toc.addEntry(1, "Testing for the use of the table of contents", 1)
         toc.addEntry(0, "Test", 1, toc.levelStyles[0])
-        print(toc._entries)
         story.append(toc)
         f = Frame(inch, inch, 7*inch, 9*inch, showBoundary=0)
         f.addFromList(story, c)
@@ -70,3 +72,11 @@ def pdfGen(request):
         buf.seek(0)
         return FileResponse(buf, as_attachment=True, filename="DefaultReport.pdf")
 
+def pdfGenHelper(degreeprogram_id):
+        # Degree program queryset.
+        dpqs = MakereportsReport.objects.filter(degreeprogram=degreeprogram_id)
+        # SLOs in report queryset.
+        sirqs = MakereportsSloinreport.objects.filter(report__in=dpqs)
+        # SLOs in report status queryset. 
+        sirsqs = MakereportsSlostatus.objects.filter(sloir__in=sirqs)
+        return dpqs, sirqs, sirsqs
