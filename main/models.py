@@ -270,8 +270,8 @@ class MakereportsDegreeprogram(models.Model):
         managed = False
         db_table = 'makeReports_degreeprogram'
     
-    # def __str__(self):
-    #     return self.name
+    def __str__(self):
+        return self.name
 
 
 class MakereportsDepartment(models.Model):
