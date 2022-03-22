@@ -13,7 +13,7 @@ Change Database settings to match your postgres database name go to
 
 # Release Notes
 
-## 02-28-2022 (Milestone 2)
+## 02-28-2022 (Milestone 1)
 
 - SQL dump loaded into PostgreSQL database hosted on Amazon EC2 instance, information to connect is in the settings.py file.
 - Models generated from the database in the models.py file.
@@ -23,7 +23,7 @@ Change Database settings to match your postgres database name go to
 pytest
 ```
 
-## 02-28-2022 (Milestone 1)
+## 03-22-2022 (Milestone 2)
 - Updated Home Page HTML with buttons for views and dropdown department/degree program selection
 - Added PDF Generation to Historical Data View with basic plots
 - Added Navbar and HTML template
