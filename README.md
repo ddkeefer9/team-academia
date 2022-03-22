@@ -22,3 +22,10 @@ Change Database settings to match your postgres database name go to
 ```
 pytest
 ```
+
+## 02-28-2022 (Milestone 1)
+- Updated Home Page HTML with buttons for views and dropdown department/degree program selection
+- Added PDF Generation to Historical Data View with basic plots
+- Added Navbar and HTML template
+- Added Selenium Testing Framework and ChromeDriver
+- Added Tests for Historical and Feedback Buttons on Home Page
