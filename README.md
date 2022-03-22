@@ -13,7 +13,7 @@ Change Database settings to match your postgres database name go to
 
 # Release Notes
 
-## 02-28-2022 (Milestone 1)
+## 02-28-2022 (Milestone 2)
 
 - SQL dump loaded into PostgreSQL database hosted on Amazon EC2 instance, information to connect is in the settings.py file.
 - Models generated from the database in the models.py file.
