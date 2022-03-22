@@ -23,7 +23,7 @@ Change Database settings to match your postgres database name go to
 pytest
 ```
 
-## 03-22-2022 (Milestone 2)
+## 03-21-2022 (Milestone 2)
 - Updated Home Page HTML with buttons for views and dropdown department/degree program selection
 - Added PDF Generation to Historical Data View with basic plots
 - Added Navbar and HTML template
@@ -33,4 +33,3 @@ pytest
 ```
 pytest --reuse-db
 ```
-

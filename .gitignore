@@ -2,4 +2,3 @@
 *.pyc
 main/migrations
 AcademicAssessmentAssistant/settings.py
-main/static/testfig.png

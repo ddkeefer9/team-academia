@@ -140,6 +140,16 @@ class MakereportsAnnouncement(models.Model):
 
 
 class MakereportsAssessment(models.Model):
+    """
+    Notes on the usage of this table:
+        The assessment table contains high level information of a given assessment.
+        title (CharField): A title given to the assessment.
+        domainexamination (BooleanField): A boolean for if assessment is an examination.
+        domainproduct (BooleanField): A boolean for if the assessment is a product.
+        domainperformance (BooleanField): A boolean for if the assessment is a performance.
+        directmeasure (BooleanField): A boolean for if the assessment is a direct measure. (*)
+        numberofuses (IntegerField): A count for the number of times 
+    """
     title = models.CharField(max_length=300)
     domainexamination = models.BooleanField(db_column='domainExamination')  # Field name made lowercase.
     domainproduct = models.BooleanField(db_column='domainProduct')  # Field name made lowercase.
@@ -164,6 +174,16 @@ class MakereportsAssessmentaggregate(models.Model):
 
 
 class MakereportsAssessmentdata(models.Model):
+    """
+    Notes on the usage of this table:
+        This table contains information on the collected data from a given version of an assesment.
+        numberstudents (IntegerField): The count of students include in this assessment version.
+        overallproficient (IntegerField): The count of students with a proficient assessment.
+        assessmentversion (ForeignKey): A foreign key to the assessment version table.
+        datarange (CharField): A data range for the collection period of this assessment version.
+    Additional Remarks:
+        datarange is not standard across programs/departments. 
+    """
     numberstudents = models.IntegerField(db_column='numberStudents')  # Field name made lowercase.
     overallproficient = models.IntegerField(db_column='overallProficient')  # Field name made lowercase.
     assessmentversion = models.ForeignKey('MakereportsAssessmentversion', models.DO_NOTHING, db_column='assessmentVersion_id')  # Field name made lowercase.
@@ -184,6 +204,25 @@ class MakereportsAssessmentsupplement(models.Model):
 
 
 class MakereportsAssessmentversion(models.Model):
+    """
+    Notes on the usage of this table:
+        The assessmentversion table provides high level information about a given version of an assessment.
+        date (DateField): Date of the assessment version record.
+        description (CharField): A description of the assessment.
+        finalterm (BooleanField): Boolean of whether the assessment was done in the last term before graduation.
+        where (CharField): A description of how the assessment is to be conducted (hence where).
+        allstudents (BooleanField): Required for all students or not.
+        sampledescription (CharField): Additional description of the assessment. (*)
+        frequency (CharField): The sampling frequency in years for this assessment.
+        threshold (CharField): The threshold for the measurement of this assessment (percentage, pass/fail, etc.).
+        target (IntegerField): A target percentage of proficiency for the assessment.
+        changedfromprior (BooleanField): Was the assessment changed since last sample/assessment version?
+        slo (ForeignKey): A foreign key to MakereportsSloinreport which contains the SLO as it is in the particular report.
+        number (IntegerField): I have no clue. (*)
+        frequencychoice (CharField): Letter for the rate of the assessment (Y for yearly, S for semester, O for occasional (not sure on that)) (*)
+    Future Work:
+        Any variables with a (*) need to be clarified by the sponsor.
+    """
     date = models.DateField()
     description = models.CharField(max_length=1000)
     finalterm = models.BooleanField(db_column='finalTerm')  # Field name made lowercase.
@@ -216,6 +255,12 @@ class MakereportsAssessmentversionSupplements(models.Model):
 
 
 class MakereportsCollege(models.Model):
+    """
+    Notes on the usage of this table:
+        This table contains information relating to the college.
+        name (CharField): The name of the college.
+        active (BooleanField): College active or not.
+    """
     name = models.CharField(max_length=100)
     active = models.BooleanField()
 
@@ -250,13 +295,13 @@ class MakereportsDegreeprogram(models.Model):
     """
     Notes on the usage of this table:
         The degreeprogram table contains information regarding a degree program at UNO.
-        name: The name of the degree program.
-        level: The level of the degree program (UG for undergraduate for example)
-        cycle: Their reporting cycle.
-        department: The department that coordinates this degree program
-        startingyear: The starting year of their current reporting cycle.
-        active: A boolean of whether the program is active or inactive
-        accredited: A boolean of whether this program is accredited or not.
+        name (CharField): The name of the degree program.
+        level (CharField): The level of the degree program (UG for undergraduate for example)
+        cycle (IntegerField): Their reporting cycle.
+        department (ForeignKey): The department that coordinates this degree program
+        startingyear (IntegerField): The starting year of their current reporting cycle.
+        active (BooleanField): A boolean of whether the program is active or inactive
+        accredited (BooleanField): A boolean of whether this program is accredited or not.
     """
     name = models.CharField(max_length=100)
     level = models.CharField(max_length=75)
@@ -270,11 +315,18 @@ class MakereportsDegreeprogram(models.Model):
         managed = False
         db_table = 'makeReports_degreeprogram'
     
-    # def __str__(self):
-    #     return self.name
+    def __str__(self):
+        return self.name
 
 
 class MakereportsDepartment(models.Model):
+    """
+    Notes on the usage of this table:
+        The department table contains high-level information relating to the department.
+        name (CharField): The department name.
+        college (ForeignKey): A foreign key to the MakereportsCollege table.
+        active (BooleanField): Boolean for if department active or not.
+    """
     name = models.CharField(max_length=100)
     college = models.ForeignKey(MakereportsCollege, models.DO_NOTHING)
     active = models.BooleanField()
@@ -288,6 +340,16 @@ class MakereportsDepartment(models.Model):
 
 
 class MakereportsGradedrubric(models.Model):
+    """
+    Notes on the usage of this table:
+        This table contains the feedback on the graded rubric.
+        rubricversion (ForeignKey): A foreign key to the MakereportsRubric table
+        section1comment (CharField): Comment section for the "Student Learning Outcomes (SLOs)"
+        section2comment (CharField): Comment section for the "Assessment Methods"
+        section3comment (CharField): Comment section for the "Data Collection and Analysis"
+        section4comment (CharField): Comment section for the "Decisions and Actions"
+        complete (BooleanField): BooleanField describing whether the graded rubric is completed.
+    """
     rubricversion = models.ForeignKey('MakereportsRubric', models.DO_NOTHING, db_column='rubricVersion_id')  # Field name made lowercase.
     generalcomment = models.CharField(db_column='generalComment', max_length=2000, blank=True, null=True)  # Field name made lowercase.
     section1comment = models.CharField(db_column='section1Comment', max_length=2000, blank=True, null=True)  # Field name made lowercase.
@@ -343,20 +405,20 @@ class MakereportsReport(models.Model):
     """
     Notes on the usage of this table:
         The reports table contains high-level information regarding a report generated for a degree program.
-        author: This is the author of the report
-        section1comment:
-        section2comment:
-        section3comment:
-        section4comment:
-        submitted: Boolean of whether the report has been submitted for review or not.
-        degreeprogram: The degree program this report is for.
-        rubric: A foreign key to the rubric this report is utilizing.
-        year: The year this report was submitted.
-        returned: Whether the report has been returned from review.
-        date_range_of_reported_data: A CharField formatting the range of years this report covers.
-        numberofslos: The number of SLOs this report contains
-        accreditorestslos: I have no clue. (*)
-        accreditorrevslos: I have no clue. (*)
+        author (CharField): This is the author of the report
+        section1comment (CharField): Comment section for the "Student Learning Outcomes (SLOs)"
+        section2comment (CharField): Comment section for the "Assessment Methods"
+        section3comment (CharField): Comment section for the "Data Collection and Analysis"
+        section4comment (CharField): Comment section for the "Decisions and Actions"
+        submitted (BooleanField): Boolean of whether the report has been submitted for review or not.
+        degreeprogram (ForeignKey): The degree program this report is for.
+        rubric (OneToOneField): A one-to-one foreign key to the rubric this report is utilizing.
+        year (IntegerField): The year this report was submitted.
+        returned (BooleanField): Whether the report has been returned from review.
+        date_range_of_reported_data (CharField): A CharField formatting the range of years this report covers.
+        numberofslos (IntegerField): The number of SLOs this report contains
+        accreditorestslos (BooleanField): I have no clue. (*)
+        accreditorrevslos (BooleanField): I have no clue. (*)
     Future Work:
         Variables denoted with (*) need to be inquired about to the sponsor.
     """
@@ -412,6 +474,16 @@ class MakereportsResultcommunicate(models.Model):
 
 
 class MakereportsRubric(models.Model):
+    """
+    Notes on the usage of this table:
+        This table contains high level information on the rubric in the makereports process.
+        date (DateField): Creation date for this report rubric.
+        fullfile (CharField): An absolute path to the .pdf describing the rubric.
+        name (CharField): The name of the rubric.
+    Additional Comments:
+        Only two rubrics, an Accredited Assessment Rubric, and an Non-accredited Assessment Rubric.
+        respective pk for each is 5 & 4.
+    """
     date = models.DateField()
     fullfile = models.CharField(db_column='fullFile', max_length=100, blank=True, null=True)  # Field name made lowercase.
     name = models.CharField(max_length=150)
@@ -422,6 +494,21 @@ class MakereportsRubric(models.Model):
 
 
 class MakereportsRubricitem(models.Model):
+    """
+    Notes on the usage of this table:
+        This table contains a description of a particular rubric item.
+        text (CharField): A text description of the rubric item.
+        section (IntegerField): The section number this rubric is assigned to.
+        rubricversion (ForeignKey): A foreign key to the MakereportsRubric table, see its docstring for additional information.
+        order (IntegerField): I have no clue (*)
+        dmetext (CharField): I have no clue (*)
+        eetext (CharField): I have no clue (*)
+        metext (CharField): I have no clue (*)
+        abbreviation (CharField): I have no clue (*)
+    Future Work:
+        Ask for more info from sponsor, dme/ee/metext all had raw HTML in them describing levels of a rubric, but the abbreviations are unknown.
+        abbreviation and order seem to be mainly unfilled for table entries.
+    """
     text = models.CharField(max_length=1000)
     section = models.IntegerField()
     rubricversion = models.ForeignKey(MakereportsRubric, models.DO_NOTHING, db_column='rubricVersion_id')  # Field name made lowercase.
@@ -440,8 +527,8 @@ class MakereportsSlo(models.Model):
     """
     Notes on the Usage of this table:
         MakereportsSlo contains additional information on the SLO itself.
-        Blooms: The blooms taxonomy that the SLO is assessing
-        Numberofuses: The number of times the SLO has been used (*)
+        blooms (CharField): The blooms taxonomy that the SLO is assessing
+        numberofuses (IntegerField): The number of times the SLO has been used (*)
     Definition for Blooms Abbreviations
         EV: Evaluation
         SN: Synthesis
@@ -462,6 +549,12 @@ class MakereportsSlo(models.Model):
 
 
 class MakereportsSloGradgoals(models.Model):
+    """
+    Notes on the Usage of this table:
+        Contains foreign keys relating to goals for graduation.
+        slo (ForeignKey): A foreign key to the SLO used for the grad goal.
+        gradgoal (ForeignKey): A foreign key to a table containing the raw HTML describing the grad goal.
+    """
     slo = models.ForeignKey(MakereportsSlo, models.DO_NOTHING)
     gradgoal = models.ForeignKey(MakereportsGradgoal, models.DO_NOTHING)
 
@@ -475,12 +568,12 @@ class MakereportsSloinreport(models.Model):
     """
     Notes on the Usage of this table:
         Sloinreport contains information regarding the used SLO in a report.
-        report: A foreign key that creates a relation to the MakereportReport that this SLO is being used within.
-        slo: A foreign key that denotes the MakereportsSlo, which itself contains additional information about the SLO (More info is in "MakerportsSlo" docstring)
-        date: A date, that I am assuming relates to when this SLO was added to a report. (*)
-        goaltext: The goal of the SLO.
-        number: A number that has no meaning, it might relate to the range of years this SLO is applied to (2 for 2 years, 3 for 3 years, etc.) (*)
-        numberofassess: The number of times this SLO has been used for an assessment, this is also a guess (*)
+        report (ForeignKey): A foreign key that creates a relation to the MakereportReport that this SLO is being used within.
+        slo (ForeignKey): A foreign key that denotes the MakereportsSlo, which itself contains additional information about the SLO (More info is in "MakerportsSlo" docstring)
+        date (DateField): A date, that I am assuming relates to when this SLO was added to a report. (*)
+        goaltext (CharField): The goal of the SLO.
+        number (IntegerField): A number that has no meaning, it might relate to the range of years this SLO is applied to (2 for 2 years, 3 for 3 years, etc.) (*)
+        numberofassess (integerField): The number of times this SLO has been used for an assessment, this is also a guess (*)
     Future Work:
         Variables marked with (*) could be inquired about to our sponsor.
     """
@@ -504,9 +597,9 @@ class MakereportsSlostatus(models.Model):
     """
     Notes on the Usage of this table:
         Slostatus contains information regarding if the SLO is not met, also contains a foreign key to the Sloinreport.
-        status: The status of the SLO, this can be Met, Partially Met, Not Met, or Unknown.
-        sloir: This is a foreign key to the SLO in report that this status is referring to.
-        override: This is a mechanism to allow the overriding of the Slostatus if needed.
+        status (CharField): The status of the SLO, this can be Met, Partially Met, Not Met, or Unknown.
+        sloir (OneToOneField): This is a one-to-one foreign key to the SLO in report that this status is referring to.
+        override (BooleanField): This is a mechanism to allow the overriding of the Slostatus if needed.
     """
     status = models.CharField(max_length=50)
     sloir = models.OneToOneField(MakereportsSloinreport, models.DO_NOTHING, db_column='sloIR_id')  # Field name made lowercase.
