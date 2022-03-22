@@ -29,3 +29,8 @@ pytest
 - Added Navbar and HTML template
 - Added Selenium Testing Framework and ChromeDriver
 - Added Tests for Historical and Feedback Buttons on Home Page
+- Added a test database with updated test command
+```
+pytest --reuse-db
+```
+
