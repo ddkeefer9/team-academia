@@ -3,6 +3,7 @@ from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+
 import pytest
 # Create your tests here.
 
@@ -22,10 +23,8 @@ class BasicTests(TestCase):
 		response = self.client.get('/admin')
 		self.assertEqual(response.status_code, 301)
 
-		
-class PlayerFormTest(LiveServerTestCase):
 
-	def testform(self):
+	def testButtonSmartFeedback(self):
 		selenium = webdriver.Chrome('C:/bin/chromedriver.exe')
 		#Choose your url to visit
 		selenium.get('http://127.0.0.1:8000/')
@@ -36,3 +35,16 @@ class PlayerFormTest(LiveServerTestCase):
 		currentURL = selenium.current_url
 		self.assertEqual(currentURL,"http://127.0.0.1:8000/smartAssistant")
 		selenium.quit()
+
+	def testButtonHistoricalData(self):
+		selenium = webdriver.Chrome('C:/bin/chromedriver.exe')
+		#Choose your url to visit
+		selenium.get('http://127.0.0.1:8000/')
+		#find the elements you need to submit form
+		# Obtain button by link text and click.
+		selenium.find_element_by_xpath("//a[@type='button' and @value='Hist']").click()
+		#check result; page source looks at entire html document
+		currentURL = selenium.current_url
+		self.assertEqual(currentURL,"http://127.0.0.1:8000/")
+		selenium.quit()
+
