@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import FileResponse, HttpResponse
-from .models import \
+from main.models import \
         MakereportsReport, MakereportsSloinreport, MakereportsDegreeprogram, MakereportsDepartment, MakereportsSlostatus, \
         MakereportsSlostatus 
 from AcademicAssessmentAssistant.settings import BASE_DIR
@@ -13,7 +13,7 @@ from reportlab.lib.units import inch
 from reportlab.platypus import Paragraph, Frame, PageBreak
 from reportlab.platypus.tableofcontents import TableOfContents
 from reportlab.lib.pagesizes import letter
-from .util.pdfgenhelpers import PDFGenHelpers as pg
+from ..util.pdfgenhelpers import PDFGenHelpers as pg
 # Create your views here.
 
 def index(request):
@@ -30,6 +30,13 @@ def smartAssistant(request):
                 request, 
                 'smart_assistant/smart_assistant.html',
         )
+
+def historical(request):
+        return render(
+                request, 
+                'reports/historical_report.html',
+        )
+
 
 def pdfGen(request):
         ## DB query to retrieve usable info for this generated PDF
