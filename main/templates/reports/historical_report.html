@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.27/bootstrap-native-v4.min.js"></script>
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+{% bootstrap_messages %}
+{% block content %}
+
+<div class="container-md" style="padding-top: 30px;">
+
+
+    <h3>Historical Report Page</h3>
+    <div class="p-2">
+        <ul class="list-group">  
+            {% buttons %}
+            <a type="button" class="btn btn-primary" href="pdfGen" value = "Hist">View Historical Data</a>
+            <br><br>
+            {% endbuttons %}
+          </ul>
+    </div>
+  
+  </div>
+
+{% endblock %}
