@@ -9,12 +9,12 @@ from django.http import FileResponse
 from ..util.pdfgenhelpers import PDFGenHelpers as pg
 import io
 # Create your views here.
-class SmartAssistantPage():
+class HistoricalPage():
     """
-    Smart Assistant View
+    Historical View
     """
-    def display_smartAssistant(request):
+    def display_historical(request):
             return render(
                     request, 
-                    'smart_assistant/smart_assistant.html',
+                    'reports/historical_report.html',
             )
