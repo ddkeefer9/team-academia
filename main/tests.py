@@ -6,8 +6,12 @@ from selenium.webdriver.common.by import By
 
 import pytest
 # Create your tests here.
+pytestmark = pytest.mark.django_db
 
+@pytest.mark.django_db
 class BasicTests(TestCase):
+	pytestmark = pytest.mark.django_db
+
 	def test_example(self):
 		assert 1 == 1
 
@@ -45,6 +49,6 @@ class BasicTests(TestCase):
 		selenium.find_element_by_xpath("//a[@type='button' and @value='Hist']").click()
 		#check result; page source looks at entire html document
 		currentURL = selenium.current_url
-		self.assertEqual(currentURL,"http://127.0.0.1:8000/")
+		self.assertEqual(currentURL,"http://127.0.0.1:8000/historical")
 		selenium.quit()
 
