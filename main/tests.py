@@ -23,7 +23,7 @@ class BasicTests(TestCase):
 		self.assertEqual(response.status_code, 301)
 
 		
-class PlayerFormTest(LiveServerTestCase):
+#class PlayerFormTest(LiveServerTestCase):
 
 	def testform(self):
 		selenium = webdriver.Chrome('C:/bin/chromedriver.exe')
