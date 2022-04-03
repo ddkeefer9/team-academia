@@ -14,7 +14,11 @@ class HistoricalPage():
     Historical View
     """
     def display_historical(request):
-            return render(
+                departments = MakereportsDepartment.objects.all()
+                degreePrograms = MakereportsDegreeprogram.objects.all()
+                return render(
                     request, 
                     'reports/historical_report.html',
+                    {'showDepartments':departments,
+                        'showDegrees':degreePrograms}
             )

@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% endblock %}
 {% load bootstrap4 %}
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.27/bootstrap-native-v4.min.js"></script>
 {% bootstrap_css %}
@@ -6,19 +9,126 @@
 {% bootstrap_messages %}
 {% block content %}
 
+
+
 <div class="container-md" style="padding-top: 30px;">
 
 
-    <h3>Historical Report Page</h3>
+    <h3>Historical Report Generation</h3>
     <div class="p-2">
-        <ul class="list-group">  
+      <form action="pdfGen">
+        <div style="width:50%; display:inline-block;">
+        <h4>Department</h4>
+        <select name="department" class="form-control col-9" title="" required id="id_department">
+          <option value="" selected disabled hidden>Choose a department</option>
+          {% for departments in showDepartments %}
+          <option value="{{ departments.pk }}" >{{ departments.name}}</option>
+          {% endfor %}
+        </select>
+
+        <br>
+        <h4>Degree Program</h4>
+        <select name="degree-program" class="form-control col-9" title="" required id="id_degree-program">
+          <option value="All Programs" selected >All Programs</option>
+          {% for degreePrograms in showDegrees %}
+          <option value="" >{{ degreePrograms.name}}</option>
+          {% endfor %}
+        </select>
+
+        <br>
+
+        <h4>Date Range</h4>
+        
+        <div style="width:50%; display:inline-block">
+          <select name="start-date" class="form-control col-9" title="" required id="id_start-date" style="display:inline-block">
+        <!-- somehow get the dates that are present instead of listing them all-->
+          <option value="" selected disable hidden>Start</option>
+          <option value="2015">2015</option>
+          <option value="2016">2016</option>
+          <option value="2017">2017</option>
+          <option value="2018">2018</option>
+          <option value="2019">2019</option>
+          <option value="2020">2020</option>
+          <option value="2021">2021</option>
+          <option value="2022">2022</option>
+        </select>
+      </div><div style="width:50%; display:inline-block;">
+          <select name="end-date" class="form-control col-9" title="" required id="id_end-date" style="display:inline-block;">
+            <!-- somehow get the dates that are present instead of listing them all-->
+            <option value="" selected disable hidden>End</option>
+            <option value="2015">2015</option>
+            <option value="2016">2016</option>
+            <option value="2017">2017</option>
+            <option value="2018">2018</option>
+            <option value="2019">2019</option>
+            <option value="2020">2020</option>
+            <option value="2021">2021</option>
+            <option value="2022">2022</option>
+          </select>
+        </div>
+        
+        
+
+      </div><!--
+        this needs to be here in order for the divs to be formatted properly
+      --><div style="width:50%; display:inline-block;">
+          <h4>Options</h4>
+          <input type="checkbox" id="assessmentStats" name="assessmentStats" value="assessmentStats">
+          <label for="assessmentStats"> SLO and Assessment Statistics</label><br>
+          <input type="checkbox" id="numbOfSLOsMet" name="numbOfSLOsMet" value="numbOfSLOsMet">
+          <label for="numbOfSLOsMet"> Number of SLOs met</label><br>
+          <input type="checkbox" id="targetsMet" name="targetsMet" value="targetsMet" disabled>
+          <label for="targetsMet"> Targets met by degree program</label><br>
+        </div>
+
+        
+        
+        <br><br>
+        <div style="text-align: center;">
+          <ul class="list-group">  
             {% buttons %}
-            <a type="button" class="btn btn-primary" href="pdfGen" value = "Hist">View Historical Data</a>
+            <input type="submit" class="btn btn-primary" value = "Generate Report">
             <br><br>
             {% endbuttons %}
           </ul>
+        </div>
+      </form>
+
+      
     </div>
-  
   </div>
 
+{% endblock %}
+{% block endscripts %}
+<script>
+  var dept = $("#id_department")
+  dept.change(function () {
+     // var degreeName = dept[0].options[dept[0].selectedIndex].text;
+      var degreeName = dept.val()
+      $.ajax({
+        url: "/degreeDropdown",
+        data: {
+          'department': degreeName
+        },
+        success: function (data) {
+          $("#id_degree-program").html(data);
+        }
+      });
+    });
+</script>
+
+<!-- This script ensures that the user can't select the option Targets met by degree program
+    without selecting a degree program.
+    It does this by disabling the checkbox if All Programs is the option that is selected. -->
+<script>
+  $("#id_degree-program").on('change', function () {
+      var val = $(this).val();
+      if (val === "All Programs" || val === "---------") {
+          $('#targetsMet').prop('checked', false);
+          $('#targetsMet').attr("disabled", true);
+          return;
+      }
+      $('#targetsMet').attr("disabled", false);
+  });
+</script>
 {% endblock %}
