@@ -25,11 +25,11 @@ class PDFGenHelpers:
 
         # Degree program report queryset.
         mrdpqs = MakereportsDegreeprogram.objects.filter(name=degreeprogram_name)
-        print(mrdpqs)
+        # print(mrdpqs)
         if len(mrdpqs) < 1:
             return (None, None, None)
         dprqs = MakereportsReport.objects.filter(degreeprogram=mrdpqs[0])
-        print(dprqs)
+        # print(dprqs)
         if len(dprqs) < 1:  # Degree program does not have a report associated with it.
             return (None,None,None)
         # SLOs in report queryset.

@@ -31,8 +31,10 @@ class HomePage():
         )
     
     def page_traversal(request):
-        print(request.POST)
-        if "historical_woptions" in request.POST:
+        # If we are traversing from the home page OR we are redirecting back to the historical page after 
+        if "historical_woptions" in request.POST or len(request.POST) < 1 and request.method == "POST":
+            return HistoricalPage.display_historical(request)
+        elif "historical_woptions" not in request.POST and request.method == "GET":
             return HistoricalPage.display_historical(request)
         elif "smart_woptions" in request.POST:
             return SmartAssistantPage.display_smartAssistant(request)
