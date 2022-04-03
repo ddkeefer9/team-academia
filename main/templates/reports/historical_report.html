@@ -21,16 +21,24 @@
         <div style="width:50%; display:inline-block;">
         <h4>Department</h4>
         <select name="department" class="form-control col-9" title="" required id="id_department">
-          <option value="" selected disabled hidden>Choose a department</option>
+          {% if start_department %}
+            <option value="{{ start_department.pk }}" selected hidden>{{ start_department.name }}</option>
+          {% else %}
+            <option value="" selected disabled hidden>Choose a department</option>
+          {% endif %}
           {% for departments in showDepartments %}
-          <option value="{{ departments.pk }}" >{{ departments.name }}</option>
+            <option value="{{ departments.pk }}" >{{ departments.name }}</option>
           {% endfor %}
         </select>
 
         <br>
         <h4>Degree Program</h4>
         <select name="degree-program" class="form-control col-9" title="" required id="id_degree-program">
-          <option value="All Programs" selected >All Programs</option>
+          {% if start_degree_program %}
+            <option value="{{ start_degree_program.name }}" selected hidden>{{ start_degree_program }}</option>
+          {% else %}
+            <option value="" selected >Choose degree program</option>
+          {% endif %}
           {% for degreePrograms in showDegrees %}
             <option value="" >{{ degreePrograms.name }}</option>
           {% endfor %}

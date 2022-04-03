@@ -28,7 +28,7 @@ class PDFPage():
     def display_pdfGen(request):
         ## DB query to retrieve usable info for this generated PDF
         if request.method == "POST":
-            print(request.POST)
+            pass
         dprqs, sirqs, sirsqs = pg.pdfGenQuery(request.POST['degree-program'])
 
         ## Generate the plot

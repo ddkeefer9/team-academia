@@ -17,14 +17,28 @@ class HistoricalPage():
     Historical View
     """
     def display_historical(request):
-        
-        if request.method == "POST":
-            messages.error(request, 'Not enough data.')
-            messages.get_messages(request).used = True
+        print(request.POST)
+        if request.method == "POST" and "historical_woptions" not in request.POST:
             return PDFPage.display_pdfGen(request)
+        
         departments = MakereportsDepartment.objects.all()
         degreePrograms = MakereportsDegreeprogram.objects.all()
         form = PdfForm()
+
+        if request.method == "POST" and "department" in request.POST and "degree-program" in request.POST:
+            start_department = MakereportsDepartment.objects.filter(id=int(request.POST['department']))[0]
+            start_degree_program = MakereportsDegreeprogram.objects.filter(name=request.POST['degree-program'])[0]
+            return render(
+                request,
+                'reports/historical_report.html',
+                {
+                    'showDepartments':departments,
+                    'showDegrees':degreePrograms,
+                    'pdfForm':form,
+                    'start_department': start_department,
+                    'start_degree_program': start_degree_program
+                }
+            )
         return render(
             request, 
             'reports/historical_report.html',
