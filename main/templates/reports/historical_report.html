@@ -16,7 +16,8 @@
 
     <h3>Historical Report Generation</h3>
     <div class="p-2">
-      <form action="pdfGen">
+      <form action="{% url 'historical' %}", method="post">
+        {% csrf_token %}
         <div style="width:50%; display:inline-block;">
         <h4>Department</h4>
         <select name="department" class="form-control col-9" title="" required id="id_department">
@@ -31,7 +32,7 @@
         <select name="degree-program" class="form-control col-9" title="" required id="id_degree-program">
           <option value="All Programs" selected >All Programs</option>
           {% for degreePrograms in showDegrees %}
-          <option value="" >{{ degreePrograms.name}}</option>
+          <option value="" >{{ degreePrograms.name }}</option>
           {% endfor %}
         </select>
 
@@ -97,6 +98,7 @@
       
     </div>
   </div>
+
 
 {% endblock %}
 {% block endscripts %}

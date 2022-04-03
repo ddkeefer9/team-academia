@@ -1,13 +1,14 @@
 
 from django.shortcuts import render
-from django.http import FileResponse, HttpResponse
+from django.http import FileResponse, HttpResponse, HttpResponseRedirect
+from django.contrib.messages import ERROR 
 from main.models import \
-        MakereportsReport, MakereportsSloinreport, MakereportsDegreeprogram, MakereportsDepartment, MakereportsSlostatus, \
-        MakereportsSlostatus 
+    MakereportsReport, MakereportsSloinreport, MakereportsDegreeprogram, MakereportsDepartment, MakereportsSlostatus, \
+    MakereportsSlostatus 
 from AcademicAssessmentAssistant.settings import BASE_DIR
 # Report Gen Imports
 from django.http import FileResponse
-from ..util.pdfgenhelpers import PDFGenHelpers as pg
+from .util.pdfgenhelpers import PDFGenHelpers as pg
 from django.views.generic.list import ListView
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
@@ -25,38 +26,42 @@ class PDFPage():
     PDF Generation View
     """
     def display_pdfGen(request):
-            ## DB query to retrieve usable info for this generated PDF
-            dprqs, sirqs, sirsqs = pg.pdfGenQuery(1)
+        ## DB query to retrieve usable info for this generated PDF
+        if request.method == "POST":
+            print(request.POST)
+        dprqs, sirqs, sirsqs = pg.pdfGenQuery(request.POST['degree-program'])
 
-            ## Generate the plot
-            if any((dprqs, sirqs, sirsqs)):
-                    plot = pg.pdfGenPlotting(dprqs, sirqs, sirsqs)
+        ## Generate the plot
+        if any((dprqs, sirqs, sirsqs)):
+            plot = pg.pdfGenPlotting(dprqs, sirqs, sirsqs)
+        else:
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-            ## PDF generation nonsense
-            PAGE_WIDTH, PAGE_HEIGHT = letter
-            buf = io.BytesIO()
-            c = canvas.Canvas(buf, pagesize=letter)
-            c.setTitle("DefaultReport")
-            styles = getSampleStyleSheet()
-            f = Frame(inch, inch, 7*inch, 9*inch, showBoundary=0)
-            styleN = styles['Normal']
-            styleH1 = styles['Heading1']
-            styleH2 = styles['Heading2']
-            story = []
-            story.append(Paragraph("Historical Data Report from YEAR to YEAR for PROGRAM", styleH2))
-            f.addFromList(story, c)
-            c.showPage()
-            story.clear()
-            toc = TableOfContents()
-            story.append(toc)
-            f.addFromList(story, c)
-            c.showPage()
-            story.clear()
-            story.append(Paragraph(f"Percentage of Targets the {dprqs[0].degreeprogram.name} Degree Program Meets", styleH1))
-            c.drawInlineImage(str(BASE_DIR) + "/main/static/testfig.png", inch, inch, width=400, height=300)
-            f.addFromList(story, c)
-            c.save()
-            buf.seek(0)
+        ## PDF generation nonsense
+        PAGE_WIDTH, PAGE_HEIGHT = letter
+        buf = io.BytesIO()
+        c = canvas.Canvas(buf, pagesize=letter)
+        c.setTitle("DefaultReport")
+        styles = getSampleStyleSheet()
+        f = Frame(inch, inch, 7*inch, 9*inch, showBoundary=0)
+        styleN = styles['Normal']
+        styleH1 = styles['Heading1']
+        styleH2 = styles['Heading2']
+        story = []
+        story.append(Paragraph("Historical Data Report from YEAR to YEAR for PROGRAM", styleH2))
+        f.addFromList(story, c)
+        c.showPage()
+        story.clear()
+        toc = TableOfContents()
+        story.append(toc)
+        f.addFromList(story, c)
+        c.showPage()
+        story.clear()
+        story.append(Paragraph(f"Percentage of Targets the {dprqs[0].degreeprogram.name} Degree Program Meets", styleH1))
+        c.drawInlineImage(str(BASE_DIR) + "/main/static/testfig.png", inch, inch, width=400, height=300)
+        f.addFromList(story, c)
+        c.save()
+        buf.seek(0)
 
-            # Return file to download to the user.
-            return FileResponse(buf, as_attachment=True, filename="DefaultReport.pdf")
+        # Return file to download to the user.
+        return FileResponse(buf, as_attachment=True, filename="DefaultReport.pdf")

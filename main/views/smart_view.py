@@ -6,7 +6,6 @@ from main.models import \
 from AcademicAssessmentAssistant.settings import BASE_DIR
 # Report Gen Imports
 from django.http import FileResponse
-from ..util.pdfgenhelpers import PDFGenHelpers as pg
 import io
 # Create your views here.
 class SmartAssistantPage():

@@ -1,4 +1,4 @@
-from ..models import \
+from ...models import \
         MakereportsReport, MakereportsSloinreport, MakereportsDegreeprogram, MakereportsDepartment, MakereportsSlostatus, \
         MakereportsSlostatus 
 import matplotlib
@@ -10,7 +10,7 @@ from AcademicAssessmentAssistant.settings import BASE_DIR
 
 class PDFGenHelpers:
 
-    def pdfGenQuery(degreeprogram_id):
+    def pdfGenQuery(degreeprogram_name):
         """
         Helper for querying the database to generate our default report.
 
@@ -22,8 +22,14 @@ class PDFGenHelpers:
                 - sirqs: is the SLOinreport queryset.
                 - sirsqs: is the SLOinreportstatus queryset.
         """
+
         # Degree program report queryset.
-        dprqs = MakereportsReport.objects.filter(degreeprogram=degreeprogram_id)
+        mrdpqs = MakereportsDegreeprogram.objects.filter(name=degreeprogram_name)
+        print(mrdpqs)
+        if len(mrdpqs) < 1:
+            return (None, None, None)
+        dprqs = MakereportsReport.objects.filter(degreeprogram=mrdpqs[0])
+        print(dprqs)
         if len(dprqs) < 1:  # Degree program does not have a report associated with it.
             return (None,None,None)
         # SLOs in report queryset.
