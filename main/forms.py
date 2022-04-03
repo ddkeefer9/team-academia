@@ -15,13 +15,8 @@ class PdfForm(forms.Form):
     Notes:
         - The targets met is only enabled when the degree program selected is "All Programs"
     """
-    department = forms.ChoiceField()
-    degree_program = forms.ChoiceField()
-    YEAR_CHOICES = []
+    year_dropdown = []
     for r in range(2015, (datetime.datetime.now().year+1)):
-        YEAR_CHOICES.append((r,r))
-    date_start = forms.IntegerField(_('year'), choices=YEAR_CHOICES, default=datetime.datetime.now().year)
-    date_end = forms.IntegerField()
-    SLO_and_Assessment_statistics = forms.BooleanField()
-    number_of_SLOs_met = forms.BooleanField()
-    targets_met = forms.BooleanField()
+        year_dropdown.append((r,r))
+    date_start = year = forms.ChoiceField(choices=year_dropdown)
+    date_end = forms.ChoiceField(choices=year_dropdown, initial=datetime.datetime.now().year)

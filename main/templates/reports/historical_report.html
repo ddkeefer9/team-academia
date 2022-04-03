@@ -23,7 +23,7 @@
         <select name="department" class="form-control col-9" title="" required id="id_department">
           <option value="" selected disabled hidden>Choose a department</option>
           {% for departments in showDepartments %}
-          <option value="{{ departments.pk }}" >{{ departments.name}}</option>
+          <option value="{{ departments.pk }}" >{{ departments.name }}</option>
           {% endfor %}
         </select>
 
@@ -32,7 +32,7 @@
         <select name="degree-program" class="form-control col-9" title="" required id="id_degree-program">
           <option value="All Programs" selected >All Programs</option>
           {% for degreePrograms in showDegrees %}
-          <option value="" >{{ degreePrograms.name }}</option>
+            <option value="" >{{ degreePrograms.name }}</option>
           {% endfor %}
         </select>
 
@@ -41,30 +41,18 @@
         <h4>Date Range</h4>
         
         <div style="width:50%; display:inline-block">
-          <select name="start-date" class="form-control col-9" title="" required id="id_start-date" style="display:inline-block">
+          <select name="date_start" class="form-control col-9" title="" required id="id_date_start" style="display:inline-block">
         <!-- somehow get the dates that are present instead of listing them all-->
-          <option value="" selected disable hidden>Start</option>
-          <option value="2015">2015</option>
-          <option value="2016">2016</option>
-          <option value="2017">2017</option>
-          <option value="2018">2018</option>
-          <option value="2019">2019</option>
-          <option value="2020">2020</option>
-          <option value="2021">2021</option>
-          <option value="2022">2022</option>
+          {% for year in pdfForm.date_start %}
+            {{year}}
+          {% endfor %}
         </select>
       </div><div style="width:50%; display:inline-block;">
-          <select name="end-date" class="form-control col-9" title="" required id="id_end-date" style="display:inline-block;">
+          <select name="date_end" class="form-control col-9" title="" required id="id_date_end" style="display:inline-block;">
             <!-- somehow get the dates that are present instead of listing them all-->
-            <option value="" selected disable hidden>End</option>
-            <option value="2015">2015</option>
-            <option value="2016">2016</option>
-            <option value="2017">2017</option>
-            <option value="2018">2018</option>
-            <option value="2019">2019</option>
-            <option value="2020">2020</option>
-            <option value="2021">2021</option>
-            <option value="2022">2022</option>
+          {% for year in pdfForm.date_end %}
+            {{year}}
+          {% endfor %}
           </select>
         </div>
         
@@ -125,7 +113,7 @@
 <script>
   $("#id_degree-program").on('change', function () {
       var val = $(this).val();
-      if (val === "All Programs" || val === "---------") {
+      if (val === "All Programs") {
           $('#targetsMet').prop('checked', false);
           $('#targetsMet').attr("disabled", true);
           return;
