@@ -50,7 +50,7 @@ table, th, td {
     <form method="post", action="{% url 'traverse' %}">
       {% csrf_token %}
       <h4>Department</h4>
-      <select name="department" class="form-control col-9" title="" required id="id_department">
+      <select name="department" class="form-control col-9" title="" id="id_department">
         <option value="" selected disabled hidden>Choose a department</option>
       {% for departments in showDepartments %}
         <option value="{{ departments.pk }}">{{ departments.name}}</option>
@@ -58,7 +58,7 @@ table, th, td {
       </select>
       <br>
       <h4>Degree Program</h4>
-      <select name="degree-program" class="form-control col-9" title="" required id="id_degree-program">
+      <select name="degree-program" class="form-control col-9" title="" id="id_degree-program">
         <option value="" selected disabled hidden>Choose degree program</option>
       {% for degreePrograms in showDegrees %}
         <option value="">{{ degreePrograms.name}}</option>
