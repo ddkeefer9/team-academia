@@ -31,13 +31,17 @@ class HomePage():
         )
     
     def page_traversal(request):
+        """
+        Page traversal view
+            Notes:
+                The page traversal view covers 
+        """
         # If we are traversing from the home page OR we are redirecting back to the historical page after 
-        if "historical_woptions" in request.POST or len(request.POST) < 1 and request.method == "POST":
-            return HistoricalPage.display_historical(request)
-        elif "historical_woptions" not in request.POST and request.method == "GET":
+        if "historical_woptions" in request.POST or len(request.POST) < 1 and request.method == "POST" or 'gen_pdf' in request.POST:
             return HistoricalPage.display_historical(request)
         elif "smart_woptions" in request.POST:
             return SmartAssistantPage.display_smartAssistant(request)
+
         departments = MakereportsDepartment.objects.all()
         degreePrograms = MakereportsDegreeprogram.objects.all()
         return render(

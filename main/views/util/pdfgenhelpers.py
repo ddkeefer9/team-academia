@@ -25,7 +25,6 @@ class PDFGenHelpers:
 
         # Degree program report queryset.
         mrdpqs = MakereportsDegreeprogram.objects.filter(name=degreeprogram_name)
-        # print(mrdpqs)
         if len(mrdpqs) < 1:
             return (None, None, None)
         dprqs = MakereportsReport.objects.filter(degreeprogram=mrdpqs[0])

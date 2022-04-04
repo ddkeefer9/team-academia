@@ -27,20 +27,18 @@ class PDFPage():
     """
     def display_pdfGen(request):
         ## DB query to retrieve usable info for this generated PDF
-        if request.method == "POST":
-            pass
-            #  print(request.POST)
         dprqs, sirqs, sirsqs = pg.pdfGenQuery(request.POST['degree-program'])
-
         ## Generate the plot
         if any((dprqs, sirqs, sirsqs)):
             plot = pg.pdfGenPlotting(dprqs, sirqs, sirsqs)
-        else:
-            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+            
 
         ## PDF generation nonsense
         PAGE_WIDTH, PAGE_HEIGHT = letter
         buf = io.BytesIO()
+        if not any((dprqs, sirqs, sirsqs)):
+            buf.seek(0)
+            return FileResponse(buf, as_attachment=True, filename="DefaultReport.pdf")
         c = canvas.Canvas(buf, pagesize=letter)
         c.setTitle("DefaultReport")
         styles = getSampleStyleSheet()

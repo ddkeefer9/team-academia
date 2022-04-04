@@ -16,7 +16,7 @@
 
     <h3>Historical Report Generation</h3>
     <div class="p-2">
-      <form action="{% url 'historical' %}", method="post">
+      <form method="post", action="{% url 'traverse' %}">
         {% csrf_token %}
         <div style="width:50%; display:inline-block;">
         <h4>Department</h4>
@@ -84,7 +84,7 @@
         <div style="text-align: center;">
           <ul class="list-group">  
             {% buttons %}
-            <input type="submit" class="btn btn-primary" value = "Generate Report">
+            <input type="submit" name="gen_pdf" class="btn btn-primary" value = "Generate Report">
             <br><br>
             {% endbuttons %}
           </ul>
