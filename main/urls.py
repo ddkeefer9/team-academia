@@ -5,6 +5,6 @@ urlpatterns = [
     path("smartAssistant", smart_view.SmartAssistantPage.display_smartAssistant, name="smartAssistant"),
     path("pdfGen", reports_view.PDFPage.display_pdfGen, name="pdfGen"),
     path("degreeDropdown", basic_views.HomePage.display_sendDegrees, name="degreeDropdown"),
-    path("historical", historical_view.HistoricalPage.display_historical, name="historical"),
+    path("assistant/historical", historical_view.HistoricalPage.display_historical, name="historical"),
     path("assistant", basic_views.HomePage.page_traversal, name="traverse")
 ]

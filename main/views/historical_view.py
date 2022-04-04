@@ -17,7 +17,14 @@ class HistoricalPage():
     Historical View
     """
     def display_historical(request):
-        # If request is a POST and the post does not contain default options that are on the home page, then return the generated PDF.
+        """
+        Display Historical view
+            Notes:
+                This view handles POST requests as well as GET requests for the historical data page. 
+                The view will either generate the PDF if the request is a POST and not from the homepage.
+                Or it will persist some data from the homepage from a POST request.
+                Or it will simply render the page (only possible by manually typing URL).
+        """
         if request.method == "POST" and "historical_woptions" not in request.POST:
             return PDFPage.display_pdfGen(request)
         

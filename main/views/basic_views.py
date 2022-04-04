@@ -13,6 +13,11 @@ from main.views.smart_view import SmartAssistantPage
 # Create your views here.
 class HomePage():
     def display_index(request):
+        """
+        Display Index view
+            Notes:
+                This view handles passing data to be displayed on the homepage.
+        """
         departments = MakereportsDepartment.objects.all()
         degreePrograms = MakereportsDegreeprogram.objects.all()
         return render(
@@ -23,6 +28,11 @@ class HomePage():
         )
 
     def display_sendDegrees(request):
+        """
+        Display Send Degrees
+            Notes:
+                This view handles passing data that is filtered by department to be shown in the degree programs drop down.
+        """
         degreePrograms = MakereportsDegreeprogram.objects.filter(department=request.GET.get("department"))
         return render(
             request,
@@ -34,20 +44,13 @@ class HomePage():
         """
         Page traversal view
             Notes:
-                The page traversal view covers 
+                The page traversal view is a view with a use of handling POST requests from the homepage and subsequent pages.
+                If somehow the /assistant URL is accessed without a POST (i.e., manually typing URL), then the home page is returned.
         """
-        # If we are traversing from the home page OR we are redirecting back to the historical page after 
-        if "historical_woptions" in request.POST or len(request.POST) < 1 and request.method == "POST" or 'gen_pdf' in request.POST:
+        if "historical_woptions" in request.POST:
             return HistoricalPage.display_historical(request)
         elif "smart_woptions" in request.POST:
             return SmartAssistantPage.display_smartAssistant(request)
-
-        departments = MakereportsDepartment.objects.all()
-        degreePrograms = MakereportsDegreeprogram.objects.all()
-        return render(
-            request, 
-            'home/home_page.html',
-            {'showDepartments':departments,
-            'showDegrees':degreePrograms},
-        )
+        else:
+            return HomePage.display_index(request)
 
