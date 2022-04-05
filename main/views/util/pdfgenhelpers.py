@@ -58,7 +58,7 @@ class PDFGenHelpers:
         plot = sns.catplot(x="degree_program", y="percent_total", hue="status", kind="bar", data=df)
         plt.savefig(str(BASE_DIR) + "/main/static/testfig.png")
         
-    def pdfDegreeGenQuery(degreeprogram_id):
+    def pdfDegreeGenQuery(degreeprogram_name):
         """
         Helper for querying the database to generate our default report.
 
@@ -70,8 +70,11 @@ class PDFGenHelpers:
                 - sirqs: is the SLOinreport queryset.
                 - sirsqs: is the SLOinreportstatus queryset.
         """
+        mrdpqs = MakereportsDegreeprogram.objects.filter(name=degreeprogram_name)
+        if len(mrdpqs) < 1:
+            return (None, None)
                 # Degree program report queryset.
-        dprqs = MakereportsReport.objects.filter(degreeprogram=degreeprogram_id)
+        dprqs = MakereportsReport.objects.filter(degreeprogram=mrdpqs[0])
         if len(dprqs) < 1:  # Degree program does not have a report associated with it.
             return (None,None)
         
@@ -80,7 +83,7 @@ class PDFGenHelpers:
         assessmentDataQS = MakereportsAssessmentdata.objects.filter(assessmentversion__in=reportsAssessmentVersionQS)
         return dprqs, assessmentDataQS
 
-    def pdfDegreeGenPlotting(dprqs, assessmentDataQS):
+    def pdfDegreeGenPlotting(degree_program, degree_program2):
         """
         Helper for plotting the resulting QuerySet from pdfGenQuery for our default report
 
@@ -88,35 +91,39 @@ class PDFGenHelpers:
             - plot: The plot utilizing the data.
         """
         degree_programs = []
-        overallProficients = []
-        i = 1
-        while True: 
-            dprqs, assessmentDataQS = PDFGenHelpers.pdfDegreeGenQuery(i)
-            i += 1
-            if None in (dprqs, assessmentDataQS):
-                print("break")
-                break
-            if len(assessmentDataQS) > 0:
-                degree_programs.append(dprqs[0].degreeprogram.name)
-                overallProficients.append(assessmentDataQS[0].overallproficient)
+        overallProficiency = []
+        
+        dprqs, assessmentDataQS = PDFGenHelpers.pdfDegreeGenQuery(degree_program)
+        dprqs2, assessmentDataQS2 = PDFGenHelpers.pdfDegreeGenQuery(degree_program2)
+        print(degree_program)
+        print(degree_program2)
+        if assessmentDataQS is not None and len(assessmentDataQS) > 0 :
+            degree_programs.append(dprqs[0].degreeprogram.name)
+            overallProficiency.append(assessmentDataQS[0].overallproficient)
+        if assessmentDataQS2 is not None and len(assessmentDataQS2) > 0 :
+            degree_programs.append(dprqs2[0].degreeprogram.name)
+            overallProficiency.append(assessmentDataQS2[0].overallproficient)
 
         df = pd.DataFrame(data = {
-            'degree_program' : degree_programs,
-            'overallProficient' : overallProficients,
+            'Programs' : degree_programs,
+            'Overall Proficiency' : overallProficiency,
         })
 
-        plot = sns.catplot(x="degree_program", y="overallProficient",  kind="bar", data=df)
-        plot.set(ylim=(50,100))
-        
-        #Start putting numbers above bar plots*******************************
-        # extract the matplotlib axes_subplot objects from the FacetGrid
-        ax = plot.facet_axis(0, 0)
+        if (len(degree_programs) > 0):
+            plot = sns.catplot(x="Programs", y="Overall Proficiency",  kind="bar", data=df)
+            plot.set(ylim=(50,100))
+            
+            #Start putting numbers above bar plots*******************************
+            # extract the matplotlib axes_subplot objects from the FacetGrid
+            ax = plot.facet_axis(0, 0)
 
-        # iterate through the axes containers
-        for c in ax.containers:
-            labels = [f'{(v.get_height())}%' for v in c]
-            ax.bar_label(c, labels=labels, label_type='edge')
-        #End putting numbers above bar plots*********************************
+            # iterate through the axes containers
+            for c in ax.containers:
+                labels = [f'{(v.get_height())}%' for v in c]
+                ax.bar_label(c, labels=labels, label_type='edge')
+            #End putting numbers above bar plots*********************************
 
-        plt.savefig(str(BASE_DIR) + "/main/static/degreetestfig.png")
-        
+            plt.savefig(str(BASE_DIR) + "/main/static/degreetestfig.png")
+        else:
+            plot = sns.catplot(x="Programs", y="Overall Proficiency",  kind="bar", data=df, order=[degree_program, degree_program2])
+            plt.savefig(str(BASE_DIR) + "/main/static/degreetestfig.png")
