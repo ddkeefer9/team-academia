@@ -39,6 +39,7 @@
           {% else %}
             <option value="" selected >Choose degree program</option>
           {% endif %}
+          <option value="All Programs">All Programs</option>
           {% for degreePrograms in showDegrees %}
             <option value="" >{{ degreePrograms.name }}</option>
           {% endfor %}
@@ -122,11 +123,12 @@
   $("#id_degree-program").on('change', function () {
       var val = $(this).val();
       if (val === "All Programs") {
-          $('#targetsMet').prop('checked', false);
-          $('#targetsMet').attr("disabled", true);
-          return;
+        $('#targetsMet').attr("disabled", false);
+        return;
       }
-      $('#targetsMet').attr("disabled", false);
+      $('#targetsMet').prop('checked', false);
+      $('#targetsMet').attr("disabled", true);
+      
   });
 </script>
 {% endblock %}
