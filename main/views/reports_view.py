@@ -64,3 +64,41 @@ class PDFPage():
 
         # Return file to download to the user.
         return FileResponse(buf, as_attachment=True, filename="DefaultReport.pdf")
+
+    def display_degree_pdfGen(request):
+        ## DB query to retrieve usable info for this generated PDF
+        dprqs, assessmentDataQS = pg.pdfDegreeGenQuery(1)
+
+        ## Generate the plot
+        if any((dprqs, assessmentDataQS)):
+                plot = pg.pdfDegreeGenPlotting(dprqs, assessmentDataQS)
+
+        ## PDF generation nonsense
+        PAGE_WIDTH, PAGE_HEIGHT = letter
+        buf = io.BytesIO()
+        c = canvas.Canvas(buf, pagesize=letter)
+        c.setTitle("DefaultReport")
+        styles = getSampleStyleSheet()
+        f = Frame(inch, inch, 7*inch, 9*inch, showBoundary=0)
+        styleN = styles['Normal']
+        styleH1 = styles['Heading1']
+        styleH2 = styles['Heading2']
+        story = []
+        story.append(Paragraph("Program Comparison", styleH2))
+        f.addFromList(story, c)
+        c.showPage()
+        story.clear()
+        toc = TableOfContents()
+        story.append(toc)
+        f.addFromList(story, c)
+        c.showPage()
+        story.clear()
+        story.append(Paragraph(f"Percentage of Targets the {dprqs[0].degreeprogram.name} Degree Program Meets", styleH1))
+        c.drawInlineImage(str(BASE_DIR) + "/main/static/degreetestfig.png", inch, inch, width=400, height=300)
+        f.addFromList(story, c)
+        c.save()
+        buf.seek(0)
+
+        # Return file to download to the user.
+        return FileResponse(buf, as_attachment=True, filename="DefaultReport.pdf")
+        
