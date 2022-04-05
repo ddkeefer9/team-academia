@@ -1,8 +1,8 @@
 from re import T
 import numpy as np
-from ..models import \
-        MakereportsAssessmentdata, MakereportsAssessmentversion, MakereportsReport, MakereportsSloinreport, MakereportsDegreeprogram, MakereportsDepartment, MakereportsSlostatus, \
-        MakereportsSlostatus 
+from ...models import \
+        MakereportsAssessmentdata, MakereportsAssessmentversion, MakereportsReport, MakereportsSloinreport, MakereportsDegreeprogram, MakereportsDepartment, MakereportsSlostatus
+
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -12,7 +12,7 @@ from AcademicAssessmentAssistant.settings import BASE_DIR
 
 class PDFGenHelpers:
 
-    def pdfGenQuery(degreeprogram_id):
+    def pdfGenQuery(degreeprogram_name):
         """
         Helper for querying the database to generate our default report.
 
@@ -24,8 +24,13 @@ class PDFGenHelpers:
                 - sirqs: is the SLOinreport queryset.
                 - sirsqs: is the SLOinreportstatus queryset.
         """
+
         # Degree program report queryset.
-        dprqs = MakereportsReport.objects.filter(degreeprogram=degreeprogram_id)
+        mrdpqs = MakereportsDegreeprogram.objects.filter(name=degreeprogram_name)
+        if len(mrdpqs) < 1:
+            return (None, None, None)
+        dprqs = MakereportsReport.objects.filter(degreeprogram=mrdpqs[0])
+        # print(dprqs)
         if len(dprqs) < 1:  # Degree program does not have a report associated with it.
             return (None,None,None)
         # SLOs in report queryset.
@@ -73,7 +78,6 @@ class PDFGenHelpers:
         reportsAssessmentVersionQS = MakereportsAssessmentversion.objects.filter(report__in=dprqs)
         
         assessmentDataQS = MakereportsAssessmentdata.objects.filter(assessmentversion__in=reportsAssessmentVersionQS)
-        print(dprqs[0].degreeprogram.name + assessmentDataQS)
         return dprqs, assessmentDataQS
 
     def pdfDegreeGenPlotting(dprqs, assessmentDataQS):

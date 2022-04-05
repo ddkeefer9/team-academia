@@ -47,27 +47,32 @@ table, th, td {
 
   <h3>Academic Smart Assistant</h3>
   <div class="p-2">
-    <h4>Department</h4>
-    <select name="department" class="form-control col-9" title="" required id="id_department">
-    {% for departments in showDepartments %}
-    <option value="{{ departments.pk }}" selected>{{ departments.name}}</option>
-    {% endfor %}
-    </select>
-    <br>
-    <h4>Degree Program</h4>
-    <select name="degree-program" class="form-control col-9" title="" required id="id_degree-program">
-    {% for degreePrograms in showDegrees %}
-    <option value="" selected>{{ degreePrograms.name}}</option>
-    {% endfor %}
-    </select>
-    <br>
-    <ul class="list-group">  
-      {% buttons %}
-      <a type="button" class="btn btn-primary" href="historical" value = "Hist">View Historical Data</a>
-      <br><br>
-      <a type="button" class="btn btn-primary" href="smartAssistant" value = "Smart">Feedback Smart Assistant</a>
-      {% endbuttons %}
-    </ul>
+    <form method="post", action="{% url 'traverse' %}">
+      {% csrf_token %}
+      <h4>Department</h4>
+      <select name="department" class="form-control col-9" title="" id="id_department">
+        <option value="" selected disabled hidden>Choose a department</option>
+      {% for departments in showDepartments %}
+        <option value="{{ departments.pk }}">{{ departments.name}}</option>
+      {% endfor %}
+      </select>
+      <br>
+      <h4>Degree Program</h4>
+      <select name="degree-program" class="form-control col-9" title="" id="id_degree-program">
+        <option value="" selected disabled hidden>Choose degree program</option>
+      {% for degreePrograms in showDegrees %}
+        <option value="">{{ degreePrograms.name}}</option>
+      {% endfor %}
+      </select>
+      <br>
+      <ul class="list-group">  
+        {% buttons %}
+        <input type="submit" name="historical_woptions" class="btn btn-primary" value = "View Historical Data"></input>
+        <br><br>
+        <input type="submit" name="smart_woptions" class="btn btn-primary" href="smartAssistant" value = "Feedback Smart Assistant"></input>
+        {% endbuttons %}
+      </ul>
+    </form>
   </div>
 
 </div>
