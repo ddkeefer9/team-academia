@@ -42,14 +42,14 @@
 
             <tr>
                 <th>SLO</th>
-                <th>Smart Assistant</th>
+                <th>Smart Assistant Feedback</th>
             </tr>
-        
+            {% for slo in showSLOs %}
             <tr>
-                <td style="border: 3px; border-style:solid; border-color: black; padding: 1em;">SLO Text</td>
-                <td style="border: 3px; border-style:solid; border-color: black; padding: 1em;">Feedback on SLO</td>
+                <td style="border: 3px; border-style:solid; border-color: black; padding: 1em;">{{ slo.0 }}</td>
+                <td style="border: 3px; border-style:solid; border-color: black; padding: 1em;">{{ slo.1 }}</td>
             </tr>
-       
+            {% endfor %}
         </table>
     </div>
   
