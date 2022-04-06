@@ -64,3 +64,40 @@ class PDFPage():
 
         # Return file to download to the user.
         return FileResponse(buf, as_attachment=True, filename="DefaultReport.pdf")
+
+    def display_degree_pdfGen(request):
+        degree_program = request.POST['degree-program']
+        degree_program2 = request.POST['degree-program2']
+
+        ## Generate the plot
+        plot = pg.pdfDegreeGenPlotting(degree_program, degree_program2)
+
+        ## PDF generation nonsense
+        PAGE_WIDTH, PAGE_HEIGHT = letter
+        buf = io.BytesIO()
+        c = canvas.Canvas(buf, pagesize=letter)
+        c.setTitle(f"{degree_program} and {degree_program2} Comparison")
+        styles = getSampleStyleSheet()
+        f = Frame(inch, inch, 7*inch, 9*inch, showBoundary=0)
+        styleN = styles['Normal']
+        styleH1 = styles['Heading1']
+        styleH2 = styles['Heading2']
+        story = []
+        story.append(Paragraph("Program Comparison", styleH2))
+        f.addFromList(story, c)
+        c.showPage()
+        story.clear()
+        toc = TableOfContents()
+        story.append(toc)
+        f.addFromList(story, c)
+        c.showPage()
+        story.clear()
+        story.append(Paragraph(f"Comparison of Proficiency between {degree_program} and {degree_program2}", styleH1))
+        c.drawInlineImage(str(BASE_DIR) + "/main/static/degreetestfig.png", inch, inch, width=400, height=300)
+        f.addFromList(story, c)
+        c.save()
+        buf.seek(0)
+
+        # Return file to download to the user.
+        return FileResponse(buf, as_attachment=True, filename=f"{degree_program} and {degree_program2} Comparison.pdf")
+        

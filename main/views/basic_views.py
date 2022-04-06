@@ -6,6 +6,7 @@ from main.models import \
 from AcademicAssessmentAssistant.settings import BASE_DIR
 # Report Gen Imports
 from django.http import FileResponse
+from main.views.degree_comparison_view import DegreeCompPage
 from main.views.historical_view import HistoricalPage
 import io
 
@@ -51,6 +52,8 @@ class HomePage():
             return HistoricalPage.display_historical(request)
         elif "smart_woptions" in request.POST:
             return SmartAssistantPage.display_smartAssistant(request)
+        elif "comparisons_woptions" in request.POST:
+            return DegreeCompPage.display_degree_comp(request)
         else:
             return HomePage.display_index(request)
 

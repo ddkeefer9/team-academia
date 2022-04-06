@@ -14,9 +14,9 @@
 <div class="container-md" style="padding-top: 30px;">
 
 
-    <h3>Historical Report Generation</h3>
+    <h3>Degree Program Comparisons Report Generation</h3>
     <div class="p-2">
-      <form method="post", action="{% url 'historical' %}">
+      <form method="post", action="{% url 'degreecomparison' %}">
         {% csrf_token %}
         <div style="width:50%; display:inline-block;">
         <h4>Department</h4>
@@ -44,39 +44,30 @@
             <option value="" >{{ degreePrograms.name }}</option>
           {% endfor %}
         </select>
-
         <br>
-
-        <h4>Date Range</h4>
-        
-        <div style="width:50%; display:inline-block">
-          <select name="date_start" class="form-control col-9" title="" required id="id_date_start" style="display:inline-block">
-        <!-- somehow get the dates that are present instead of listing them all-->
-          {% for year in pdfForm.date_start %}
-            {{year}}
-          {% endfor %}
-        </select>
-        </div><div style="width:50%; display:inline-block;">
-          <select name="date_end" class="form-control col-9" title="" required id="id_date_end" style="display:inline-block;">
-            <!-- somehow get the dates that are present instead of listing them all-->
-          {% for year in pdfForm.date_end %}
-            {{year}}
-          {% endfor %}
-          </select>
-        </div>
-        
-        
 
       </div><!--
         this needs to be here in order for the divs to be formatted properly
       --><div style="width:50%; display:inline-block;">
-          <h4>Options</h4>
-          <input type="checkbox" id="assessmentStats" name="assessmentStats" value="assessmentStats">
-          <label for="assessmentStats"> SLO and Assessment Statistics</label><br>
-          <input type="checkbox" id="numbOfSLOsMet" name="numbOfSLOsMet" value="numbOfSLOsMet">
-          <label for="numbOfSLOsMet"> Number of SLOs met</label><br>
-          <input type="checkbox" id="targetsMet" name="targetsMet" value="targetsMet" disabled>
-          <label for="targetsMet"> Targets met by degree program</label><br>
+          <h4>Department</h4>
+        <select name="department2" class="form-control col-9" title="" required id="id_department2">
+            <option value="" selected disabled hidden>Choose a department</option>
+          {% for departments in showDepartments %}
+            <option value="{{ departments.pk }}" >{{ departments.name }}</option>
+          {% endfor %}
+        </select>
+
+        <br>
+        <h4>Degree Program</h4>
+        <select name="degree-program2" class="form-control col-9" title="" required id="id_degree-program2">
+            <option value="" selected >Choose degree program</option>
+          <option value="All Programs">All Programs</option>
+          {% for degreePrograms in showDegrees %}
+            <option value="" >{{ degreePrograms.name }}</option>
+          {% endfor %}
+        </select>
+
+        <br>
         </div>
 
         
@@ -87,6 +78,8 @@
             {% buttons %}
             <input type="submit" name="gen_pdf" class="btn btn-primary" value = "Generate Report">
             <br><br>
+            <!-- <a type="button" class="btn btn-primary" href="pdfDegreeGen" value = "DegreeComp">View Degree Comparison Data</a>
+            <br><br> -->
             {% endbuttons %}
           </ul>
         </div>
@@ -116,19 +109,20 @@
     });
 </script>
 
-<!-- This script ensures that the user can't select the option Targets met by degree program
-    without selecting a degree program.
-    It does this by disabling the checkbox if All Programs is the option that is selected. -->
 <script>
-  $("#id_degree-program").on('change', function () {
-      var val = $(this).val();
-      if (val === "All Programs") {
-        $('#targetsMet').attr("disabled", false);
-        return;
-      }
-      $('#targetsMet').prop('checked', false);
-      $('#targetsMet').attr("disabled", true);
-      
-  });
+  var dept2 = $("#id_department2")
+  dept2.change(function () {
+     // var degreeName = dept[0].options[dept[0].selectedIndex].text;
+      var degreeName2 = dept2.val()
+      $.ajax({
+        url: "/degreeDropdown",
+        data: {
+          'department': degreeName2
+        },
+        success: function (data) {
+          $("#id_degree-program2").html(data);
+        }
+      });
+    });
 </script>
 {% endblock %}
