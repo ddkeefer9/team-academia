@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<style>
+table, th, td {
+  border:1px solid black;
+}
+</style>
+<body>
+
+<table style="width:100%">
+
+  <tr>
+    <th>Report</th>
+    <th>SLO</th>
+    <th>Changed From Prior</th>
+    <th>Date</th>
+    <th>Goal Text</th>
+  </tr>
+
+{% for i in slosInReport %}
+<tr>
+    <td>{{ i.report }}</td>
+    <td>{{ i.slo }}</td>
+    <td>{{ i.changedfromprior }}</td>
+    <td>{{ i.date }}</td>
+    <td>{{ i.goaltext }}</td>
+
+</tr>
+{% endfor %}
+</tbody>
+ 
+</table>
+</body>
+</html>
