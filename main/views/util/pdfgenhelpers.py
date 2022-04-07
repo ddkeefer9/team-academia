@@ -17,6 +17,43 @@ def cleanhtml(raw_html):
 
 class PDFGenHelpers:
 
+    def assessment_stats_for_each_slo(dprqs):
+        pass
+
+    def number_of_slos_met(dprqs):
+        pass
+
+    def slos_met_by_report_plotting(dprqs):
+        possible_statuses = ['Met', 'Partially Met', 'Not Met', 'Unknown']
+        degree_program = dprqs[0].degreeprogram.name
+        slos_by_report = list()
+        dp_df = pd.DataFrame()
+        for report in dprqs:
+            statuses = list()
+            SLO_nums = list()
+            slo_dict = dict()
+            report_slos = MakereportsSloinreport.objects.filter(report=report)
+            report_slo_statuses = MakereportsSlostatus.objects.filter(sloir__in=report_slos)
+            for status in report_slo_statuses:
+                statuses.append(status.status)
+            for slo in report_slos:
+                SLO_nums.append(slo.number)
+            for i in range(len(statuses)):
+                slo_dict[SLO_nums[i]] = statuses[i]
+            report_series = pd.Series(data=slo_dict, name=str(report))   
+            dp_df = dp_df.append(report_series)
+        slomet_freq = dp_df.apply(pd.Series.value_counts, axis=1).T.reindex(possible_statuses, fill_value=np.nan)
+        fig, ax = plt.subplots(slomet_freq.iloc[0].size, 1)
+        if slomet_freq.iloc[0].size > 1:
+            for i in range(slomet_freq.iloc[0].size):
+                plot = sns.barplot(y=slomet_freq.index, x=slomet_freq.iloc[:,i], ax=ax[i])
+        else:
+            plot = sns.barplot(y=slomet_freq.index, x=slomet_freq.iloc[:,0])
+        fig.tight_layout()
+        handles, labels = plt.gca().get_legend_handles_labels()
+        fig.legend(handles, labels, loc='upper right')
+        plt.savefig(str(BASE_DIR) + "/main/static/slo_status_by_reporting_year_fig.png")
+
     def pdfGenQuery(degreeprogram_name, request):
         """
         Helper for querying the database to generate our default report.
@@ -51,42 +88,20 @@ class PDFGenHelpers:
         avirqs = MakereportsAssessmentversion.objects.filter(slo__in=sirqs)
         return dprqs, sirqs, sirsqs
 
-    def pdfGenPlotting(dprqs, sirqs, sirsqs):
+    def pdfGenPlotting(dprqs, sirqs, sirsqs, request):
         """
-        Helper for plotting the resulting QuerySet from pdfGenQuery for our default report
+        Helper for plotting the resulting QuerySet from pdfGenQuery for our historical report
 
         Returns:
             - plot: The plot utilizing the data.
         """
-        possible_statuses = ['Met', 'Partially Met', 'Not Met', 'Unknown']
-        degree_program = dprqs[0].degreeprogram.name
-        slos_by_report = list()
-        dp_df = pd.DataFrame()
-        for report in dprqs:
-            statuses = list()
-            SLO_nums = list()
-            slo_dict = dict()
-            report_slos = MakereportsSloinreport.objects.filter(report=report)
-            report_slo_statuses = MakereportsSlostatus.objects.filter(sloir__in=report_slos)
-            for status in report_slo_statuses:
-                statuses.append(status.status)
-            for slo in report_slos:
-                SLO_nums.append(slo.number)
-            for i in range(len(statuses)):
-                slo_dict[SLO_nums[i]] = statuses[i]
-            report_series = pd.Series(data=slo_dict, name=str(report))   
-            dp_df = dp_df.append(report_series)
-        slomet_freq = dp_df.apply(pd.Series.value_counts, axis=1).T.reindex(possible_statuses, fill_value=np.nan)
-        
-        fig, ax = plt.subplots(slomet_freq.iloc[0].size, 1)
-        for i in range(slomet_freq.iloc[0].size):
-            plot = sns.countplot(y=slomet_freq.iloc[:,i], ax=ax[i], hue=slomet_freq.index)
-            ax[i].get_legend().remove()
-        fig.tight_layout()
-        handles, labels = plt.gca().get_legend_handles_labels()
-        fig.legend(handles, labels, loc='upper right')
-        plt.savefig(str(BASE_DIR) + "/main/static/testfig.png")
-        
+        print(request.POST)
+        PDFGenHelpers.slos_met_by_report_plotting(dprqs)
+        if 'assessmentStats' in request.POST:
+            PDFGenHelpers.assessment_stats_for_each_slo(dprqs)
+        if 'numbOfSLOsMet' in request.POST:
+            PDFGenHelpers.number_of_slos_met(dprqs)
+
     def pdfDegreeGenQuery(degreeprogram_name):
         """
         Helper for querying the database to generate our default report.

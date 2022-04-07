@@ -34,7 +34,7 @@ class PDFPage():
         year_end = request.POST['date_end']
         ## Generate the plot
         if any((dprqs, sirqs, sirsqs)):
-            plot = pg.pdfGenPlotting(dprqs, sirqs, sirsqs)
+            pg.pdfGenPlotting(dprqs, sirqs, sirsqs, request)
             
 
         ## PDF generation nonsense
@@ -62,7 +62,7 @@ class PDFPage():
         c.showPage()
         story.clear()
         story.append(Paragraph(f"Percentage of Targets the {degree_program} Degree Program Meets", styleH1))
-        c.drawInlineImage(str(BASE_DIR) + "/main/static/testfig.png", inch, inch, width=400, height=300)
+        c.drawInlineImage(str(BASE_DIR) + "/main/static/slo_status_by_reporting_year_fig.png", inch, inch, width=400, height=300)
         f.addFromList(story, c)
         c.save()
         buf.seek(0)
