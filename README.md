@@ -33,3 +33,17 @@ pytest
 ```
 pytest --reuse-db
 ```
+## 04-06-2022 (Milestone 3)
+- Updated Home Page HTML with buttons for views and dropdown department/degree program selection
+- Edited PDF Generation of Historical Data View to be dynamic with selected degree
+- Enhanced Navbar and HTML template
+- Added Historical Data page
+- Added Degree Comparison page
+- Added Degree Comparison PDF generation
+- Added Selenium Tests for new pages
+- Added new database credentials
+- Adjusted how pytest works with database
+- Added initial Smart Assistant HTML 
+```
+pytest
+```
