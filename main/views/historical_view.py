@@ -31,27 +31,23 @@ class HistoricalPage():
         departments = MakereportsDepartment.objects.all()
         degreePrograms = MakereportsDegreeprogram.objects.all()
         form = PdfForm()
-
+        context = dict()      
+        context['showDepartments'] = departments
+        context['showDegrees'] = degreePrograms
+        context['pdfForm'] = form      
         if request.method == "POST" and "department" in request.POST and "degree-program" in request.POST:
-            start_department = MakereportsDepartment.objects.filter(id=int(request.POST['department']))[0]
-            start_degree_program = MakereportsDegreeprogram.objects.filter(name=request.POST['degree-program'])[0]
+            start_department = MakereportsDepartment.objects.filter(id=int(request.POST['department']))
+            start_degree_program = MakereportsDegreeprogram.objects.filter(name=request.POST['degree-program'])
+            context['start_department'] = start_department[0]
+            if start_degree_program:
+                context['start_degree_program'] = start_degree_program[0]
             return render(
                 request,
                 'reports/historical_report.html',
-                {
-                    'showDepartments':departments,
-                    'showDegrees':degreePrograms,
-                    'pdfForm':form,
-                    'start_department': start_department,
-                    'start_degree_program': start_degree_program
-                }
+                context
             )
         return render(
             request, 
             'reports/historical_report.html',
-            {
-                'showDepartments':departments,
-                'showDegrees':degreePrograms,
-                'pdfForm':form
-            }
+            context
         )

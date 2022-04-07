@@ -568,8 +568,8 @@ class MakereportsSloinreport(models.Model):
         slo (ForeignKey): A foreign key that denotes the MakereportsSlo, which itself contains additional information about the SLO (More info is in "MakerportsSlo" docstring)
         date (DateField): A date, that I am assuming relates to when this SLO was added to a report. (*)
         goaltext (CharField): The goal of the SLO.
-        number (IntegerField): A number that has no meaning, it might relate to the range of years this SLO is applied to (2 for 2 years, 3 for 3 years, etc.) (*)
-        numberofassess (integerField): The number of times this SLO has been used for an assessment, this is also a guess (*)
+        number (IntegerField): The position (or number) that the SLO belongs to in the report. (1 for 1st, 2 for 2nd, etc.)
+        numberofassess (integerField): The number of times this SLO has been used for an assessment.
     Future Work:
         Variables marked with (*) could be inquired about to our sponsor.
     """
