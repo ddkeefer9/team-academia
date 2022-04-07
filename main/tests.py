@@ -28,27 +28,38 @@ class BasicTests(TestCase):
 		self.assertEqual(response.status_code, 301)
 
 
-	def testButtonSmartFeedback(self):
+	def testButtonSmartFeedback_home(self):
 		selenium = webdriver.Chrome('C:/bin/chromedriver.exe')
 		#Choose your url to visit
 		selenium.get('http://127.0.0.1:8000/')
 		#find the elements you need to submit form
 		# Obtain button by link text and click.
-		selenium.find_element_by_xpath("//a[@type='button' and @value='Smart']").click()
+		selenium.find_element_by_xpath("//input[@type='submit' and @value='Feedback Smart Assistant']").click()
 		#check result; page source looks at entire html document
 		currentURL = selenium.current_url
-		self.assertEqual(currentURL,"http://127.0.0.1:8000/smartAssistant")
+		self.assertEqual(currentURL,"http://127.0.0.1:8000/assistant")
 		selenium.quit()
 
-	def testButtonHistoricalData(self):
+	def testButtonHistoricalData_home(self):
 		selenium = webdriver.Chrome('C:/bin/chromedriver.exe')
 		#Choose your url to visit
 		selenium.get('http://127.0.0.1:8000/')
 		#find the elements you need to submit form
 		# Obtain button by link text and click.
-		selenium.find_element_by_xpath("//a[@type='button' and @value='Hist']").click()
+		selenium.find_element_by_xpath("//input[@type='submit' and @value='View Historical Data']").click()
 		#check result; page source looks at entire html document
 		currentURL = selenium.current_url
-		self.assertEqual(currentURL,"http://127.0.0.1:8000/historical")
+		self.assertEqual(currentURL,"http://127.0.0.1:8000/assistant")
 		selenium.quit()
 
+	def testButtonDegreeComparisons_home(self):
+		selenium = webdriver.Chrome('C:/bin/chromedriver.exe')
+		#Choose your url to visit
+		selenium.get('http://127.0.0.1:8000/')
+		#find the elements you need to submit form
+		# Obtain button by link text and click.
+		selenium.find_element_by_xpath("//input[@type='submit' and @value='View Degree Program Comparisons']").click()
+		#check result; page source looks at entire html document
+		currentURL = selenium.current_url
+		self.assertEqual(currentURL,"http://127.0.0.1:8000/assistant")
+		selenium.quit()
