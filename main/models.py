@@ -212,16 +212,15 @@ class MakereportsAssessmentversion(models.Model):
         finalterm (BooleanField): Boolean of whether the assessment was done in the last term before graduation.
         where (CharField): A description of how the assessment is to be conducted (hence where).
         allstudents (BooleanField): Required for all students or not.
-        sampledescription (CharField): Additional description of the assessment. (*)
+        sampledescription (CharField): Additional description of the assessment. Only available if all students were not assessed.
+        Describes how the assessment was sampled.
         frequency (CharField): The sampling frequency in years for this assessment.
         threshold (CharField): The threshold for the measurement of this assessment (percentage, pass/fail, etc.).
         target (IntegerField): A target percentage of proficiency for the assessment.
         changedfromprior (BooleanField): Was the assessment changed since last sample/assessment version?
         slo (ForeignKey): A foreign key to MakereportsSloinreport which contains the SLO as it is in the particular report.
-        number (IntegerField): I have no clue. (*)
-        frequencychoice (CharField): Letter for the rate of the assessment (Y for yearly, S for semester, O for occasional (not sure on that)) (*)
-    Future Work:
-        Any variables with a (*) need to be clarified by the sponsor.
+        number (IntegerField): The SLO number associated with the prior foreign key.
+        frequencychoice (CharField): Letter for the rate of the assessment (Y for yearly, S for semester, O for other)
     """
     date = models.DateField()
     description = models.CharField(max_length=1000)
@@ -417,10 +416,10 @@ class MakereportsReport(models.Model):
         returned (BooleanField): Whether the report has been returned from review.
         date_range_of_reported_data (CharField): A CharField formatting the range of years this report covers.
         numberofslos (IntegerField): The number of SLOs this report contains
-        accreditorestslos (BooleanField): I have no clue. (*)
-        accreditorrevslos (BooleanField): I have no clue. (*)
-    Future Work:
-        Variables denoted with (*) need to be inquired about to the sponsor.
+        accreditorestslos (BooleanField): SLOs established by accrediting body. This means the set of SLOs were not
+        developed internally but come from a standard external source.
+        accreditorrevslos (BooleanField): SLOs reviewed by accrediting body. This is a bit stricter than the prior.
+        It means that the SLOs are actually reviewed and enforced by the accrediting body.
     """
     author = models.CharField(max_length=100)
     section1comment = models.CharField(db_column='section1Comment', max_length=2000, blank=True, null=True)  # Field name made lowercase.
@@ -500,14 +499,11 @@ class MakereportsRubricitem(models.Model):
         text (CharField): A text description of the rubric item.
         section (IntegerField): The section number this rubric is assigned to.
         rubricversion (ForeignKey): A foreign key to the MakereportsRubric table, see its docstring for additional information.
-        order (IntegerField): I have no clue (*)
-        dmetext (CharField): I have no clue (*)
-        eetext (CharField): I have no clue (*)
-        metext (CharField): I have no clue (*)
-        abbreviation (CharField): I have no clue (*)
-    Future Work:
-        Ask for more info from sponsor, dme/ee/metext all had raw HTML in them describing levels of a rubric, but the abbreviations are unknown.
-        abbreviation and order seem to be mainly unfilled for table entries.
+        order (IntegerField): Ordering sequence for the rubric item. Lower numbers are displayed first.
+        dmetext (CharField): DME - did not meet expectations. This is the text in the rubric that goes into the DME column.
+        eetext (CharField): EE - exceeds expectations. This is the text in the rubric that goes into the EE column.
+        metext (CharField): ME - meets expectations with concerns. This is the text in the rubric that goes into the ME column.
+        abbreviation (CharField): A code for the rubric item, e.g., one could shortcut the rubric "SLOs consists of a single construct" as "SCON".
     """
     text = models.CharField(max_length=1000)
     section = models.IntegerField()
@@ -572,8 +568,8 @@ class MakereportsSloinreport(models.Model):
         slo (ForeignKey): A foreign key that denotes the MakereportsSlo, which itself contains additional information about the SLO (More info is in "MakerportsSlo" docstring)
         date (DateField): A date, that I am assuming relates to when this SLO was added to a report. (*)
         goaltext (CharField): The goal of the SLO.
-        number (IntegerField): A number that has no meaning, it might relate to the range of years this SLO is applied to (2 for 2 years, 3 for 3 years, etc.) (*)
-        numberofassess (integerField): The number of times this SLO has been used for an assessment, this is also a guess (*)
+        number (IntegerField): The position (or number) that the SLO belongs to in the report. (1 for 1st, 2 for 2nd, etc.)
+        numberofassess (integerField): The number of times this SLO has been used for an assessment.
     Future Work:
         Variables marked with (*) could be inquired about to our sponsor.
     """
