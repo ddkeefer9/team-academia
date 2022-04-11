@@ -75,7 +75,7 @@ class PDFPage():
         degree_program2 = request.POST['degree-program2']
 
         ## Generate the plot
-        plot = pg.pdfDegreeGenPlotting(degree_program, degree_program2)
+        plot = pg.pdfCollegeComparisonsPlotting("TEST - College of Testing this System")
 
         ## PDF generation nonsense
         PAGE_WIDTH, PAGE_HEIGHT = letter
