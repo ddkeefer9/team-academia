@@ -5,11 +5,14 @@ from ...models import (
     MakereportsAssessmentdata, MakereportsAssessmentversion, MakereportsCollege, MakereportsReport, MakereportsSloinreport, 
     MakereportsDegreeprogram, MakereportsDepartment, MakereportsSlostatus, MakereportsAssessmentversion
 )
+from reportlab.lib.pagesizes import letter
 import matplotlib
 matplotlib.use('Agg')
 import pandas as pd, io, seaborn as sns, matplotlib.pyplot as plt
 from PIL import Image
 from AcademicAssessmentAssistant.settings import BASE_DIR
+
+PAGE_HEIGHT, PAGE_WIDTH = (dim // 10 for dim in letter)
 
 def cleanhtml(raw_html):
     return re.sub(re.compile('<.*?>'), '', raw_html)
@@ -18,8 +21,9 @@ class PDFGenHelpers:
 
     class SLOStatusPage:
 
-        def __init__(self, dprqs):
+        def __init__(self, dprqs, plots_per_page):
             self.dprqs = dprqs
+            self.plots_per_page = plots_per_page
             self.description = "SLO Status"
 
         def __str__(self):
@@ -35,8 +39,8 @@ class PDFGenHelpers:
                 slo_dict = dict()
                 report_slos = MakereportsSloinreport.objects.filter(report=report)
                 report_slo_statuses = MakereportsSlostatus.objects.filter(sloir__in=report_slos)
-                if len(report_slo_statuses) < 1:
-                    continue
+                # if len(report_slo_statuses) < 1:
+                #     continue
                 for status in report_slo_statuses:
                     statuses.append(status.status)
                 for slo in report_slos:
@@ -46,13 +50,15 @@ class PDFGenHelpers:
                 report_series = pd.Series(data=slo_dict, name=str(report))   
                 dp_df = dp_df.append(report_series)
             slomet_freq = dp_df.apply(pd.Series.value_counts, axis=1).T.reindex(possible_statuses, fill_value=np.nan)
-            if slomet_freq.iloc[0].size > 0:
-                fig, ax = plt.subplots(slomet_freq.iloc[0].size, 1)
-                if slomet_freq.iloc[0].size > 1:
-                    for i in range(slomet_freq.iloc[0].size):
+            n_plots = slomet_freq.iloc[0].size
+            if n_plots > 0:
+                fig, ax = plt.subplots(self.plots_per_page, 1, sharex=True, sharey=True)
+                for i in range(self.plots_per_page):
+                    if i in range(n_plots):
                         plot = sns.barplot(y=slomet_freq.index, x=slomet_freq.iloc[:,i], ax=ax[i])
-                else:
-                    plot = sns.barplot(y=slomet_freq.index, x=slomet_freq.iloc[:,0])
+                    else:
+                        ax[i].set_visible(False)
+                fig.set_size_inches(8.5, 9, forward=True)
                 fig.tight_layout()
                 img_buf = io.BytesIO()
                 plt.savefig(img_buf)
@@ -85,26 +91,26 @@ class PDFGenHelpers:
         def assessment_stats_for_each_slo(self):
             pass
 
-    def historicalPdfGenPlotting(dprqs, sirqs, sirsqs, request):
+    def historicalPdfGenPlotting(dprqs, sirqs, sirsqs, request, plots_per_page = 4):
         """
         Helper for plotting the resulting QuerySet from pdfGenQuery for our historical report
 
         Returns:
             - plot: The plot utilizing the data.
         """
-        plots = list()
-        slo_page = PDFGenHelpers.SLOStatusPage(dprqs=dprqs)
-        slostatus_by_report = slo_page.slos_met_by_report_plotting()
-        if slostatus_by_report:
-            plots.append(slostatus_by_report)
-        
+        pages = list()
+        for i in range(len(dprqs)//plots_per_page+1):
+            slo_page = PDFGenHelpers.SLOStatusPage(dprqs=dprqs[i*plots_per_page:(i+1)*plots_per_page], plots_per_page=plots_per_page)
+            slostatus_by_report = slo_page.slos_met_by_report_plotting()
+            if slostatus_by_report:
+                pages.append(slostatus_by_report)
         if 'assessmentStats' in request.POST:
             PDFGenHelpers.assessment_stats_for_each_slo(dprqs)
         if 'numbOfSLOsMet' in request.POST:
             n_slos_met = PDFGenHelpers.number_of_slos_met(dprqs)
             if n_slos_met:
-                plots.append(n_slos_met)
-        return plots
+                pages.append(n_slos_met)
+        return pages
 
     def historicalPdfGenQuery(degreeprogram_name, request):
         """
