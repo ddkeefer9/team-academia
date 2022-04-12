@@ -34,23 +34,23 @@ class PDFPage():
         year_end = request.POST['date_end']
         ## Generate the plot
         if any((dprqs, sirqs, sirsqs)):
-            pg.pdfGenPlotting(dprqs, sirqs, sirsqs, request)
+            plots = pg.pdfGenPlotting(dprqs, sirqs, sirsqs, request)
             
 
         ## PDF generation nonsense
         PAGE_WIDTH, PAGE_HEIGHT = letter
         buf = io.BytesIO()
         if not any((dprqs, sirqs, sirsqs)):
-            print('here')
             buf.seek(0)
             return FileResponse(buf, as_attachment=True, filename=f"{department}-{degree_program}HistoricalReport.pdf")
         c = canvas.Canvas(buf, pagesize=letter)
-        c.setTitle("{department}-{degree_program}HistoricalReport")
+        c.setTitle(f"{department}-{degree_program}HistoricalReport")
         styles = getSampleStyleSheet()
         f = Frame(inch, inch, 7*inch, 9*inch, showBoundary=0)
         styleN = styles['Normal']
         styleH1 = styles['Heading1']
         styleH2 = styles['Heading2']
+        styleH3 = styles['Heading3']
         story = []
         story.append(Paragraph(f"Historical Data Report from {year_start} to {year_end} for {degree_program}", styleH2))
         f.addFromList(story, c)
@@ -61,8 +61,14 @@ class PDFPage():
         f.addFromList(story, c)
         c.showPage()
         story.clear()
-        story.append(Paragraph(f"Percentage of Targets the {degree_program} Degree Program Meets", styleH1))
-        c.drawInlineImage(str(BASE_DIR) + "/main/static/slo_status_by_reporting_year_fig.png", inch, inch, width=400, height=300)
+        story.append(Paragraph(f"SLO Status Breakdown by Report for {degree_program}", styleH1))
+        for plot in plots:
+            if isinstance(plot, str):
+                # Then the "plot" is actually a string saying that the degree program has no status data.
+                story.append(Paragraph(plot, styleH3))
+                continue
+            c.drawInlineImage(plot, inch, inch, width=400, height=300)
+            plot.close()
         f.addFromList(story, c)
         c.save()
         buf.seek(0)

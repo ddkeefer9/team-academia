@@ -7,9 +7,8 @@ from ...models import (
 )
 import matplotlib
 matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-import seaborn as sns
-import pandas as pd
+import pandas as pd, io, seaborn as sns, matplotlib.pyplot as plt
+from PIL import Image
 from AcademicAssessmentAssistant.settings import BASE_DIR
 
 def cleanhtml(raw_html):
@@ -34,6 +33,8 @@ class PDFGenHelpers:
             slo_dict = dict()
             report_slos = MakereportsSloinreport.objects.filter(report=report)
             report_slo_statuses = MakereportsSlostatus.objects.filter(sloir__in=report_slos)
+            if len(report_slo_statuses) < 1:
+                continue
             for status in report_slo_statuses:
                 statuses.append(status.status)
             for slo in report_slos:
@@ -43,16 +44,20 @@ class PDFGenHelpers:
             report_series = pd.Series(data=slo_dict, name=str(report))   
             dp_df = dp_df.append(report_series)
         slomet_freq = dp_df.apply(pd.Series.value_counts, axis=1).T.reindex(possible_statuses, fill_value=np.nan)
-        fig, ax = plt.subplots(slomet_freq.iloc[0].size, 1)
-        if slomet_freq.iloc[0].size > 1:
-            for i in range(slomet_freq.iloc[0].size):
-                plot = sns.barplot(y=slomet_freq.index, x=slomet_freq.iloc[:,i], ax=ax[i])
+        if slomet_freq.iloc[0].size > 0:
+            fig, ax = plt.subplots(slomet_freq.iloc[0].size, 1)
+            if slomet_freq.iloc[0].size > 1:
+                for i in range(slomet_freq.iloc[0].size):
+                    plot = sns.barplot(y=slomet_freq.index, x=slomet_freq.iloc[:,i], ax=ax[i])
+            else:
+                plot = sns.barplot(y=slomet_freq.index, x=slomet_freq.iloc[:,0])
+            fig.tight_layout()
+            img_buf = io.BytesIO()
+            plt.savefig(img_buf)
+            plt_img = Image.open(img_buf)
+            return plt_img
         else:
-            plot = sns.barplot(y=slomet_freq.index, x=slomet_freq.iloc[:,0])
-        fig.tight_layout()
-        handles, labels = plt.gca().get_legend_handles_labels()
-        fig.legend(handles, labels, loc='upper right')
-        plt.savefig(str(BASE_DIR) + "/main/static/slo_status_by_reporting_year_fig.png")
+            return f"{degree_program} contained no data regarding SLO status."
 
     def pdfGenQuery(degreeprogram_name, request):
         """
@@ -76,7 +81,6 @@ class PDFGenHelpers:
             Q(year__lte=request.POST['date_end']) &
             Q(year__gte=request.POST['date_start'])
         )
-        # print(dprqs)
         if len(dprqs) < 1:  # Degree program does not have a report associated with it.
             return (None,None,None)
         # SLOs in report queryset.
@@ -95,12 +99,12 @@ class PDFGenHelpers:
         Returns:
             - plot: The plot utilizing the data.
         """
-        print(request.POST)
-        PDFGenHelpers.slos_met_by_report_plotting(dprqs)
+        plots = PDFGenHelpers.slos_met_by_report_plotting(dprqs)
         if 'assessmentStats' in request.POST:
             PDFGenHelpers.assessment_stats_for_each_slo(dprqs)
         if 'numbOfSLOsMet' in request.POST:
             PDFGenHelpers.number_of_slos_met(dprqs)
+        return [plots]
 
     def pdfDegreeGenQuery(degreeprogram_name):
         """
