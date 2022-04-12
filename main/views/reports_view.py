@@ -25,16 +25,16 @@ class PDFPage():
     """
     PDF Generation View
     """
-    def display_pdfGen(request):
+    def display_historical_pdfGen(request):
         ## DB query to retrieve usable info for this generated PDF
-        dprqs, sirqs, sirsqs = pg.pdfGenQuery(request.POST['degree-program'], request)
+        dprqs, sirqs, sirsqs = pg.historicalPdfGenQuery(request.POST['degree-program'], request)
         degree_program = request.POST['degree-program']
         department = MakereportsDepartment.objects.filter(id=request.POST['department'])[0]
         year_start = request.POST['date_start']
         year_end = request.POST['date_end']
         ## Generate the plot
         if any((dprqs, sirqs, sirsqs)):
-            plots = pg.pdfGenPlotting(dprqs, sirqs, sirsqs, request)
+            plots = pg.historicalPdfGenPlotting(dprqs, sirqs, sirsqs, request)
             
 
         ## PDF generation nonsense
@@ -81,7 +81,7 @@ class PDFPage():
         degree_program2 = request.POST['degree-program2']
 
         ## Generate the plot
-        plot = pg.pdfCollegeComparisonsPlotting("TEST - College of Testing this System")
+        plot = pg.pdfCollegeComparisonsPlotting(degree_program, degree_program2)
 
         ## PDF generation nonsense
         PAGE_WIDTH, PAGE_HEIGHT = letter

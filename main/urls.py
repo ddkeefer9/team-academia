@@ -3,7 +3,7 @@ from main.views import basic_views, reports_view, smart_view, historical_view, d
 urlpatterns = [
     path("", basic_views.HomePage.display_index, name="home"),
     path("smart_assistant", smart_view.SmartAssistantPage.display_smartAssistant, name="smartAssistant"),
-    path("pdfGen", reports_view.PDFPage.display_pdfGen, name="pdfGen"),
+    path("pdfGen", reports_view.PDFPage.display_historical_pdfGen, name="pdfGen"),
     path("pdfDegreeGen", reports_view.PDFPage.display_degree_pdfGen, name="pdfDegreeGen"),
     path("degreeDropdown", basic_views.HomePage.display_sendDegrees, name="degreeDropdown"),
     path("degree_comparison", degree_comparison_view.DegreeCompPage.display_degree_comp, name="degreecomparison"),

@@ -26,7 +26,7 @@ class HistoricalPage():
                 Or it will simply render the page (only possible by manually typing URL).
         """
         if request.method == "POST" and "historical_woptions" not in request.POST:
-            return PDFPage.display_pdfGen(request)
+            return PDFPage.display_historical_pdfGen(request)
         
         departments = MakereportsDepartment.objects.all()
         degreePrograms = MakereportsDegreeprogram.objects.all()
