@@ -59,7 +59,7 @@ class PDFGenHelpers:
         else:
             return f"{degree_program} contained no data regarding SLO status."
 
-    def pdfGenQuery(degreeprogram_name, request):
+    def historicalPdfGenQuery(degreeprogram_name, request):
         """
         Helper for querying the database to generate our default report.
 
@@ -92,7 +92,7 @@ class PDFGenHelpers:
         avirqs = MakereportsAssessmentversion.objects.filter(slo__in=sirqs)
         return dprqs, sirqs, sirsqs
 
-    def pdfGenPlotting(dprqs, sirqs, sirsqs, request):
+    def historicalPdfGenPlotting(dprqs, sirqs, sirsqs, request):
         """
         Helper for plotting the resulting QuerySet from pdfGenQuery for our historical report
 
