@@ -61,6 +61,30 @@ class PDFGenHelpers:
             else:
                 return f"{degree_program} contained no data regarding SLO status."
 
+    class NumSLOsMetPage:
+        
+        def __init__(self, dprqs):
+            self.dprqs = dprqs
+            self.description = "Number of SLOs Met"
+
+        def __str__(self):
+            return self.description
+
+        def number_of_slos_met(self):
+            pass
+
+    class AssessmentStatisticsPage:
+
+        def __init__(self, dprqs):
+            self.dprqs = dprqs
+            self.description = "Assessment Statistics"
+
+        def __str__(self):
+            return self.description
+
+        def assessment_stats_for_each_slo(self):
+            pass
+
     def historicalPdfGenPlotting(dprqs, sirqs, sirsqs, request):
         """
         Helper for plotting the resulting QuerySet from pdfGenQuery for our historical report
@@ -81,13 +105,6 @@ class PDFGenHelpers:
             if n_slos_met:
                 plots.append(n_slos_met)
         return plots
-
-
-    def assessment_stats_for_each_slo(dprqs):
-        pass
-
-    def number_of_slos_met(dprqs):
-        pass
 
     def historicalPdfGenQuery(degreeprogram_name, request):
         """
