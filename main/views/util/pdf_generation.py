@@ -67,22 +67,11 @@ class PDFGenHelpers:
             else:
                 return f"{degree_program} contained no data regarding SLO status."
 
-    class NumSLOsMetPage:
-        
-        def __init__(self, dprqs):
-            self.dprqs = dprqs
-            self.description = "Number of SLOs Met"
-
-        def __str__(self):
-            return self.description
-
-        def number_of_slos_met(self):
-            pass
-
     class AssessmentStatisticsPage:
 
-        def __init__(self, dprqs):
+        def __init__(self, dprqs, plots_per_page):
             self.dprqs = dprqs
+            self.plots_per_page = plots_per_page
             self.description = "Assessment Statistics"
 
         def __str__(self):
@@ -104,12 +93,10 @@ class PDFGenHelpers:
             slostatus_by_report = slo_page.slos_met_by_report_plotting()
             if slostatus_by_report:
                 pages.append(slostatus_by_report)
-        if 'assessmentStats' in request.POST:
-            PDFGenHelpers.assessment_stats_for_each_slo(dprqs)
-        if 'numbOfSLOsMet' in request.POST:
-            n_slos_met = PDFGenHelpers.number_of_slos_met(dprqs)
-            if n_slos_met:
-                pages.append(n_slos_met)
+            if 'assessmentStats' in request.POST:
+                assess_stats = PDFGenHelpers.AssessmentStatisticsPage.assessment_stats_for_each_slo(dprqs=dprqs[i*plots_per_page:(i+1)*plots_per_page], plots_per_page=plots_per_page)
+                if assess_stats:
+                    pages.append(assess_stats)
         return pages
 
     def historicalPdfGenQuery(degreeprogram_name, request):
