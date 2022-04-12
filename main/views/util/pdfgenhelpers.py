@@ -2,7 +2,7 @@ import re
 from django.db.models import Q
 import numpy as np
 from ...models import (
-    MakereportsAssessmentdata, MakereportsAssessmentversion, MakereportsReport, MakereportsSloinreport, 
+    MakereportsAssessmentdata, MakereportsAssessmentversion, MakereportsCollege, MakereportsReport, MakereportsSloinreport, 
     MakereportsDegreeprogram, MakereportsDepartment, MakereportsSlostatus, MakereportsAssessmentversion
 )
 import matplotlib
@@ -106,7 +106,7 @@ class PDFGenHelpers:
             PDFGenHelpers.number_of_slos_met(dprqs)
         return [plots]
 
-    def pdfDegreeGenQuery(degreeprogram_name):
+    def pdfDegreeGenQuery(degree_id):
         """
         Helper for querying the database to generate our default report.
 
@@ -118,39 +118,51 @@ class PDFGenHelpers:
                 - sirqs: is the SLOinreport queryset.
                 - sirsqs: is the SLOinreportstatus queryset.
         """
-        mrdpqs = MakereportsDegreeprogram.objects.filter(name=degreeprogram_name)
-        if len(mrdpqs) < 1:
-            return (None, None)
-                # Degree program report queryset.
-        dprqs = MakereportsReport.objects.filter(degreeprogram=mrdpqs[0])
-        if len(dprqs) < 1:  # Degree program does not have a report associated with it.
+        # collegeQS = MakereportsCollege.objects.filter(name=college_name)
+        # if len(collegeQS) < 1:
+        #     return (None, None)
+        
+        # departmentQS = MakereportsDepartment.objects.filter(college__in=collegeQS)
+
+        # degreeProgramQS = MakereportsDegreeprogram.objects.filter(department__in=departmentQS)
+
+        makeReportQS = MakereportsReport.objects.filter(degreeprogram=degree_id)
+        if len(makeReportQS) < 1:  # Degree program does not have a report associated with it.
             return (None,None)
         
-        reportsAssessmentVersionQS = MakereportsAssessmentversion.objects.filter(report__in=dprqs)
+        reportsAssessmentVersionQS = MakereportsAssessmentversion.objects.filter(report__in=makeReportQS)
         
         assessmentDataQS = MakereportsAssessmentdata.objects.filter(assessmentversion__in=reportsAssessmentVersionQS)
-        return dprqs, assessmentDataQS
+        return makeReportQS, assessmentDataQS
 
-    def pdfDegreeGenPlotting(degree_program, degree_program2):
+    def pdfCollegeComparisonsPlotting(college_name):
         """
-        Helper for plotting the resulting QuerySet from pdfGenQuery for our default report
+        Plots the college comparisons graphs for a given college name.
 
         Returns:
             - plot: The plot utilizing the data.
         """
+        collegeQS = MakereportsCollege.objects.filter(name=college_name)
+        if len(collegeQS) < 1:
+            return (None, None)
+        
+        departmentQS = MakereportsDepartment.objects.filter(college__in=collegeQS)
+
+        degreeProgramQS = MakereportsDegreeprogram.objects.filter(department__in=departmentQS)
+
         degree_programs = []
         overallProficiency = []
+
+        for degree in degreeProgramQS:
+            dprqs, assessmentDataQS = PDFGenHelpers.pdfDegreeGenQuery(degree)
+            if assessmentDataQS is not None and len(assessmentDataQS) > 0 :
+                degree_programs.append(degree.name)
+                overallProficiency.append(assessmentDataQS[0].overallproficient)
+                print("loop")
         
-        dprqs, assessmentDataQS = PDFGenHelpers.pdfDegreeGenQuery(degree_program)
-        dprqs2, assessmentDataQS2 = PDFGenHelpers.pdfDegreeGenQuery(degree_program2)
-        print(degree_program)
-        print(degree_program2)
-        if assessmentDataQS is not None and len(assessmentDataQS) > 0 :
-            degree_programs.append(dprqs[0].degreeprogram.name)
-            overallProficiency.append(assessmentDataQS[0].overallproficient)
-        if assessmentDataQS2 is not None and len(assessmentDataQS2) > 0 :
-            degree_programs.append(dprqs2[0].degreeprogram.name)
-            overallProficiency.append(assessmentDataQS2[0].overallproficient)
+        # if assessmentDataQS is not None and len(assessmentDataQS) > 0 :
+        #     degree_programs.append(dprqs.degreeprogram.name)
+        #     overallProficiency.append(assessmentDataQS.overallproficient)
 
         df = pd.DataFrame(data = {
             'Programs' : degree_programs,
@@ -173,5 +185,5 @@ class PDFGenHelpers:
 
             plt.savefig(str(BASE_DIR) + "/main/static/degreetestfig.png")
         else:
-            plot = sns.catplot(x="Programs", y="Overall Proficiency",  kind="bar", data=df, order=[degree_program, degree_program2])
+            plot = sns.catplot(x="Programs", y="Overall Proficiency",  kind="bar", data=df, order=degreeProgramQS.all)
             plt.savefig(str(BASE_DIR) + "/main/static/degreetestfig.png")
