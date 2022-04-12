@@ -1,7 +1,7 @@
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import FileResponse, HttpResponse, HttpResponseRedirect
-from django.contrib.messages import ERROR 
+from django.contrib import messages
 from main.models import \
     MakereportsReport, MakereportsSloinreport, MakereportsDegreeprogram, MakereportsDepartment, MakereportsSlostatus, \
     MakereportsSlostatus 
@@ -42,7 +42,8 @@ class PDFPage():
         buf = io.BytesIO()
         if not any((dprqs, sirqs, sirsqs)):
             buf.seek(0)
-            return FileResponse(buf, as_attachment=True, filename=f"{department}-{degree_program}HistoricalReport.pdf")
+            messages.warning(request, message=f'No data found for {degree_program}')
+            return redirect('historical')
         c = canvas.Canvas(buf, pagesize=letter)
         c.setTitle(f"{department}-{degree_program}HistoricalReport")
         styles = getSampleStyleSheet()
