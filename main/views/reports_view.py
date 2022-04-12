@@ -1,6 +1,7 @@
 
+from msilib.schema import Error
 from django.shortcuts import render
-from django.http import FileResponse, HttpResponse, HttpResponseRedirect
+from django.http import FileResponse, HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.contrib.messages import ERROR 
 from main.models import \
     MakereportsReport, MakereportsSloinreport, MakereportsDegreeprogram, MakereportsDepartment, MakereportsSlostatus, \
@@ -73,36 +74,48 @@ class PDFPage():
     def display_degree_pdfGen(request):
         degree_program = request.POST['degree-program']
         degree_program2 = request.POST['degree-program2']
+        
+        # print("In display_degree_pdfGen")
 
         ## Generate the plot
-        plot = pg.pdfCollegeComparisonsPlotting("TEST - College of Testing this System")
-
+        plot1HasData = True
+        plot1 = pg.pdfCollegeComparisonsAssessmentPlotting("IS&T - College of Information Science & Technology")
+        if plot1 == None:
+            plot1 = False
+        plot2HasData = True
+        plot2 = pg.pdfCollegeComparisonsSLOPlotting("IS&T - College of Information Science & Technology")
+        if plot2 == None:
+            plot2 = False
         ## PDF generation nonsense
         PAGE_WIDTH, PAGE_HEIGHT = letter
         buf = io.BytesIO()
         c = canvas.Canvas(buf, pagesize=letter)
         c.setTitle(f"{degree_program} and {degree_program2} Comparison")
         styles = getSampleStyleSheet()
+        # inch = 1
         f = Frame(inch, inch, 7*inch, 9*inch, showBoundary=0)
         styleN = styles['Normal']
         styleH1 = styles['Heading1']
         styleH2 = styles['Heading2']
         story = []
-        story.append(Paragraph("Program Comparison", styleH2))
+        story.append(Paragraph("College Comparison", styleH2))
         f.addFromList(story, c)
-        c.showPage()
+        # c.showPage()
         story.clear()
-        toc = TableOfContents()
-        story.append(toc)
+        # toc = TableOfContents()
+        # story.append(toc)
         f.addFromList(story, c)
-        c.showPage()
-        story.clear()
-        story.append(Paragraph(f"Comparison of Proficiency between {degree_program} and {degree_program2}", styleH1))
-        c.drawInlineImage(str(BASE_DIR) + "/main/static/degreetestfig.png", inch, inch, width=400, height=300)
+        # c.showPage()
+        # story.clear()
+        # story.append(Paragraph(f"Comparison of :  ", styleH1))
+        if plot1HasData:
+            c.drawImage(str(BASE_DIR) + "/main/static/assessmentcomparisonfig.png", inch, inch, width=300, height=300)
+        if plot2HasData:
+            c.drawImage(str(BASE_DIR) + "/main/static/slocomparisonfig.png", inch, inch+300, width=300, height=300)
         f.addFromList(story, c)
         c.save()
         buf.seek(0)
 
         # Return file to download to the user.
-        return FileResponse(buf, as_attachment=True, filename=f"{degree_program} and {degree_program2} Comparison.pdf")
+        return FileResponse(buf, as_attachment=True, filename=f"Comparison.pdf")
         
