@@ -8,7 +8,7 @@ from main.models import \
 from AcademicAssessmentAssistant.settings import BASE_DIR
 # Report Gen Imports
 from django.http import FileResponse
-from .util.pdfgenhelpers import PDFGenHelpers as pg
+from .util.pdf_generation import PDFGenHelpers as pg
 from django.views.generic.list import ListView
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView

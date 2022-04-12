@@ -1,7 +1,7 @@
 
 from AcademicAssessmentAssistant.settings import BASE_DIR
 import re
-from .pdfgenhelpers import PDFGenHelpers as pg
+from .pdf_generation import PDFGenHelpers as pg
 from ...models import \
         MakereportsAssessmentdata, MakereportsAssessmentversion, MakereportsReport, MakereportsSloinreport, MakereportsDegreeprogram, MakereportsDepartment, MakereportsSlostatus
 

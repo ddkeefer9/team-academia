@@ -9,7 +9,7 @@ from .reports_view import PDFPage
 from ..forms import PdfForm
 # Report Gen Imports
 from django.http import FileResponse
-from .util.pdfgenhelpers import PDFGenHelpers as pg
+from .util.pdf_generation import PDFGenHelpers as pg
 import io
 # Create your views here.
 class HistoricalPage():
