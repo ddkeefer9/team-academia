@@ -63,6 +63,7 @@ class PDFPage():
         c.showPage()
         story.clear()
         story.append(Paragraph(f"SLO Status Breakdown by Report for {degree_program}", styleH1))
+        print(plots)
         for plot in plots:
             if isinstance(plot, str):
                 # Then the "plot" is actually a string saying that the degree program has no status data.
