@@ -52,12 +52,10 @@ class PDFPage():
         styleH2 = styles['Heading2']
         styleH3 = styles['Heading3']
         story = []
-        print("HERE")
         story.append(Paragraph(f"Historical Data Report from {year_start} to {year_end} for {degree_program}", styleH2))
         f.addFromList(story, c)
         c.showPage()
         story.clear()
-        print(pages)
         for page_plot in pages:
             story.append(Paragraph(f"SLO Status Breakdown by Report for {degree_program}", styleH1))
             if isinstance(page_plot, str):
