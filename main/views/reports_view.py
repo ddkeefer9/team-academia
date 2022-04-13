@@ -1,15 +1,14 @@
 
-from msilib.schema import Error
-from django.shortcuts import render
-from django.http import FileResponse, HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
-from django.contrib.messages import ERROR 
+from django.shortcuts import render, redirect
+from django.http import FileResponse, HttpResponse, HttpResponseRedirect
+from django.contrib import messages
 from main.models import \
     MakereportsReport, MakereportsSloinreport, MakereportsDegreeprogram, MakereportsDepartment, MakereportsSlostatus, \
     MakereportsSlostatus 
 from AcademicAssessmentAssistant.settings import BASE_DIR
 # Report Gen Imports
 from django.http import FileResponse
-from .util.pdfgenhelpers import PDFGenHelpers as pg
+from .util.pdf_generation import PDFGenHelpers as pg
 from django.views.generic.list import ListView
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
@@ -17,7 +16,7 @@ import io
 from reportlab.pdfgen import canvas
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
-from reportlab.platypus import Paragraph, Frame, PageBreak
+from reportlab.platypus import Paragraph, Frame, PageBreak, Image
 from reportlab.platypus.tableofcontents import TableOfContents
 from reportlab.lib.pagesizes import letter
 
@@ -35,19 +34,19 @@ class PDFPage():
         year_end = request.POST['date_end']
         ## Generate the plot
         if any((dprqs, sirqs, sirsqs)):
-            plots = pg.historicalPdfGenPlotting(dprqs, sirqs, sirsqs, request)
+            pages = pg.historicalPdfGenPlotting(dprqs, sirqs, sirsqs, request)
             
 
         ## PDF generation nonsense
-        PAGE_WIDTH, PAGE_HEIGHT = letter
         buf = io.BytesIO()
         if not any((dprqs, sirqs, sirsqs)):
             buf.seek(0)
-            return FileResponse(buf, as_attachment=True, filename=f"{department}-{degree_program}HistoricalReport.pdf")
+            messages.warning(request, message=f'No data found for {degree_program}')
+            return redirect('historical')
         c = canvas.Canvas(buf, pagesize=letter)
         c.setTitle(f"{department}-{degree_program}HistoricalReport")
         styles = getSampleStyleSheet()
-        f = Frame(inch, inch, 7*inch, 9*inch, showBoundary=0)
+        f = Frame(inch, inch, 7*inch, 9*inch, showBoundary=1)
         styleN = styles['Normal']
         styleH1 = styles['Heading1']
         styleH2 = styles['Heading2']
@@ -57,20 +56,18 @@ class PDFPage():
         f.addFromList(story, c)
         c.showPage()
         story.clear()
-        toc = TableOfContents()
-        story.append(toc)
-        f.addFromList(story, c)
-        c.showPage()
-        story.clear()
-        story.append(Paragraph(f"SLO Status Breakdown by Report for {degree_program}", styleH1))
-        for plot in plots:
-            if isinstance(plot, str):
+        for page_plot in pages:
+            story.append(Paragraph(f"SLO Status Breakdown by Report for {degree_program}", styleH1))
+            if isinstance(page_plot, str):
                 # Then the "plot" is actually a string saying that the degree program has no status data.
-                story.append(Paragraph(plot, styleH3))
+                story.append(Paragraph(page_plot, styleH3))
                 continue
-            c.drawInlineImage(plot, inch, inch, width=400, height=300)
-            plot.close()
-        f.addFromList(story, c)
+            width, height = page_plot.size
+            c.drawInlineImage(page_plot, inch, inch, width=0.5*width, height=0.5*height)
+            page_plot.close()
+            f.addFromList(story, c)
+            c.showPage()
+            story.clear()
         c.save()
         buf.seek(0)
 
