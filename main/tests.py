@@ -1,9 +1,11 @@
 from django.test import TestCase
 from django.test import LiveServerTestCase
+from numpy import equal
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-from .models import MakereportsDepartment, MakereportsAnnouncement
+from .models import MakereportsDepartment, MakereportsAnnouncement, MakereportsSlostatus
+from main.views.util.pdf_generation import PDFGenHelpers as pg
 
 import pytest
 # Create your tests here.
@@ -68,3 +70,28 @@ class UnitTests(TestCase):
 
 	def test_announcement_length(self):
 		assert len(MakereportsAnnouncement.objects.all()) == 0
+
+	def test_SLOStatus(self):
+		page = pg.SLOStatusPage(0 , 4)
+		assert page.description == "SLO Status"
+	
+	def test_SLO_dprqs(self):
+		page = pg.SLOStatusPage(0 , 4)
+		assert page.dprqs == 0
+	
+	def test_SLO_plots_per_page(self):
+		page = pg.SLOStatusPage(0 , 4)
+		assert page.plots_per_page == 4
+
+	def test_AssessmentStats(self):
+		page = pg.AssessmentStatisticsPage(0,4)
+		assert page.description == "Assessment Statistics"
+	
+	def test_AssessmentStats_dprqs(self):
+		page = pg.SLOStatusPage(0 , 4)
+		assert page.dprqs == 0
+	
+	def test_AssessmentStats_plots_per_page(self):
+		page = pg.SLOStatusPage(0 , 4)
+		assert page.plots_per_page == 4
+		
