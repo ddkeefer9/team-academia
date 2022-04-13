@@ -56,8 +56,11 @@ class PDFPage():
         f.addFromList(story, c)
         c.showPage()
         story.clear()
-        for page_plot in pages:
-            story.append(Paragraph(f"SLO Status Breakdown by Report for {degree_program}", styleH1))
+        for (page_plot, page_descriptions), page_title in pages:
+            print(page_descriptions)
+            story.append(Paragraph(page_title, styleH1))
+            for description in page_descriptions:
+                story.append(Paragraph(f"Report: {description}", styleH3))
             if isinstance(page_plot, str):
                 # Then the "plot" is actually a string saying that the degree program has no status data.
                 story.append(Paragraph(page_plot, styleH3))
