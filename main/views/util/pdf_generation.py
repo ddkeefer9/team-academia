@@ -40,8 +40,8 @@ class PDFGenHelpers:
                 slo_dict = dict()
                 report_slos = MakereportsSloinreport.objects.filter(report=report)
                 report_slo_statuses = MakereportsSlostatus.objects.filter(sloir__in=report_slos)
-                # if len(report_slo_statuses) < 1:
-                #     continue
+                if len(report_slo_statuses) < 1:
+                    continue
                 for status in report_slo_statuses:
                     statuses.append(status.status)
                 for slo in report_slos:
@@ -132,20 +132,6 @@ class PDFGenHelpers:
         # Assessment version in report query set.
         avirqs = MakereportsAssessmentversion.objects.filter(slo__in=sirqs)
         return dprqs, sirqs, sirsqs
-
-    def historicalPdfGenPlotting(dprqs, sirqs, sirsqs, request):
-        """
-        Helper for plotting the resulting QuerySet from pdfGenQuery for our historical report
-
-        Returns:
-            - plot: The plot utilizing the data.
-        """
-        plots = PDFGenHelpers.slos_met_by_report_plotting(dprqs)
-        if 'assessmentStats' in request.POST:
-            PDFGenHelpers.assessment_stats_for_each_slo(dprqs)
-        if 'numbOfSLOsMet' in request.POST:
-            PDFGenHelpers.number_of_slos_met(dprqs)
-        return [plots]
 
     def pdfDegreeAssessmentQuery(degree_id):
         """
