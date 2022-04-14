@@ -109,7 +109,8 @@ class AssessmentStatisticsPage:
         return self.description
 
     def assessment_stats_for_each_slo(self):
-        pass
+        for assessment in self.avirqs:
+            print(MakereportsAssessmentaggregate.objects.filter(assessmentversion=assessment))
 
 class PDFGenHelpers:
 
@@ -133,7 +134,6 @@ class PDFGenHelpers:
                 pages.append((slostatus_by_report, f"SLO Status Breakdown by Report for {degree_program}"))
     
         if 'assessmentStats' in request.POST:
-            print(sirqs)
             assess_stats_page = AssessmentStatisticsPage(dprqs, sirqs, avirqs, plots_per_page=plots_per_page)
             assess_stats_by_report = assess_stats_page.assessment_stats_for_each_slo()
             if assess_stats_by_report:
@@ -157,14 +157,14 @@ class PDFGenHelpers:
         # Degree program report queryset.
         mrdpqs = MakereportsDegreeprogram.objects.filter(name=degreeprogram_name)
         if len(mrdpqs) < 1:
-            return (None, None, None)
+            return (None, None, None, None)
         dprqs = MakereportsReport.objects.filter(
             Q(degreeprogram=mrdpqs[0]) &
             Q(year__lte=request.POST['date_end']) &
             Q(year__gte=request.POST['date_start'])
         )
         if len(dprqs) < 1:  # Degree program does not have a report associated with it.
-            return (None,None,None)
+            return (None,None,None,None)
         # SLOs in report queryset.
         sirqs = MakereportsSloinreport.objects.filter(report__in=dprqs)
 

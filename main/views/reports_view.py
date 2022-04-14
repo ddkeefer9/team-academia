@@ -36,51 +36,79 @@ class PDFPage():
 
     def display_historical_pdfGen(request):
         ## DB query to retrieve usable info for this generated PDF
-            
-        dprqs, sirqs, sirsqs, avirqs = pg.historicalPdfGenQuery(request.POST['degree-program'], request)
-        degree_program = request.POST['degree-program']
-        department = MakereportsDepartment.objects.filter(id=request.POST['department'])[0]
-        year_start = request.POST['date_start']
-        year_end = request.POST['date_end']
-        ## Generate the plot
-        if any((dprqs, sirqs, sirsqs)):
-            pages = pg.historicalPdfGenPlotting(dprqs, sirqs, sirsqs, avirqs, request)
-             
-        ## PDF generation nonsense
+        department = MakereportsDepartment.objects.filter(id=request.POST['department'])
         buf = io.BytesIO()
-        if not any((dprqs, sirqs, sirsqs)):
-            buf.seek(0)
-            messages.warning(request, message=f'No data found for {degree_program}')
-            return redirect('historical')
         c = canvas.Canvas(buf, pagesize=letter)
-        c.setTitle(f"{department}-{degree_program}HistoricalReport")
         styles = getSampleStyleSheet()
-        f = Frame(inch, inch, 7*inch, 9*inch, showBoundary=1)
         styleN = styles['Normal']
         styleH1 = styles['Heading1']
         styleH2 = styles['Heading2']
         styleH3 = styles['Heading3']
         story = []
-        story.append(Paragraph(f"Historical Data Report from {year_start} to {year_end} for {degree_program}", styleH2))
-        story = PDFPage.finish_page(story, c, f)
-        for (page_plot, page_descriptions), page_title in pages:
-            story.append(Paragraph(page_title, styleH1))
-            for description in page_descriptions:
-                story.append(Paragraph(f"Report: {description}", styleH3))
-            if isinstance(page_plot, str):
-                # Then the "plot" is actually a string saying that the degree program has no status data.
-                story.append(Paragraph(page_plot, styleH3))
-                story = PDFPage.finish_page(story, c, f)
-                continue
-            width, height = page_plot.size
-            c.drawInlineImage(page_plot, inch, inch, width=0.5*width, height=0.5*height)
-            page_plot.close()
+        f = Frame(inch, inch, 7*inch, 9*inch, showBoundary=0)
+
+        degree_program = request.POST['degree-program']
+        year_start = request.POST['date_start']
+        year_end = request.POST['date_end']
+
+        if request.POST['degree-program'] == "All Programs":
+            degree_programs = MakereportsDegreeprogram.objects.filter(department__in=department)
+            story.append(Paragraph(f"Historical Data Report from {year_start} to {year_end} for All Programs in the {department[0]} Department", styleH2))
+            PDFPage.finish_page(story, c, f)
+            for degree in degree_programs:
+                dprqs, sirqs, sirsqs, avirqs = pg.historicalPdfGenQuery(degree, request)
+                ## Generate the plot
+                if any((dprqs, sirqs)):
+                    pages = pg.historicalPdfGenPlotting(dprqs, sirqs, sirsqs, avirqs, request)
+                    
+                if not any((dprqs, sirqs)):
+                    continue
+
+                c.setTitle(f"{department[0]}HistoricalReport")
+                for (page_plot, page_descriptions), page_title in pages:
+                    story.append(Paragraph(page_title, styleH1))
+                    for description in page_descriptions:
+                        story.append(Paragraph(f"Report: {description}", styleH3))
+                    if isinstance(page_plot, str):
+                        # Then the "plot" is actually a string saying that the degree program has no status data.
+                        story.append(Paragraph(page_plot, styleH3))
+                        story = PDFPage.finish_page(story, c, f)
+                        continue
+                    width, height = page_plot.size
+                    c.drawInlineImage(page_plot, inch, inch, width=0.5*width, height=0.5*height)
+                    page_plot.close()
+                    story = PDFPage.finish_page(story, c, f)
+        else:
+            dprqs, sirqs, sirsqs, avirqs = pg.historicalPdfGenQuery(request.POST['degree-program'], request)
+            ## Generate the plot
+            if any((dprqs, sirqs)):
+                pages = pg.historicalPdfGenPlotting(dprqs, sirqs, sirsqs, avirqs, request)                
+            if not any((dprqs, sirqs)):
+                buf.seek(0)
+                messages.warning(request, message=f'No data found for {degree_program}')
+                return redirect('historical')
+            c.setTitle(f"{department[0]}-{degree_program}HistoricalReport")
+            styles = getSampleStyleSheet()
+            story.append(Paragraph(f"Historical Data Report from {year_start} to {year_end} for {degree_program}", styleH2))
             story = PDFPage.finish_page(story, c, f)
+            for (page_plot, page_descriptions), page_title in pages:
+                story.append(Paragraph(page_title, styleH1))
+                for description in page_descriptions:
+                    story.append(Paragraph(f"Report: {description}", styleH3))
+                if isinstance(page_plot, str):
+                    # Then the "plot" is actually a string saying that the degree program has no status data.
+                    story.append(Paragraph(page_plot, styleH3))
+                    story = PDFPage.finish_page(story, c, f)
+                    continue
+                width, height = page_plot.size
+                c.drawInlineImage(page_plot, inch, inch, width=0.5*width, height=0.5*height)
+                page_plot.close()
+                story = PDFPage.finish_page(story, c, f)
         c.save()
         buf.seek(0)
 
         # Return file to download to the user.
-        return FileResponse(buf, as_attachment=True, filename=f"{department}-{degree_program}HistoricalReport.pdf")
+        return FileResponse(buf, as_attachment=True, filename=f"{department[0]}-{degree_program}HistoricalReport.pdf")
 
     def display_degree_pdfGen(request):
         degree_program = request.POST['degree-program']
@@ -94,7 +122,6 @@ class PDFPage():
         plot2 = pg.pdfCollegeComparisonsSLOPlotting("IS&T - College of Information Science & Technology")
         if plot2 == None:
             plot2 = False
-        ## PDF generation nonsense
         PAGE_WIDTH, PAGE_HEIGHT = letter
         buf = io.BytesIO()
         c = canvas.Canvas(buf, pagesize=letter)
