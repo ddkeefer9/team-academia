@@ -44,7 +44,6 @@ class PDFPage():
             story.append(Paragraph(page_title, styleH1))
             for description, style in page_descriptions:
                 if isinstance(description, list):
-                    print(description, style)
                     for i in range(len(description)):
                         story.append(Paragraph(description[i], style=styles[style[i]]))
                         story.append(Spacer(7*inch, 0.2*inch))
