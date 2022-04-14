@@ -37,10 +37,13 @@ class SLOStatusPage:
             """
             return self.description
     
-        def get_report_descriptions(self):
+        def get_report_descriptions(self, SLOdata_bool_mask):
             descriptions = list()
             for report in self.dprqs:
                 descriptions.append(report.__str__())
+            for i in range(len(SLOdata_bool_mask)):
+                if SLOdata_bool_mask[i]:
+                    descriptions[i] += " (No SLO Status Data)"
             return descriptions
                 
         def slos_met_by_report_plotting(self):
@@ -52,6 +55,7 @@ class SLOStatusPage:
             possible_statuses = ['Met', 'Partially Met', 'Not Met', 'Unknown']
             degree_program = self.dprqs[0].degreeprogram.name
             dp_df = pd.DataFrame()
+            SLOdata_bool_mask = []
             for report in self.dprqs:
                 statuses = list()
                 SLO_nums = list()
@@ -59,7 +63,10 @@ class SLOStatusPage:
                 report_slos = MakereportsSloinreport.objects.filter(report=report)
                 report_slo_statuses = MakereportsSlostatus.objects.filter(sloir__in=report_slos)
                 if len(report_slo_statuses) < 1:
+                    SLOdata_bool_mask.append(True)
                     continue
+                else:
+                    SLOdata_bool_mask.append(False)
                 for status in report_slo_statuses:
                     statuses.append(status.status)
                 for slo in report_slos:
@@ -70,7 +77,7 @@ class SLOStatusPage:
                 dp_df = dp_df.append(report_series)
             slomet_freq = dp_df.apply(pd.Series.value_counts, axis=1).T.reindex(possible_statuses, fill_value=np.nan)
             n_plots = slomet_freq.iloc[0].size
-            report_descriptions = self.get_report_descriptions()
+            report_descriptions = self.get_report_descriptions(SLOdata_bool_mask)
             if n_plots > 0:
                 fig, ax = plt.subplots(self.plots_per_page, 1, sharex=True, sharey=True)
                 for i in range(self.plots_per_page):
