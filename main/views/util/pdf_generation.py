@@ -4,7 +4,7 @@ from django.db.models import Q
 import numpy as np
 from ...models import (
     MakereportsAssessmentdata, MakereportsAssessmentversion, MakereportsCollege, MakereportsReport, MakereportsSloinreport, 
-    MakereportsDegreeprogram, MakereportsDepartment, MakereportsSlostatus, MakereportsAssessmentversion
+    MakereportsDegreeprogram, MakereportsDepartment, MakereportsSlostatus, MakereportsAssessmentversion, MakereportsAssessmentaggregate
 )
 from reportlab.lib.pagesizes import letter
 import matplotlib
@@ -18,9 +18,7 @@ PAGE_HEIGHT, PAGE_WIDTH = (dim // 10 for dim in letter)
 def cleanhtml(raw_html):
     return re.sub(re.compile('<.*?>'), '', raw_html)
 
-class PDFGenHelpers:
-
-    class SLOStatusPage:
+class SLOStatusPage:
         """
         Class to describe the SLO Status PDF Page.
         """
@@ -89,32 +87,33 @@ class PDFGenHelpers:
             else:
                 return (f"This page for {degree_program} contained no data regarding SLO status.", report_descriptions)
 
-            
+class AssessmentStatisticsPage:
+    """
+    Class to describe the Assessment Statistics PDF Page.
+    """
 
-    class AssessmentStatisticsPage:
+    def __init__(self, dprqs, sirqs, avirqs, plots_per_page):
         """
-        Class to describe the Assessment Statistics PDF Page.
+        Constructor
         """
+        self.dprqs = dprqs
+        self.sirqs = sirqs
+        self.avirqs = avirqs
+        self.plots_per_page = plots_per_page
+        self.description = "Assessment Statistics"
 
-        def __init__(self, dprqs, sirqs, plots_per_page):
-            """
-            Constructor
-            """
-            self.dprqs = dprqs
-            self.plots_per_page = plots_per_page
-            self.description = "Assessment Statistics"
+    def __str__(self):
+        """
+        toString
+        """
+        return self.description
 
-        def __str__(self):
-            """
-            toString
-            """
-            return self.description
+    def assessment_stats_for_each_slo(self):
+        pass
 
-        def assessment_stats_for_each_slo(self):
+class PDFGenHelpers:
 
-            pass
-
-    def historicalPdfGenPlotting(dprqs, sirqs, sirsqs, request, plots_per_page = 4):
+    def historicalPdfGenPlotting(dprqs, sirqs, sirsqs, avirqs, request, plots_per_page = 4):
         """
         Helper for plotting the resulting QuerySet from pdfGenQuery for our historical report.
 
@@ -127,15 +126,19 @@ class PDFGenHelpers:
         pages = list()
         degree_program = dprqs[0].degreeprogram.name
         for i in range(len(dprqs)//plots_per_page+1):
-            slo_page = PDFGenHelpers.SLOStatusPage(dprqs=dprqs[i*plots_per_page:(i+1)*plots_per_page], plots_per_page=plots_per_page)
+            slo_page = SLOStatusPage(dprqs=dprqs[i*plots_per_page:(i+1)*plots_per_page], plots_per_page=plots_per_page)
             slostatus_by_report = slo_page.slos_met_by_report_plotting()
             if slostatus_by_report:
                 # slostatus_by_report = (slostatus_by_report, )
                 pages.append((slostatus_by_report, f"SLO Status Breakdown by Report for {degree_program}"))
-            if 'assessmentStats' in request.POST:
-                assess_stats = PDFGenHelpers.AssessmentStatisticsPage.assessment_stats_for_each_slo(dprqs=dprqs[i*plots_per_page:(i+1)*plots_per_page], plots_per_page=plots_per_page)
-                if assess_stats:
-                    pages.append((assess_stats, f"Assessment Statistics for {degree_program}"))
+    
+        if 'assessmentStats' in request.POST:
+            print(sirqs)
+            assess_stats_page = AssessmentStatisticsPage(dprqs, sirqs, avirqs, plots_per_page=plots_per_page)
+            assess_stats_by_report = assess_stats_page.assessment_stats_for_each_slo()
+            if assess_stats_by_report:
+                pages.append((assess_stats_by_report, f"Assessment Statistics by Report for {degree_program}"))
+    
         return pages
 
     def historicalPdfGenQuery(degreeprogram_name, request):
@@ -169,7 +172,7 @@ class PDFGenHelpers:
         sirsqs = MakereportsSlostatus.objects.filter(sloir__in=sirqs)
         # Assessment version in report query set.
         avirqs = MakereportsAssessmentversion.objects.filter(slo__in=sirqs)
-        return dprqs, sirqs, sirsqs
+        return dprqs, sirqs, sirsqs, avirqs
 
     def pdfDegreeAssessmentQuery(degree_id):
         """
