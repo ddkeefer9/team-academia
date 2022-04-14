@@ -41,7 +41,6 @@ class PDFPage():
         styleH3 = styles['Heading3']
         for (page_plot, page_descriptions), page_title in pages:
             story.append(Paragraph(page_title, styleH1))
-            print(page_plot)
             for description, style in page_descriptions:
                 story.append(Paragraph(f"{description}", styles[style]))
             if isinstance(page_plot, str):

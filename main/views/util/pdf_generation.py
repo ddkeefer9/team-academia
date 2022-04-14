@@ -1,4 +1,5 @@
 from pickle import NONE
+from pickletools import int4
 import re
 from django.db.models import Q
 import numpy as np
@@ -77,7 +78,7 @@ class SLOStatusPage:
             n_plots = slomet_freq.iloc[0].size
             report_descriptions = self.get_report_descriptions(SLOdata_bool_mask)
             if n_plots > 0:
-                fig, ax = plt.subplots(self.plots_per_page, 1, sharex=True, sharey=True)
+                fig, ax = plt.subplots(self.plots_per_page, 1, sharex=False, sharey=True)
                 for i in range(self.plots_per_page):
                     if i in range(n_plots):
                         plot = sns.barplot(y=slomet_freq.index, x=slomet_freq.iloc[:,i], ax=ax[i])
@@ -124,7 +125,11 @@ class AssessmentStatisticsPage:
                         description = ( f"Report {report} with SLO {slo} and an assessment with an aggregate of {aggregate.aggregate_proficiency} percent proficient and a target of {assessment.target} percent,"
                                         f" marked as {'met' if aggregate.met else 'unmet'}."
                         )
-                        fig = plt.plot([1, 2, 3], [3, 2, 1])  
+                        plt.clf()
+                        plot = sns.barplot(x=["Actual", "Target"], y=[aggregate.aggregate_proficiency, assessment.target])
+                        fig = plot.get_figure() 
+                        fig.set_size_inches(8.5, 9, forward=True)
+                        fig.tight_layout()
                         img_buf = io.BytesIO()
                         plt.savefig(img_buf)
                         plt_img = Image.open(img_buf)
