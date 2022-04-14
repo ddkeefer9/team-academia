@@ -73,8 +73,10 @@
           <h4>Options</h4>
           <input type="checkbox" id="assessmentStats" name="assessmentStats" value="assessmentStats">
           <label for="assessmentStats"> SLO and Assessment Statistics</label><br>
+         <!--
           <input type="checkbox" id="targetsMet" name="targetsMet" value="targetsMet" disabled>
           <label for="targetsMet"> Targets met by degree program</label><br>
+         --> 
         </div>
 
         
@@ -126,6 +128,7 @@
 <!-- This script ensures that the user can't select the option Targets met by degree program
     without selecting a degree program.
     It does this by disabling the checkbox if All Programs is the option that is selected. -->
+<!--
 <script>
   $("#id_degree-program").on('change', function () {
       var val = $(this).val();
@@ -138,4 +141,5 @@
       
   });
 </script>
+-->
 {% endblock %}

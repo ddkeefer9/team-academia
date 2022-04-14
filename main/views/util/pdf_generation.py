@@ -34,6 +34,9 @@ class SLOStatusPage:
             return self.description
     
         def get_report_descriptions(self, SLOdata_bool_mask):
+            """
+            Helper function to format the list of strings describing the reports description for each SLO status.
+            """
             descriptions = list()
             for report in self.dprqs:
                 descriptions.append([report.__str__(), "Heading2"])
@@ -46,10 +49,9 @@ class SLOStatusPage:
             """
             Main plotting function that creates up to plots_per_page number of plots for a page describing data from the dprqs (Degree Program Report) QuerySet.
 
-            Returns: A PIL object with the plots split into plots_per_page number of subplots. Or returns a string saying:
-
-            This page for (degree_program) contained no data regarding SLO status.
-
+            Returns: 
+                - A PIL image object with the plots split into plots_per_page number of subplots. Or returns a string saying: "This page for (degree_program) contained no data regarding SLO status".
+                - A report description list describing the reports included on the plots for this page. The description will indicate if the plot is not included due to the absense of SLO status data.
             """
             possible_statuses = ['Met', 'Partially Met', 'Not Met', 'Unknown']
             degree_program = self.dprqs[0].degreeprogram.name
@@ -115,12 +117,22 @@ class AssessmentStatisticsPage:
         return self.description
 
     def assessment_stats_for_each_slo(self):
+        """
+        Main plotting and description building function for the AssessmentStatisticsPage.
+
+        Returns: 
+            - A PIL image object with a bar plot of the assessment aggregated proficiency and the target proficiency.
+            - A formatted description with specified styles that includes information about the assessment like its SLO, report, and proficiency.
+        """
         for report in self.dprqs:
             slos = MakereportsSloinreport.objects.filter(report=report)
             for slo in slos:
                 assessments = MakereportsAssessmentversion.objects.filter(slo=slo)
                 for assessment in assessments:
+                    data = MakereportsAssessmentdata.objects.filter(assessmentversion=assessment)
+                    print(data)
                     aggregates = MakereportsAssessmentaggregate.objects.filter(assessmentversion=assessment)
+                    print(aggregates)
                     for aggregate in aggregates:
                         description = [ 
                             f"Report: {report}", 

@@ -163,6 +163,14 @@ class MakereportsAssessment(models.Model):
 
 
 class MakereportsAssessmentaggregate(models.Model):
+    """
+    Notes on the usage of this table
+        This table contains information regarding the aggregate proficiency of an assessment.
+        aggregate_proficiency (IntegerField): A percentage of proficiency.
+        met (BooleanField): A boolean of whether the target was met or not.
+        assessmentversion (OneToOneField): A one-to-one relation between the aggregate and the assessmentversion it is within.
+        override (BooleanField): A boolean field to allow for overriding of the met status.
+    """
     aggregate_proficiency = models.IntegerField()
     met = models.BooleanField()
     assessmentversion = models.OneToOneField('MakereportsAssessmentversion', models.DO_NOTHING, db_column='assessmentVersion_id')  # Field name made lowercase.
