@@ -1,26 +1,17 @@
-
-from django.shortcuts import render, redirect
-from django.http import FileResponse, HttpResponse, HttpResponseRedirect
+from django.shortcuts import redirect
+from django.http import FileResponse
 from django.contrib import messages
-from numpy import isin
-from main.models import (
-    MakereportsReport, MakereportsSloinreport, MakereportsDegreeprogram, MakereportsDepartment, MakereportsSlostatus,
-    MakereportsSlostatus
-)
+from main.models import MakereportsDegreeprogram, MakereportsDepartment, MakereportsSlostatus
 
 from AcademicAssessmentAssistant.settings import BASE_DIR
 # Report Gen Imports
 from django.http import FileResponse
 from .util.pdf_generation import PDFGenHelpers as pg
-from django.views.generic.list import ListView
-from django.views.generic import TemplateView
-from django.views.generic.edit import FormView
 import io
 from reportlab.pdfgen import canvas
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import inch
-from reportlab.platypus import Paragraph, Frame, PageBreak, Image, Spacer
-from reportlab.platypus.tableofcontents import TableOfContents
+from reportlab.platypus import Paragraph, Frame, Spacer
 from reportlab.lib.pagesizes import letter
 
 

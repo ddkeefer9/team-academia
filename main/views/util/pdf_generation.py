@@ -1,10 +1,7 @@
-from pickle import NONE
-from pickletools import int4
-import re
 from django.db.models import Q
 import numpy as np
 from ...models import (
-    MakereportsAssessment, MakereportsAssessmentdata, MakereportsAssessmentversion, MakereportsCollege, MakereportsReport, MakereportsSloinreport, 
+    MakereportsAssessmentdata, MakereportsAssessmentversion, MakereportsCollege, MakereportsReport, MakereportsSloinreport, 
     MakereportsDegreeprogram, MakereportsDepartment, MakereportsSlostatus, MakereportsAssessmentversion, MakereportsAssessmentaggregate
 )
 from reportlab.lib.pagesizes import letter
