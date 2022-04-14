@@ -3,7 +3,7 @@ import re
 from django.db.models import Q
 import numpy as np
 from ...models import (
-    MakereportsAssessmentdata, MakereportsAssessmentversion, MakereportsCollege, MakereportsReport, MakereportsSloinreport, 
+    MakereportsAssessment, MakereportsAssessmentdata, MakereportsAssessmentversion, MakereportsCollege, MakereportsReport, MakereportsSloinreport, 
     MakereportsDegreeprogram, MakereportsDepartment, MakereportsSlostatus, MakereportsAssessmentversion, MakereportsAssessmentaggregate
 )
 from reportlab.lib.pagesizes import letter
@@ -12,11 +12,6 @@ matplotlib.use('Agg')
 import pandas as pd, io, seaborn as sns, matplotlib.pyplot as plt
 from PIL import Image
 from AcademicAssessmentAssistant.settings import BASE_DIR
-
-PAGE_HEIGHT, PAGE_WIDTH = (dim // 10 for dim in letter)
-
-def cleanhtml(raw_html):
-    return re.sub(re.compile('<.*?>'), '', raw_html)
 
 class SLOStatusPage:
         """
@@ -40,17 +35,20 @@ class SLOStatusPage:
         def get_report_descriptions(self, SLOdata_bool_mask):
             descriptions = list()
             for report in self.dprqs:
-                descriptions.append(report.__str__())
+                descriptions.append([report.__str__(), "Heading2"])
             for i in range(len(SLOdata_bool_mask)):
                 if SLOdata_bool_mask[i]:
-                    descriptions[i] += " (No SLO Status Data)"
+                    descriptions[i][0] += " (No SLO Status Data)"
             return descriptions
                 
         def slos_met_by_report_plotting(self):
             """
             Main plotting function that creates up to plots_per_page number of plots for a page describing data from the dprqs (Degree Program Report) QuerySet.
 
-            Returns: A PIL object with the plots split into plots_per_page number of subplots.
+            Returns: A PIL object with the plots split into plots_per_page number of subplots. Or returns a string saying:
+
+            This page for (degree_program) contained no data regarding SLO status.
+
             """
             possible_statuses = ['Met', 'Partially Met', 'Not Met', 'Unknown']
             degree_program = self.dprqs[0].degreeprogram.name
@@ -116,8 +114,21 @@ class AssessmentStatisticsPage:
         return self.description
 
     def assessment_stats_for_each_slo(self):
-        for assessment in self.avirqs:
-            print(MakereportsAssessmentaggregate.objects.filter(assessmentversion=assessment))
+        for report in self.dprqs:
+            slos = MakereportsSloinreport.objects.filter(report=report)
+            for slo in slos:
+                assessments = MakereportsAssessmentversion.objects.filter(slo=slo)
+                for assessment in assessments:
+                    aggregates = MakereportsAssessmentaggregate.objects.filter(assessmentversion=assessment)
+                    for aggregate in aggregates:
+                        description = ( f"Report {report} with SLO {slo} and an assessment with an aggregate of {aggregate.aggregate_proficiency} percent proficient and a target of {assessment.target} percent,"
+                                        f" marked as {'met' if aggregate.met else 'unmet'}."
+                        )
+                        fig = plt.plot([1, 2, 3], [3, 2, 1])  
+                        img_buf = io.BytesIO()
+                        plt.savefig(img_buf)
+                        plt_img = Image.open(img_buf)
+                        return (plt_img, [[description, "Normal"]])                    
 
 class PDFGenHelpers:
 
@@ -145,7 +156,6 @@ class PDFGenHelpers:
             assess_stats_by_report = assess_stats_page.assessment_stats_for_each_slo()
             if assess_stats_by_report:
                 pages.append((assess_stats_by_report, f"Assessment Statistics by Report for {degree_program}"))
-    
         return pages
 
     def historicalPdfGenQuery(degreeprogram_name, request):

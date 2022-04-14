@@ -41,8 +41,9 @@ class PDFPage():
         styleH3 = styles['Heading3']
         for (page_plot, page_descriptions), page_title in pages:
             story.append(Paragraph(page_title, styleH1))
-            for description in page_descriptions:
-                story.append(Paragraph(f"Report: {description}", styleH3))
+            print(page_plot)
+            for description, style in page_descriptions:
+                story.append(Paragraph(f"{description}", styles[style]))
             if isinstance(page_plot, str):
                 # Then the "plot" is actually a string saying that the degree program has no status data.
                 story.append(Paragraph(page_plot, styleH3))
@@ -68,7 +69,7 @@ class PDFPage():
         year_end = request.POST['date_end']
         # For all programs option, if all True then the entire department does not contain data, triggering a warning later on in this function.
         nodata_degree_bool_mask = []
-        
+
         if request.POST['degree-program'] == "All Programs":
             degree_programs = MakereportsDegreeprogram.objects.filter(department__in=department)
             story.append(Paragraph(f"Historical Data Report from {year_start} to {year_end} for All Programs in the {department[0]} Department", styleTitle))
