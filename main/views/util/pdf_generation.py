@@ -129,10 +129,7 @@ class AssessmentStatisticsPage:
             for slo in slos:
                 assessments = MakereportsAssessmentversion.objects.filter(slo=slo)
                 for assessment in assessments:
-                    data = MakereportsAssessmentdata.objects.filter(assessmentversion=assessment)
-                    print(data)
                     aggregates = MakereportsAssessmentaggregate.objects.filter(assessmentversion=assessment)
-                    print(aggregates)
                     for aggregate in aggregates:
                         description = [ 
                             f"Report: {report}", 
