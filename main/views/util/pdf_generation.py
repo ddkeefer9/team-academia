@@ -122,18 +122,27 @@ class AssessmentStatisticsPage:
                 for assessment in assessments:
                     aggregates = MakereportsAssessmentaggregate.objects.filter(assessmentversion=assessment)
                     for aggregate in aggregates:
-                        description = ( f"Report {report} with SLO {slo} and an assessment with an aggregate of {aggregate.aggregate_proficiency} percent proficient and a target of {assessment.target} percent,"
-                                        f" marked as {'met' if aggregate.met else 'unmet'}."
-                        )
+                        description = [ 
+                            f"Report: {report}", 
+                            "SLO Goal:",
+                            f"{slo.goaltext}",
+                            f"An assessment with an aggregate of {aggregate.aggregate_proficiency} percent proficient and a target of {assessment.target} percent, marked as {'met' if aggregate.met else 'unmet'}."
+                        ] 
+                        styles = [
+                            "Heading3",
+                            "Heading4",
+                            "Normal",
+                            "Normal"
+                        ]
                         plt.clf()
                         plot = sns.barplot(x=["Actual", "Target"], y=[aggregate.aggregate_proficiency, assessment.target])
                         fig = plot.get_figure() 
-                        fig.set_size_inches(8.5, 9, forward=True)
+                        fig.set_size_inches(8.5, 6, forward=True)
                         fig.tight_layout()
                         img_buf = io.BytesIO()
                         plt.savefig(img_buf)
                         plt_img = Image.open(img_buf)
-                        return (plt_img, [[description, "Normal"]])                    
+                        return (plt_img, [[description, styles]])                    
 
 class PDFGenHelpers:
 

@@ -2,6 +2,7 @@
 from django.shortcuts import render, redirect
 from django.http import FileResponse, HttpResponse, HttpResponseRedirect
 from django.contrib import messages
+from numpy import isin
 from main.models import (
     MakereportsReport, MakereportsSloinreport, MakereportsDegreeprogram, MakereportsDepartment, MakereportsSlostatus,
     MakereportsSlostatus
@@ -18,7 +19,7 @@ import io
 from reportlab.pdfgen import canvas
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
-from reportlab.platypus import Paragraph, Frame, PageBreak, Image
+from reportlab.platypus import Paragraph, Frame, PageBreak, Image, Spacer
 from reportlab.platypus.tableofcontents import TableOfContents
 from reportlab.lib.pagesizes import letter
 
@@ -42,7 +43,13 @@ class PDFPage():
         for (page_plot, page_descriptions), page_title in pages:
             story.append(Paragraph(page_title, styleH1))
             for description, style in page_descriptions:
-                story.append(Paragraph(f"{description}", styles[style]))
+                if isinstance(description, list):
+                    print(description, style)
+                    for i in range(len(description)):
+                        story.append(Paragraph(description[i], style=styles[style[i]]))
+                        story.append(Spacer(7*inch, 0.2*inch))
+                else:
+                    story.append(Paragraph(description, styles[style]))
             if isinstance(page_plot, str):
                 # Then the "plot" is actually a string saying that the degree program has no status data.
                 story.append(Paragraph(page_plot, styleH3))
