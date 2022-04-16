@@ -31,7 +31,7 @@ class HistoricalPage():
         departments = MakereportsDepartment.objects.all()
         degreePrograms = MakereportsDegreeprogram.objects.all()
         form = PdfForm()
-        context = dict()      
+        context = dict()
         context['showDepartments'] = departments
         context['showDegrees'] = degreePrograms
         context['pdfForm'] = form      

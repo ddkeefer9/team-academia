@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% endblock %}
 {% load bootstrap4 %}
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.27/bootstrap-native-v4.min.js"></script>
 {% bootstrap_css %}
@@ -6,53 +9,81 @@
 {% bootstrap_messages %}
 {% block content %}
 
-<div class="container-md" style="padding-top: 30px;">
+<div class="p-2">
+  <form method="post", action="{% url 'smartAssistant' %}">
+    {% csrf_token %}
+    <div style="width:50%; display:inline-block;">
+    <h4>Department</h4>
+    <select name="department" class="form-control col-9" title="" required id="id_department">
+      {% if start_department %}
+        <option value="{{ start_department.pk }}" selected hidden>{{ start_department.name }}</option>
+      {% else %}
+        <option value="" selected disabled hidden>Choose a department</option>
+      {% endif %}
+      {% for departments in showDepartments %}
+        <option value="{{ departments.pk }}" >{{ departments.name }}</option>
+      {% endfor %}
+    </select>
 
+    <br>
+    <h4>Degree Program</h4>
+    <select name="degree-program" class="form-control col-9" title="" required id="id_degree-program">
+      {% if start_degree_program %}
+        <option value="{{ start_degree_program.name }}" selected hidden>{{ start_degree_program }}</option>
+      {% else %}
+        <option value="" selected >Choose degree program</option>
+      {% endif %}
+      <option value="All Programs">All Programs</option>
+      {% for degreePrograms in showDegrees %}
+        <option value="" >{{ degreePrograms.name }}</option>
+      {% endfor %}
+    </select>
 
-    <h3>Feedback Smart Assistant</h3>
-    <div class="p-2">
-        <h4>Department</h4>
-        <select name="department" class="form-control col-9" title="" required id="id_department">
-          {% if start_department %}
-            <option value="{{ start_department.pk }}" selected hidden>{{ start_department.name }}</option>
-          {% else %}
-            <option value="" selected disabled hidden>Choose a department</option>
-          {% endif %}
-          {% for departments in showDepartments %}
-            <option value="{{ departments.pk }}" >{{ departments.name }}</option>
-          {% endfor %}
-        </select>
-
-        <br>
-        <h4>Degree Program</h4>
-        <select name="degree-program" class="form-control col-9" title="" required id="id_degree-program">
-          {% if start_degree_program %}
-            <option value="{{ start_degree_program.name }}" selected hidden>{{ start_degree_program }}</option>
-          {% else %}
-            <option value="" selected >Choose degree program</option>
-          {% endif %}
-          <option value="All Programs">All Programs</option>
-          {% for degreePrograms in showDegrees %}
-            <option value="" >{{ degreePrograms.name }}</option>
-          {% endfor %}
-        </select>
-
-        <br>
-        <table style="width:100%">
-
-            <tr>
-                <th>SLO</th>
-                <th>Smart Assistant Feedback</th>
-            </tr>
-            {% for slo in showSLOs %}
-            <tr>
-                <td style="border: 3px; border-style:solid; border-color: black; padding: 1em;">{{ slo.0 }}</td>
-                <td style="border: 3px; border-style:solid; border-color: black; padding: 1em;">{{ slo.1 }}</td>
-            </tr>
-            {% endfor %}
-        </table>
+    <br>
+    
+    <br><br>
+    <div style="text-align: center;">
+      <ul class="list-group">  
+        {% buttons %}
+        <a type="submit" name="smart_woptions" class="btn btn-primary" value = "Feedback Smart Assistant">Feedback Smart Assistant</a>
+        <br><br>
+        {% endbuttons %}
+      </ul>
     </div>
-  
-  </div>
 
+    {% if showSLOs %}
+    <table style="width:100%">
+
+      <tr>
+          <th>SLO</th>
+          <th>Smart Assistant Feedback</th>
+      </tr>
+      {% for slo in showSLOs %}
+      <tr>
+          <td style="border: 3px; border-style:solid; border-color: black; padding: 1em;">{{ slo.0 }}</td>
+          <td style="border: 3px; border-style:solid; border-color: black; padding: 1em;">{{ slo.1 }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% endif %}
+  </form>
+</div>
+{% endblock %}
+{% block endscripts %}
+<script>
+  var dept = $("#id_department")
+  dept.change(function () {
+     // var degreeName = dept[0].options[dept[0].selectedIndex].text;
+      var degreeName = dept.val()
+      $.ajax({
+        url: "/degreeDropdown",
+        data: {
+          'department': degreeName
+        },
+        success: function (data) {
+          $("#id_degree-program").html(data);
+        }
+      });
+    });
+</script>
 {% endblock %}
