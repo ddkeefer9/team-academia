@@ -45,11 +45,12 @@
     <div style="text-align: center;">
       <ul class="list-group">  
         {% buttons %}
-        <a type="submit" name="smart_woptions" class="btn btn-primary" value = "Feedback Smart Assistant">Feedback Smart Assistant</a>
+        <input type="submit" name="smart_woptions" class="btn btn-primary" value = "Feedback Smart Assistant">
         <br><br>
         {% endbuttons %}
       </ul>
     </div>
+  </form>
 
     {% if showSLOs %}
     <table style="width:100%">
@@ -66,7 +67,6 @@
       {% endfor %}
     </table>
     {% endif %}
-  </form>
 </div>
 {% endblock %}
 {% block endscripts %}
