@@ -32,7 +32,7 @@ class SmartAssistantPage():
 			dprqs, sirqs, sirsqs = sa.sloQuerySet(request.POST['degree-program'])
 			slo_list = []
 			for slo_ in sirqs:
-				slo_list.append(SLO_Object(slo_))
+				slo_list.append(SLO_Object(slo_, start_degree_program))
 			context['showSLOs'] = slo_list    
 
 		return render(
