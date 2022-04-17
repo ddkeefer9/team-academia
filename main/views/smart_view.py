@@ -1,3 +1,4 @@
+from xml.dom.minidom import Element
 from django.shortcuts import render
 from django.http import FileResponse, HttpResponse
 from main.models import \
@@ -7,6 +8,7 @@ from nltk.corpus import wordnet
 from AcademicAssessmentAssistant.settings import BASE_DIR
 from .util.pdf_generation import PDFGenHelpers as pg
 from .util.smart_assistant import SmartAssistantHelper as sa
+from .util.smart_assistant import SLO_Object
 # Report Gen Imports
 from django.http import FileResponse
 import io
@@ -28,10 +30,10 @@ class SmartAssistantPage():
 			if start_degree_program:
 				context['start_degree_program'] = start_degree_program
 			dprqs, sirqs, sirsqs = sa.sloQuerySet(request.POST['degree-program'])
-			slo_texts = sa.SLOList_goaltext(sirqs)
-			slo_blooms = sa.SLOList_bloomText(sirqs)
-			slos = [(goalText,bloomText) for goalText,bloomText in zip(slo_texts,slo_blooms)]
-			context['showSLOs'] = slos    
+			slo_list = []
+			for slo_ in sirqs:
+				slo_list.append(SLO_Object(slo_))
+			context['showSLOs'] = slo_list    
 
 		return render(
 			request, 

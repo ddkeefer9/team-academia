@@ -5,6 +5,13 @@ from .pdf_generation import PDFGenHelpers as pg
 from ...models import \
         MakereportsAssessmentdata, MakereportsAssessmentversion, MakereportsReport, MakereportsSloinreport, MakereportsDegreeprogram, MakereportsDepartment, MakereportsSlostatus
 
+
+class SLO_Object():
+    def __init__(self, slo_object):
+        self.slo_object = slo_object
+        self.goal_text = SmartAssistantHelper.SLO_goaltext(self.slo_object)
+        self.bloom_taxonomy = SmartAssistantHelper.SLO_Blooms(self.slo_object)
+
 class SmartAssistantHelper():
     Blooms_Abbrev = dict()
     Blooms_Abbrev['EV'] = "Evaluation"
