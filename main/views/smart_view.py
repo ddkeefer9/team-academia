@@ -3,6 +3,7 @@ from django.http import FileResponse, HttpResponse
 from main.models import \
         MakereportsReport, MakereportsSloinreport, MakereportsDegreeprogram, MakereportsDepartment, MakereportsSlostatus, \
         MakereportsSlostatus 
+from nltk.corpus import wordnet
 from AcademicAssessmentAssistant.settings import BASE_DIR
 from .util.pdf_generation import PDFGenHelpers as pg
 from .util.smart_assistant import SmartAssistantHelper as sa
@@ -19,12 +20,15 @@ class SmartAssistantPage():
 		degreePrograms = MakereportsDegreeprogram.objects.all()
 		context = dict()      
 		context['showDepartments'] = departments
-		context['showDegrees'] = degreePrograms
-		print(request.method)
-		if request.method == "POST":
-			dprqs, sirqs, sirsqs = pg.historicalPdfGenQuery(request.POST['degree-program'])
+		context['showDegrees'] = degreePrograms		
+		if request.method == "POST" and "department" in request.POST and "degree-program" in request.POST:
+			start_department = MakereportsDepartment.objects.filter(id=int(request.POST['department']))[0]
+			start_degree_program = MakereportsDegreeprogram.objects.filter(name=request.POST['degree-program'])[0]
+			context['start_department'] = start_department
+			if start_degree_program:
+				context['start_degree_program'] = start_degree_program
+			dprqs, sirqs, sirsqs = sa.sloQuerySet(request.POST['degree-program'])
 			slo_texts = sa.SLOList_goaltext(sirqs)
-			print(slo_texts)
 			slos = [(element, "FEEDBACK_PLACEHOLDER") for element in slo_texts]
 			context['showSLOs'] = slos    
 
