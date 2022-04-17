@@ -6,7 +6,13 @@ from ...models import \
         MakereportsAssessmentdata, MakereportsAssessmentversion, MakereportsReport, MakereportsSloinreport, MakereportsDegreeprogram, MakereportsDepartment, MakereportsSlostatus
 
 class SmartAssistantHelper():
-
+    Blooms_Abbrev = dict()
+    Blooms_Abbrev['EV'] = "Evaluation"
+    Blooms_Abbrev['SN'] = "Synthesis"
+    Blooms_Abbrev['AN'] = "Analysis"
+    Blooms_Abbrev['AP'] = "Application"
+    Blooms_Abbrev['CO'] = "Comprehension"
+    Blooms_Abbrev['KN'] = "Knowledge"
     """
             A 3-tuple of the form: (dpqs, sirqs, sirsqs) where:
                 - dpqs: is the Degree program queryset.
@@ -24,6 +30,21 @@ class SmartAssistantHelper():
         if slo_object is not None:
             first_report_goal_text = SmartAssistantHelper.cleanhtml(slo_object.goaltext)
         return first_report_goal_text
+
+    def SLOList_bloomText(slo_list):
+        slo_texts = []
+        for i in range(len(slo_list)):
+            slo_texts.append(SmartAssistantHelper.SLO_Blooms(slo_list[i]))
+        return slo_texts
+
+
+    def SLO_Blooms(slo_object):
+        if slo_object is not None:
+            slo_make_report = slo_object.slo
+            bloom_abbrev = SmartAssistantHelper.cleanhtml(slo_make_report.blooms)
+            return SmartAssistantHelper.Blooms_Abbrev[bloom_abbrev]
+        return ""
+
 
 
     def cleanhtml(raw_html):
@@ -47,7 +68,7 @@ class SmartAssistantHelper():
         if len(mrdpqs) < 1:
             return (None, None, None)
         dprqs = MakereportsReport.objects.filter(degreeprogram=mrdpqs[0])
-        # print(dprqs)
+        #print(dprqs)
         if len(dprqs) < 1:  # Degree program does not have a report associated with it.
             return (None,None,None)
         # SLOs in report queryset.

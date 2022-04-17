@@ -29,7 +29,8 @@ class SmartAssistantPage():
 				context['start_degree_program'] = start_degree_program
 			dprqs, sirqs, sirsqs = sa.sloQuerySet(request.POST['degree-program'])
 			slo_texts = sa.SLOList_goaltext(sirqs)
-			slos = [(element, "FEEDBACK_PLACEHOLDER") for element in slo_texts]
+			slo_blooms = sa.SLOList_bloomText(sirqs)
+			slos = [(goalText,bloomText) for goalText,bloomText in zip(slo_texts,slo_blooms)]
 			context['showSLOs'] = slos    
 
 		return render(
