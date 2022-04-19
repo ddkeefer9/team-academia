@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib import messages
 from django.http import FileResponse, HttpResponse
 from main.models import \
-        MakereportsReport, MakereportsSloinreport, MakereportsDegreeprogram, MakereportsDepartment, MakereportsSlostatus, \
+        MakereportsCollege, MakereportsReport, MakereportsSloinreport, MakereportsDegreeprogram, MakereportsDepartment, MakereportsSlostatus, \
         MakereportsSlostatus 
 from AcademicAssessmentAssistant.settings import BASE_DIR
 from .reports_view import PDFPage
@@ -30,6 +30,8 @@ class DegreeCompPage():
         
         departments = MakereportsDepartment.objects.all()
         degreePrograms = MakereportsDegreeprogram.objects.all()
+        colleges = MakereportsCollege.objects.all()
+        
         form = PdfForm()
 
         if request.method == "POST" and "department" in request.POST and "degree-program" in request.POST:
@@ -52,6 +54,7 @@ class DegreeCompPage():
             {
                 'showDepartments':departments,
                 'showDegrees':degreePrograms,
+                'showColleges':colleges,
                 'pdfForm':form
             }
         )

@@ -18,59 +18,17 @@
     <div class="p-2">
       <form method="post", action="{% url 'degreecomparison' %}">
         {% csrf_token %}
-        <div style="width:50%; display:inline-block;">
-        <h4>Department</h4>
-        <select name="department" class="form-control col-9" title="" required id="id_department">
-          {% if start_department %}
-            <option value="{{ start_department.pk }}" selected hidden>{{ start_department.name }}</option>
-          {% else %}
-            <option value="" selected disabled hidden>Choose a department</option>
-          {% endif %}
-          {% for departments in showDepartments %}
-            <option value="{{ departments.pk }}" >{{ departments.name }}</option>
+        <div style="display:inline-block;">
+        <br>
+        <h4>College</h4>
+        <select name="college" class="form-control col-9" title="" required id="id_college">
+          <option value="" selected disabled hidden>Choose a college</option>
+          {% for colleges in showColleges %}
+            <option value="{{ colleges.pk }}" >{{ colleges.name }}</option>
           {% endfor %}
         </select>
 
-        <br>
-        <h4>Degree Program</h4>
-        <select name="degree-program" class="form-control col-9" title="" required id="id_degree-program">
-          {% if start_degree_program %}
-            <option value="{{ start_degree_program.name }}" selected hidden>{{ start_degree_program }}</option>
-          {% else %}
-            <option value="" selected >Choose degree program</option>
-          {% endif %}
-          <option value="All Programs">All Programs</option>
-          {% for degreePrograms in showDegrees %}
-            <option value="" >{{ degreePrograms.name }}</option>
-          {% endfor %}
-        </select>
-        <br>
-
-      </div><!--
-        this needs to be here in order for the divs to be formatted properly
-      --><div style="width:50%; display:inline-block;">
-          <h4>Department</h4>
-        <select name="department2" class="form-control col-9" title="" required id="id_department2">
-            <option value="" selected disabled hidden>Choose a department</option>
-          {% for departments in showDepartments %}
-            <option value="{{ departments.pk }}" >{{ departments.name }}</option>
-          {% endfor %}
-        </select>
-
-        <br>
-        <h4>Degree Program</h4>
-        <select name="degree-program2" class="form-control col-9" title="" required id="id_degree-program2">
-            <option value="" selected >Choose degree program</option>
-          <option value="All Programs">All Programs</option>
-          {% for degreePrograms in showDegrees %}
-            <option value="" >{{ degreePrograms.name }}</option>
-          {% endfor %}
-        </select>
-
-        <br>
-        </div>
-
-        
+      </div>
         
         <br><br>
         <div style="text-align: center;">
@@ -78,8 +36,6 @@
             {% buttons %}
             <input type="submit" name="gen_pdf" class="btn btn-primary" value = "Generate Report">
             <br><br>
-            <!-- <a type="button" class="btn btn-primary" href="pdfDegreeGen" value = "DegreeComp">View Degree Comparison Data</a>
-            <br><br> -->
             {% endbuttons %}
           </ul>
         </div>
@@ -88,41 +44,4 @@
       
     </div>
   </div>
-
-
-{% endblock %}
-{% block endscripts %}
-<script>
-  var dept = $("#id_department")
-  dept.change(function () {
-     // var degreeName = dept[0].options[dept[0].selectedIndex].text;
-      var degreeName = dept.val()
-      $.ajax({
-        url: "/degreeDropdown",
-        data: {
-          'department': degreeName
-        },
-        success: function (data) {
-          $("#id_degree-program").html(data);
-        }
-      });
-    });
-</script>
-
-<script>
-  var dept2 = $("#id_department2")
-  dept2.change(function () {
-     // var degreeName = dept[0].options[dept[0].selectedIndex].text;
-      var degreeName2 = dept2.val()
-      $.ajax({
-        url: "/degreeDropdown",
-        data: {
-          'department': degreeName2
-        },
-        success: function (data) {
-          $("#id_degree-program2").html(data);
-        }
-      });
-    });
-</script>
 {% endblock %}
