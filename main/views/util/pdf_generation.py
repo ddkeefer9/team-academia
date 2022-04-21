@@ -1,10 +1,14 @@
+from pathlib import Path
+import time
 from django.db.models import Q
 import numpy as np
 from ...models import (
-    MakereportsAssessmentdata, MakereportsAssessmentversion, MakereportsCollege, MakereportsReport, MakereportsSloinreport, 
+    MakereportsAssessmentdata, MakereportsAssessmentversion, MakereportsCollege, MakereportsReport, MakereportsSlo, MakereportsSloinreport, 
     MakereportsDegreeprogram, MakereportsDepartment, MakereportsSlostatus, MakereportsAssessmentversion, MakereportsAssessmentaggregate
 )
 from reportlab.lib.pagesizes import letter
+import importlib
+import array
 import matplotlib
 matplotlib.use('Agg')
 import pandas as pd, io, seaborn as sns, matplotlib.pyplot as plt
@@ -230,14 +234,14 @@ class PDFGenHelpers:
         assessmentDataQS = MakereportsAssessmentdata.objects.filter(assessmentversion__in=reportsAssessmentVersionQS)
         return assessmentDataQS
 
-    def pdfCollegeComparisonsAssessmentPlotting(college_name):
+    def pdfCollegeComparisonsAssessmentPlotting(college_id):
         """
         Plots the college comparisons graphs for a given college name.
 
         Returns:
             - plot: The plot utilizing the data.
         """
-        collegeQS = MakereportsCollege.objects.filter(name=college_name)
+        collegeQS = MakereportsCollege.objects.filter(pk=college_id)
         if len(collegeQS) < 1:
             return None
         
@@ -253,7 +257,6 @@ class PDFGenHelpers:
             if assessmentDataQS is not None and len(assessmentDataQS) > 0 :
                 degree_programs.append(degree.name)
                 overallProficiency.append(assessmentDataQS[0].overallproficient)
-                print("loop")
         
         df = pd.DataFrame(data = {
             'Programs' : degree_programs,
@@ -273,8 +276,8 @@ class PDFGenHelpers:
                 labels = [f'{(v.get_height())}%' for v in c]
                 ax.bar_label(c, labels=labels, label_type='edge')
             #End putting numbers above bar plots*********************************
-
-            return plt.savefig(str(BASE_DIR) + "/main/static/assessmentcomparisonfig.png")
+            plt.savefig(str(BASE_DIR) + "/main/static/assessmentcomparisonfig.png")
+            return "Successful"
         else:
             return None
 
@@ -290,7 +293,7 @@ class PDFGenHelpers:
         makeReportQS = MakereportsReport.objects.filter(degreeprogram=degree_id)
         return makeReportQS
         
-    def pdfCollegeComparisonsSLOPlotting(college_name):
+    def pdfCollegeComparisonsSLOPlotting(college_id):
         """
         Plots the college comparisons graphs for a given college name.
 
@@ -301,10 +304,9 @@ class PDFGenHelpers:
         numOfSLOs = []
         largestSLO = 0
 
-        collegeQS = MakereportsCollege.objects.filter(name=college_name)
+        collegeQS = MakereportsCollege.objects.filter(pk=college_id)
         if len(collegeQS) < 1:
             return None
-        
         departmentQS = MakereportsDepartment.objects.filter(college__in=collegeQS)
 
         degreeProgramQS = MakereportsDegreeprogram.objects.filter(department__in=departmentQS)
@@ -336,6 +338,100 @@ class PDFGenHelpers:
                 ax.bar_label(c, labels=labels, label_type='edge')
             #End putting numbers above bar plots*********************************
 
-            return plt.savefig(str(BASE_DIR) + "/main/static/slocomparisonfig.png")
+            plt.savefig(str(BASE_DIR) + "/main/static/slocomparisonfig.png")
+            return "Successful"
         else:
             return None
+
+    def pdfDegreeBloomQuery(degree_id):
+        """
+        Queries to help with College Comparison Assessment Proficiency
+
+        Queries from the MakereportsReport table -> MakereportsAssessmentversion table -> MakereportsAssessmentdata table.
+
+        Returns:
+            assessmentDataQS - The assessment data for the given degree_id
+        """
+
+        makeReportQS = MakereportsReport.objects.filter(degreeprogram=degree_id)
+        if len(makeReportQS) < 1:  # Degree program does not have a report associated with it.
+            return None
+        
+        sloInReportQS = MakereportsSloinreport.objects.filter(report__in=makeReportQS)
+        
+        sloBloomQS = MakereportsSlo.objects.filter(makereportssloinreport__in = sloInReportQS)
+        return sloBloomQS
+
+    def pdfCollegeComparisonsBloomPlotting(college_id):
+        """
+        Plots the college comparisons graphs for a given college name.
+
+        Returns:
+            - plot: The plot utilizing the data.
+        """
+        EV_INDEX = 0
+        SN_INDEX = 1
+        AN_INDEX = 2
+        AP_INDEX = 3
+        CO_INDEX = 4
+        KN_INDEX = 5
+        degree_programs = []
+        bloomTaxonmies = ['EV', 'SN', 'AN', 'AP', 'CO', 'KN']
+        blooms=[]
+        bloomValues = []
+        collegeQS = MakereportsCollege.objects.filter(pk=college_id)
+        if len(collegeQS) < 1:
+            return None
+        
+        departmentQS = MakereportsDepartment.objects.filter(college__in=collegeQS)
+
+        degreeProgramQS = MakereportsDegreeprogram.objects.filter(department__in=departmentQS)
+
+        for degree in degreeProgramQS:
+            sloBloomDataQS = PDFGenHelpers.pdfDegreeBloomQuery(degree)
+            if sloBloomDataQS is not None and len(sloBloomDataQS) > 0 :
+                degree_programs.append(degree.name)
+                bloomsForDegree = [0,0,0,0,0,0]
+                for slo in sloBloomDataQS:
+                    if (slo.blooms == 'EV'):
+                        bloomsForDegree[EV_INDEX] += 1
+                    elif (slo.blooms == 'SN'):
+                        bloomsForDegree[SN_INDEX] += 1
+                    elif (slo.blooms == 'AN'):
+                        bloomsForDegree[AN_INDEX] += 1
+                    elif (slo.blooms == 'AP'):
+                        bloomsForDegree[AP_INDEX] += 1
+                    elif (slo.blooms == 'CO'):
+                        bloomsForDegree[CO_INDEX] += 1
+                    elif (slo.blooms == 'KN'):
+                        bloomsForDegree[KN_INDEX] += 1
+                  
+                bloomValues.append(bloomsForDegree) 
+                blooms.append(bloomTaxonmies)
+        data = {
+            'Programs' : degree_programs,
+            "Number of SLOs For Each Bloom's Taxonomy" : blooms,
+            'NumberOfUses': bloomValues,
+        }
+
+        df = pd.DataFrame(data, columns=['Programs', "Number of SLOs For Each Bloom's Taxonomy", 'NumberOfUses'])
+        df = df.set_index(['Programs']).apply(pd.Series.explode).reset_index()
+        filepath = Path('main/static/out.csv')  
+        filepath.parent.mkdir(parents=True, exist_ok=True)   
+        df.to_csv(filepath)   
+        dataset = pd.read_csv(filepath)
+        if (len(degree_programs) > 0):
+            # blooms = sns.load_dataset(df)
+            importlib.reload(matplotlib); importlib.reload(plt); importlib.reload(sns)
+            pivot = dataset.pivot(index=['Programs'], columns="Number of SLOs For Each Bloom's Taxonomy", values="NumberOfUses")
+
+            if len(degree_programs) > 10:
+                sns.heatmap(pivot, annot=True, fmt="d", linewidths=.5,vmin=0, vmax=4, cmap="Reds", annot_kws = {'size':12})
+            else:
+                sns.heatmap(pivot, annot=True, fmt="d", linewidths=.5,vmin=0, vmax=4, cmap="Reds", annot_kws = {'size':15})
+
+            plt.savefig(str(BASE_DIR) + "/main/static/slobloomcomparisonfig.png", bbox_inches='tight')
+            return "Successful"
+        else:
+            return None
+    

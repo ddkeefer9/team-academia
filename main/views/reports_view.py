@@ -1,3 +1,4 @@
+from operator import contains
 from django.shortcuts import redirect
 from django.http import FileResponse
 from django.contrib import messages
@@ -114,21 +115,24 @@ class PDFPage():
         return FileResponse(buf, as_attachment=True, filename=f"{department[0]}-{degree_program}HistoricalReport.pdf")
 
     def display_degree_pdfGen(request):
-        degree_program = request.POST['degree-program']
-        degree_program2 = request.POST['degree-program2']
+        college = request.POST['college']
         ## Generate the plot
         plot1HasData = True
-        plot1 = pg.pdfCollegeComparisonsAssessmentPlotting("IS&T - College of Information Science & Technology")
-        if plot1 == None:
-            plot1 = False
+        plot1 = pg.pdfCollegeComparisonsAssessmentPlotting(college)
+        if plot1 is None:
+            plot1HasData = False
         plot2HasData = True
-        plot2 = pg.pdfCollegeComparisonsSLOPlotting("IS&T - College of Information Science & Technology")
-        if plot2 == None:
-            plot2 = False
+        plot2 = pg.pdfCollegeComparisonsSLOPlotting(college)
+        if plot2 is None:
+            plot2HasData = False
+        plot3HasData = True
+        plot3 = pg.pdfCollegeComparisonsBloomPlotting(college)
+        if plot3 == None:
+            plot3HasData = False
         PAGE_WIDTH, PAGE_HEIGHT = letter
         buf = io.BytesIO()
         c = canvas.Canvas(buf, pagesize=letter)
-        c.setTitle(f"{degree_program} and {degree_program2} Comparison")
+        c.setTitle(f"{college} Comparison")
         styles = getSampleStyleSheet()
         # inch = 1
         f = Frame(inch, inch, 7*inch, 9*inch, showBoundary=0)
@@ -146,10 +150,13 @@ class PDFPage():
         # c.showPage()
         # story.clear()
         # story.append(Paragraph(f"Comparison of :  ", styleH1))
-        if plot1HasData:
+        if plot1HasData is True:
             c.drawImage(str(BASE_DIR) + "/main/static/assessmentcomparisonfig.png", inch, inch, width=300, height=300)
-        if plot2HasData:
+        if plot2HasData is True:
             c.drawImage(str(BASE_DIR) + "/main/static/slocomparisonfig.png", inch, inch+300, width=300, height=300)
+        c.showPage()
+        if plot3HasData:
+            c.drawImage(str(BASE_DIR) + "/main/static/slobloomcomparisonfig.png", inch, inch+300, width=400, preserveAspectRatio=True)
         f.addFromList(story, c)
         c.save()
         buf.seek(0)
