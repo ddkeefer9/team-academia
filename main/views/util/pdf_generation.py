@@ -234,16 +234,13 @@ class PDFGenHelpers:
         assessmentDataQS = MakereportsAssessmentdata.objects.filter(assessmentversion__in=reportsAssessmentVersionQS)
         return assessmentDataQS
 
-    def pdfCollegeComparisonsAssessmentPlotting(college_id):
+    def pdfCollegeComparisonsAssessmentPlotting(collegeQS):
         """
         Plots the college comparisons graphs for a given college name.
 
         Returns:
             - plot: The plot utilizing the data.
         """
-        collegeQS = MakereportsCollege.objects.filter(pk=college_id)
-        if len(collegeQS) < 1:
-            return None
         
         departmentQS = MakereportsDepartment.objects.filter(college__in=collegeQS)
 
@@ -293,7 +290,7 @@ class PDFGenHelpers:
         makeReportQS = MakereportsReport.objects.filter(degreeprogram=degree_id)
         return makeReportQS
         
-    def pdfCollegeComparisonsSLOPlotting(college_id):
+    def pdfCollegeComparisonsSLOPlotting(collegeQS):
         """
         Plots the college comparisons graphs for a given college name.
 
@@ -304,9 +301,6 @@ class PDFGenHelpers:
         numOfSLOs = []
         largestSLO = 0
 
-        collegeQS = MakereportsCollege.objects.filter(pk=college_id)
-        if len(collegeQS) < 1:
-            return None
         departmentQS = MakereportsDepartment.objects.filter(college__in=collegeQS)
 
         degreeProgramQS = MakereportsDegreeprogram.objects.filter(department__in=departmentQS)
@@ -362,7 +356,7 @@ class PDFGenHelpers:
         sloBloomQS = MakereportsSlo.objects.filter(makereportssloinreport__in = sloInReportQS)
         return sloBloomQS
 
-    def pdfCollegeComparisonsBloomPlotting(college_id):
+    def pdfCollegeComparisonsBloomPlotting(collegeQS):
         """
         Plots the college comparisons graphs for a given college name.
 
@@ -379,9 +373,6 @@ class PDFGenHelpers:
         bloomTaxonmies = ['EV', 'SN', 'AN', 'AP', 'CO', 'KN']
         blooms=[]
         bloomValues = []
-        collegeQS = MakereportsCollege.objects.filter(pk=college_id)
-        if len(collegeQS) < 1:
-            return None
         
         departmentQS = MakereportsDepartment.objects.filter(college__in=collegeQS)
 
@@ -434,4 +425,6 @@ class PDFGenHelpers:
             return "Successful"
         else:
             return None
-    
+    def getCollegeQSFromID(college_id):
+        collegeQS = MakereportsCollege.objects.filter(pk=college_id)
+        return collegeQS

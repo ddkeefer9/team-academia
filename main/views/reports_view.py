@@ -115,24 +115,26 @@ class PDFPage():
         return FileResponse(buf, as_attachment=True, filename=f"{department[0]}-{degree_program}HistoricalReport.pdf")
 
     def display_degree_pdfGen(request):
-        college = request.POST['college']
+        collegeID = request.POST['college']
+        collegeQS = pg.getCollegeQSFromID(collegeID)
+        collegeName = collegeQS[0].name
         ## Generate the plot
         plot1HasData = True
-        plot1 = pg.pdfCollegeComparisonsAssessmentPlotting(college)
+        plot1 = pg.pdfCollegeComparisonsAssessmentPlotting(collegeQS)
         if plot1 is None:
             plot1HasData = False
         plot2HasData = True
-        plot2 = pg.pdfCollegeComparisonsSLOPlotting(college)
+        plot2 = pg.pdfCollegeComparisonsSLOPlotting(collegeQS)
         if plot2 is None:
             plot2HasData = False
         plot3HasData = True
-        plot3 = pg.pdfCollegeComparisonsBloomPlotting(college)
+        plot3 = pg.pdfCollegeComparisonsBloomPlotting(collegeQS)
         if plot3 == None:
             plot3HasData = False
         PAGE_WIDTH, PAGE_HEIGHT = letter
         buf = io.BytesIO()
         c = canvas.Canvas(buf, pagesize=letter)
-        c.setTitle(f"{college} Comparison")
+        c.setTitle(f"{collegeName} Comparison")
         styles = getSampleStyleSheet()
         # inch = 1
         f = Frame(inch, inch, 7*inch, 9*inch, showBoundary=0)
@@ -140,7 +142,7 @@ class PDFPage():
         styleH1 = styles['Heading1']
         styleH2 = styles['Heading2']
         story = []
-        story.append(Paragraph("College Comparison", styleH2))
+        story.append(Paragraph(f"{collegeName} Comparison", styleH2))
         f.addFromList(story, c)
         # c.showPage()
         story.clear()
@@ -152,15 +154,37 @@ class PDFPage():
         # story.append(Paragraph(f"Comparison of :  ", styleH1))
         if plot1HasData is True:
             c.drawImage(str(BASE_DIR) + "/main/static/assessmentcomparisonfig.png", inch, inch, width=300, height=300)
+        else:
+            textobject = c.beginText()
+            textobject.setFont('Times-Roman', 12)
+            textobject.setTextOrigin(inch, inch+150)
+
+            textobject.textLine(text = 'No Data For Assessment Comparison Graph')
+            c.drawText(textobject)
+            # story.append((f"No Data For Assessment Comparison", styleH2))
         if plot2HasData is True:
             c.drawImage(str(BASE_DIR) + "/main/static/slocomparisonfig.png", inch, inch+300, width=300, height=300)
+        else:
+            textobject = c.beginText()
+            textobject.setFont('Times-Roman', 12)
+            textobject.setTextOrigin(inch, inch+150)
+
+            textobject.textLine(text = 'No Data For Number of SLOs Comparison Graph')
+            c.drawText(textobject)
         c.showPage()
         if plot3HasData:
             c.drawImage(str(BASE_DIR) + "/main/static/slobloomcomparisonfig.png", inch, inch+300, width=400, preserveAspectRatio=True)
+        else:
+            textobject = c.beginText()
+            textobject.setFont('Times-Roman', 12)
+            textobject.setTextOrigin(inch, inch+150)
+
+            textobject.textLine(text = 'No Data For Blooms Taxonomy Comparison Graph')
+            c.drawText(textobject)
         f.addFromList(story, c)
         c.save()
         buf.seek(0)
 
         # Return file to download to the user.
-        return FileResponse(buf, as_attachment=True, filename=f"Comparison.pdf")
+        return FileResponse(buf, as_attachment=True, filename=f"{collegeName} Comparison.pdf")
         
