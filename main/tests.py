@@ -1,11 +1,16 @@
+from fileinput import filename
+from operator import contains
+from unicodedata import name
 from django.test import TestCase
 from django.test import LiveServerTestCase
 from numpy import equal
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-from .models import MakereportsDepartment, MakereportsAnnouncement, MakereportsSlostatus
+from selenium.webdriver.support.ui import Select
+from .models import MakereportsDepartment, MakereportsAnnouncement, MakereportsAssessment, DjangoSummernoteAttachment
 from main.views.util.pdf_generation import PDFGenHelpers as pg
+import time
 
 import pytest
 # Create your tests here.
@@ -62,6 +67,23 @@ class BasicTests(TestCase):
 		currentURL = selenium.current_url
 		self.assertEqual(currentURL,"http://127.0.0.1:8000/degree_comparison")
 		selenium.quit()
+
+	def testGeneratesPDF(self):
+				selenium = webdriver.Chrome('C:/bin/chromedriver.exe')
+				#Choose your url to visit
+				selenium.get('http://127.0.0.1:8000/')
+				selenium.find_element_by_link_text("View Historical Data").click()
+				selenium.get('http://127.0.0.1:8000/historical')
+				selenium.find_element_by_id("id_department").click()
+				Select(selenium.find_element_by_id("id_department")).select_by_visible_text("Computer Science")
+				time.sleep(1)
+				selenium.find_element_by_id("id_degree-program").click()
+				Select(selenium.find_element_by_id("id_degree-program")).select_by_visible_text("Computer Science")
+				selenium.find_element_by_name("gen_pdf").click()
+				selenium.get('file:///C:/~/Downloads/Computer%20Science-Computer%20ScienceHistoricalReport%20.pdf')
+				currentURL = selenium.current_url
+				self.assertTrue(currentURL.__contains__(".pdf"))
+				selenium.quit()
 
 class UnitTests(TestCase):
 
