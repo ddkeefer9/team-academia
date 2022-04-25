@@ -8,7 +8,7 @@ from nltk.corpus import wordnet
 from AcademicAssessmentAssistant.settings import BASE_DIR
 from .util.pdf_generation import PDFGenHelpers as pg
 from .util.smart_assistant import SmartAssistantHelper as sa
-from .util.smart_assistant import SLO_Object
+from .util.smart_assistant import SLO_Object, Degree_Object
 # Report Gen Imports
 from django.http import FileResponse
 import io
@@ -31,8 +31,10 @@ class SmartAssistantPage():
 				context['start_degree_program'] = start_degree_program
 			dprqs, sirqs, sirsqs = sa.sloQuerySet(request.POST['degree-program'])
 			slo_list = []
-			for slo_ in sirqs:
-				slo_list.append(SLO_Object(slo_, start_degree_program))
+			degreeProgram = Degree_Object(start_degree_program)
+			if sirqs is not None and len(sirqs) > 0:
+				for slo_ in sirqs:
+					slo_list.append(SLO_Object(slo_, degreeProgram))
 			context['showSLOs'] = slo_list    
 
 		return render(
