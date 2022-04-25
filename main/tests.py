@@ -9,7 +9,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from .models import MakereportsDepartment, MakereportsAnnouncement, MakereportsAssessment, DjangoSummernoteAttachment
-from main.views.util.pdf_generation import PDFGenHelpers as pg
+from main.views.util.pdf_generation import AssessmentStatisticsPage, PDFGenHelpers as pg, SLOStatusPage
 import time
 
 import pytest
@@ -94,26 +94,26 @@ class UnitTests(TestCase):
 		assert len(MakereportsAnnouncement.objects.all()) == 0
 
 	def test_SLOStatus(self):
-		page = pg.SLOStatusPage(0 , 4)
+		page = SLOStatusPage(0 , 4)
 		assert page.description == "SLO Status"
 	
 	def test_SLO_dprqs(self):
-		page = pg.SLOStatusPage(0 , 4)
+		page = SLOStatusPage(0 , 4)
 		assert page.dprqs == 0
 	
 	def test_SLO_plots_per_page(self):
-		page = pg.SLOStatusPage(0 , 4)
+		page = SLOStatusPage(0 , 4)
 		assert page.plots_per_page == 4
 
 	def test_AssessmentStats(self):
-		page = pg.AssessmentStatisticsPage(0,4)
+		page = AssessmentStatisticsPage(0,4,0,0)
 		assert page.description == "Assessment Statistics"
 	
 	def test_AssessmentStats_dprqs(self):
-		page = pg.SLOStatusPage(0 , 4)
+		page = SLOStatusPage(0 , 4)
 		assert page.dprqs == 0
 	
 	def test_AssessmentStats_plots_per_page(self):
-		page = pg.SLOStatusPage(0 , 4)
+		page = SLOStatusPage(0 , 4)
 		assert page.plots_per_page == 4
 		
