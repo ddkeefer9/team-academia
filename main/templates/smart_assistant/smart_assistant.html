@@ -61,13 +61,26 @@
       </tr>
       {% for slo in showSLOs %}
       <tr>
-          <td style="border: 3px; border-style:solid; border-color: black; padding: 1em;">{{ slo.goal_text }}</td>
-          <td style="border: 3px; border-style:solid; border-color: black; padding: 1em;">{{ slo.feedback }}</td>
+          <td style="border: 5px; border-style:solid; border-color: black; padding: 1em;">{{ slo.goal_text }}</td>
+          {% if slo.score == 0 %}
+          <td style="border: 5px; border-style:solid; border-color: black; background-color: rgba(230, 10, 6, 0.87); padding: 1em;">{{ slo.feedback }}</td>
+          {% endif %}
+          {% if slo.score == 1 %}
+          <td style="border: 5px; border-style:solid; border-color: black; background-color: rgba(245, 251, 65, 0.87); padding: 1em;">{{ slo.feedback }}</td>
+          {% endif %}
+          {% if slo.score == 2 %}
+          <td style="border: 5px; border-style:solid; border-color: black; background-color: rgb(35, 247, 49); padding: 1em;">{{ slo.feedback }}</td>
+          {% endif %}
       </tr>
       {% endfor %}
     </table>
     {% endif %}
+
 </div>
+{% if showAggregate %}
+<p>{{ showAggregate }}</p>
+{% endif %}
+
 {% endblock %}
 {% block endscripts %}
 <script>
