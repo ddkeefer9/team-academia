@@ -2,6 +2,8 @@ from pathlib import Path
 import time
 from django.db.models import Q
 import numpy as np
+
+from main.views.util.queries import CollegeQueries, DegreeQueries
 from ...models import (
     MakereportsAssessmentdata, MakereportsAssessmentversion, MakereportsCollege, MakereportsReport, MakereportsSlo, MakereportsSloinreport, 
     MakereportsDegreeprogram, MakereportsDepartment, MakereportsSlostatus, MakereportsAssessmentversion, MakereportsAssessmentaggregate
@@ -215,42 +217,21 @@ class PDFGenHelpers:
         avirqs = MakereportsAssessmentversion.objects.filter(slo__in=sirqs)
         return dprqs, sirqs, sirsqs, avirqs
 
-    def pdfDegreeAssessmentQuery(degree_id):
-        """
-        Queries to help with College Comparison Assessment Proficiency
-
-        Queries from the MakereportsReport table -> MakereportsAssessmentversion table -> MakereportsAssessmentdata table.
-
-        Returns:
-            assessmentDataQS - The assessment data for the given degree_id
-        """
-
-        makeReportQS = MakereportsReport.objects.filter(degreeprogram=degree_id)
-        if len(makeReportQS) < 1:  # Degree program does not have a report associated with it.
-            return None
-        
-        reportsAssessmentVersionQS = MakereportsAssessmentversion.objects.filter(report__in=makeReportQS)
-        
-        assessmentDataQS = MakereportsAssessmentdata.objects.filter(assessmentversion__in=reportsAssessmentVersionQS)
-        return assessmentDataQS
-
+class DegreeComparisonPlotting:
     def pdfCollegeComparisonsAssessmentPlotting(collegeQS):
         """
         Plots the college comparisons graphs for a given college name.
 
         Returns:
-            - plot: The plot utilizing the data.
+            - plot: "Successful" if sucessful or None if not.
         """
-        
-        departmentQS = MakereportsDepartment.objects.filter(college__in=collegeQS)
-
-        degreeProgramQS = MakereportsDegreeprogram.objects.filter(department__in=departmentQS)
+        degreeProgramQS = CollegeQueries.getDegreesFromCollegeQS(collegeQS)
 
         degree_programs = []
         overallProficiency = []
 
         for degree in degreeProgramQS:
-            assessmentDataQS = PDFGenHelpers.pdfDegreeAssessmentQuery(degree)
+            assessmentDataQS = DegreeQueries.pdfDegreeAssessmentQuery(degree)
             if assessmentDataQS is not None and len(assessmentDataQS) > 0 :
                 degree_programs.append(degree.name)
                 overallProficiency.append(assessmentDataQS[0].overallproficient)
@@ -278,35 +259,21 @@ class PDFGenHelpers:
         else:
             return None
 
-    def pdfDegreeReportQuery(degree_id):
-        """
-        Queries to help with College Number of SLOs Comparison
-
-        Queries from the MakereportsReport table.
-
-        Returns:
-            numOfSLOsDataQS - The number of SLOs for the given degree_id
-        """
-        makeReportQS = MakereportsReport.objects.filter(degreeprogram=degree_id)
-        return makeReportQS
-        
     def pdfCollegeComparisonsSLOPlotting(collegeQS):
         """
         Plots the college comparisons graphs for a given college name.
 
         Returns:
-            - plot: The plot utilizing the data.
+            - plot: "Successful" if sucessful or None if not.
         """
         degree_programs = []
         numOfSLOs = []
         largestSLO = 0
 
-        departmentQS = MakereportsDepartment.objects.filter(college__in=collegeQS)
-
-        degreeProgramQS = MakereportsDegreeprogram.objects.filter(department__in=departmentQS)
+        degreeProgramQS = CollegeQueries.getDegreesFromCollegeQS(collegeQS)
 
         for degree in degreeProgramQS:
-            reportDataQS = PDFGenHelpers.pdfDegreeReportQuery(degree)
+            reportDataQS = DegreeQueries.pdfDegreeReportQuery(degree)
             if reportDataQS is not None and len(reportDataQS) > 0 :
                 degree_programs.append(degree.name)
                 numOfSLOs.append(reportDataQS[0].numberofslos)
@@ -337,31 +304,12 @@ class PDFGenHelpers:
         else:
             return None
 
-    def pdfDegreeBloomQuery(degree_id):
-        """
-        Queries to help with College Comparison Assessment Proficiency
-
-        Queries from the MakereportsReport table -> MakereportsAssessmentversion table -> MakereportsAssessmentdata table.
-
-        Returns:
-            assessmentDataQS - The assessment data for the given degree_id
-        """
-
-        makeReportQS = MakereportsReport.objects.filter(degreeprogram=degree_id)
-        if len(makeReportQS) < 1:  # Degree program does not have a report associated with it.
-            return None
-        
-        sloInReportQS = MakereportsSloinreport.objects.filter(report__in=makeReportQS)
-        
-        sloBloomQS = MakereportsSlo.objects.filter(makereportssloinreport__in = sloInReportQS)
-        return sloBloomQS
-
     def pdfCollegeComparisonsBloomPlotting(collegeQS):
         """
-        Plots the college comparisons graphs for a given college name.
+        Plots the Bloom Taxonomies heatmap for each program within the given college name.
 
         Returns:
-            - plot: The plot utilizing the data.
+            - plot: "Successful" if sucessful or None if not.
         """
         EV_INDEX = 0
         SN_INDEX = 1
@@ -372,14 +320,12 @@ class PDFGenHelpers:
         degree_programs = []
         bloomTaxonmies = ['EV', 'SN', 'AN', 'AP', 'CO', 'KN']
         blooms=[]
-        bloomValues = []
-        
-        departmentQS = MakereportsDepartment.objects.filter(college__in=collegeQS)
+        bloomValues = []       
 
-        degreeProgramQS = MakereportsDegreeprogram.objects.filter(department__in=departmentQS)
+        degreeProgramQS = CollegeQueries.getDegreesFromCollegeQS(collegeQS)
 
         for degree in degreeProgramQS:
-            sloBloomDataQS = PDFGenHelpers.pdfDegreeBloomQuery(degree)
+            sloBloomDataQS = DegreeQueries.pdfDegreeBloomQuery(degree)
             if sloBloomDataQS is not None and len(sloBloomDataQS) > 0 :
                 degree_programs.append(degree.name)
                 bloomsForDegree = [0,0,0,0,0,0]
@@ -425,6 +371,5 @@ class PDFGenHelpers:
             return "Successful"
         else:
             return None
-    def getCollegeQSFromID(college_id):
-        collegeQS = MakereportsCollege.objects.filter(pk=college_id)
-        return collegeQS
+    
+    

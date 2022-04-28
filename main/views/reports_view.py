@@ -7,7 +7,9 @@ from main.models import MakereportsDegreeprogram, MakereportsDepartment, Makerep
 from AcademicAssessmentAssistant.settings import BASE_DIR
 # Report Gen Imports
 from django.http import FileResponse
-from .util.pdf_generation import PDFGenHelpers as pg
+
+from main.views.util.queries import CollegeQueries
+from .util.pdf_generation import DegreeComparisonPlotting, PDFGenHelpers as pg
 import io
 from reportlab.pdfgen import canvas
 from reportlab.lib.styles import getSampleStyleSheet
@@ -116,19 +118,19 @@ class PDFPage():
 
     def display_degree_pdfGen(request):
         collegeID = request.POST['college']
-        collegeQS = pg.getCollegeQSFromID(collegeID)
+        collegeQS = CollegeQueries.getCollegeQSFromID(collegeID)
         collegeName = collegeQS[0].name
         ## Generate the plot
         plot1HasData = True
-        plot1 = pg.pdfCollegeComparisonsAssessmentPlotting(collegeQS)
+        plot1 = DegreeComparisonPlotting.pdfCollegeComparisonsAssessmentPlotting(collegeQS)
         if plot1 is None:
             plot1HasData = False
         plot2HasData = True
-        plot2 = pg.pdfCollegeComparisonsSLOPlotting(collegeQS)
+        plot2 = DegreeComparisonPlotting.pdfCollegeComparisonsSLOPlotting(collegeQS)
         if plot2 is None:
             plot2HasData = False
         plot3HasData = True
-        plot3 = pg.pdfCollegeComparisonsBloomPlotting(collegeQS)
+        plot3 = DegreeComparisonPlotting.pdfCollegeComparisonsBloomPlotting(collegeQS)
         if plot3 == None:
             plot3HasData = False
         PAGE_WIDTH, PAGE_HEIGHT = letter
@@ -167,7 +169,7 @@ class PDFPage():
         else:
             textobject = c.beginText()
             textobject.setFont('Times-Roman', 12)
-            textobject.setTextOrigin(inch, inch+150)
+            textobject.setTextOrigin(inch, inch+450)
 
             textobject.textLine(text = 'No Data For Number of SLOs Comparison Graph')
             c.drawText(textobject)
@@ -177,7 +179,7 @@ class PDFPage():
         else:
             textobject = c.beginText()
             textobject.setFont('Times-Roman', 12)
-            textobject.setTextOrigin(inch, inch+150)
+            textobject.setTextOrigin(inch, inch+600)
 
             textobject.textLine(text = 'No Data For Blooms Taxonomy Comparison Graph')
             c.drawText(textobject)
