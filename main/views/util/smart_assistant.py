@@ -146,6 +146,57 @@ class SmartAssistantHelper():
         feedback = format_html("<p>"+ feedback +"</p>")
         return (feedback, score)
 
+
+    def cosine_similarity_degrees(degree1, degree2):
+        (_,sloList1,_) = SmartAssistantHelper.sloQuerySet(degree1)
+        (_,sloList2,_) = SmartAssistantHelper.sloQuerySet(degree2)
+        cosine_slo_list_list = []
+        for slo1 in sloList1:
+            cosine_slo_list = []
+            for slo2 in sloList2:
+                cosine_slo_list.append(SmartAssistantHelper.cosine_similarity_slo(slo1,slo2))
+
+            cosine_slo_list_list.append(cosine_slo_list)
+
+        list2 = list(map(max, cosine_slo_list_list))
+        return sum(list2)/len(list2)
+
+
+
+    def cosine_similarity_slo(slo1,slo2):
+        #Extract Goal Text From SLOs
+        X = SmartAssistantHelper.SLO_goaltext(slo1)
+        Y = SmartAssistantHelper.SLO_goaltext(slo2)
+        #Extract Stop Words from Helper
+        stops = SmartAssistantHelper.en_stop
+
+        # tokenization of SLO text
+        X_list = SmartAssistantHelper.tokenize(X) 
+        Y_list = SmartAssistantHelper.tokenize(Y)
+        
+        # empty lists for unionization
+        l1 =[];l2 =[]
+        
+        # remove stop words fron SLO text
+        X_set = {w for w in X_list if not w in stops} 
+        Y_set = {w for w in Y_list if not w in stops}
+        
+        # form a set containing keywords of both strings 
+        rvector = X_set.union(Y_set) 
+        for w in rvector:
+            if w in X_set: l1.append(1) #vector 1
+            else: l1.append(0)
+            if w in Y_set: l2.append(1) #vector 2
+            else: l2.append(0)
+        c = 0
+        
+        # cosine formula 
+        for i in range(len(rvector)):
+                c+= l1[i]*l2[i]
+        cosine = c / float((sum(l1)*sum(l2))**0.5)
+        return cosine
+
+
     def keys_from_keywords(keywords):
         key_syms = set()
         for key in keywords:
