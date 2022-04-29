@@ -133,6 +133,10 @@ class PDFPage():
         plot3 = DegreeComparisonPlotting.pdfCollegeComparisonsBloomPlotting(collegeQS)
         if plot3 == None:
             plot3HasData = False
+        plot4HasData = True
+        plot4 = DegreeComparisonPlotting.pdfCollegeComparisonsCosineSimularityPlotting(collegeQS)
+        if plot4 == None:
+            plot4HasData = False
         PAGE_WIDTH, PAGE_HEIGHT = letter
         buf = io.BytesIO()
         c = canvas.Canvas(buf, pagesize=letter)
@@ -155,7 +159,13 @@ class PDFPage():
         # story.clear()
         # story.append(Paragraph(f"Comparison of :  ", styleH1))
         if plot1HasData is True:
-            c.drawImage(str(BASE_DIR) + "/main/static/assessmentcomparisonfig.png", inch, inch, width=300, height=300)
+            textobject = c.beginText()
+            textobject.setFont('Times-Roman', 15)
+            textobject.setTextOrigin(inch, inch+243)
+
+            textobject.textLine(text = "Overall Proficiency For A Program:")
+            c.drawText(textobject)
+            c.drawImage(str(BASE_DIR) + "/main/static/assessmentcomparisonfig.png", inch, inch-60, width=300, height=300, preserveAspectRatio=True)
         else:
             textobject = c.beginText()
             textobject.setFont('Times-Roman', 12)
@@ -165,7 +175,13 @@ class PDFPage():
             c.drawText(textobject)
             # story.append((f"No Data For Assessment Comparison", styleH2))
         if plot2HasData is True:
-            c.drawImage(str(BASE_DIR) + "/main/static/slocomparisonfig.png", inch, inch+300, width=300, height=300)
+            textobject = c.beginText()
+            textobject.setFont('Times-Roman', 15)
+            textobject.setTextOrigin(inch, inch+565)
+
+            textobject.textLine(text = "Number Of SLOs For A Program:")
+            c.drawText(textobject)
+            c.drawImage(str(BASE_DIR) + "/main/static/slocomparisonfig.png", inch, inch+260, width=300, height=300, preserveAspectRatio=True)
         else:
             textobject = c.beginText()
             textobject.setFont('Times-Roman', 12)
@@ -175,13 +191,34 @@ class PDFPage():
             c.drawText(textobject)
         c.showPage()
         if plot3HasData:
-            c.drawImage(str(BASE_DIR) + "/main/static/slobloomcomparisonfig.png", inch, inch+300, width=400, preserveAspectRatio=True)
+            textobject = c.beginText()
+            textobject.setFont('Times-Roman', 15)
+            textobject.setTextOrigin(inch, inch+600)
+
+            textobject.textLine(text = "Bloom Taxonomies Used For A Program:")
+            c.drawText(textobject)
+            c.drawImage(str(BASE_DIR) + "/main/static/slobloomcomparisonfig.png", inch, inch+250, width=400, preserveAspectRatio=True)
         else:
             textobject = c.beginText()
             textobject.setFont('Times-Roman', 12)
             textobject.setTextOrigin(inch, inch+600)
 
             textobject.textLine(text = 'No Data For Blooms Taxonomy Comparison Graph')
+            c.drawText(textobject)
+        if plot4HasData:
+            textobject = c.beginText()
+            textobject.setFont('Times-Roman', 15)
+            textobject.setTextOrigin(inch, inch+330)
+
+            textobject.textLine(text = "SLO Text Simularity When Programs X SLO(s) Are Compared to Programs Y SLO(s):")
+            c.drawText(textobject)
+            c.drawImage(str(BASE_DIR) + "/main/static/simularitycomparisonfig.png", inch, inch-170, width=400, preserveAspectRatio=True)
+        else:
+            textobject = c.beginText()
+            textobject.setFont('Times-Roman', 12)
+            textobject.setTextOrigin(inch, inch+300)
+
+            textobject.textLine(text = 'No Data For SLO Simularity Comparison Graph')
             c.drawText(textobject)
         f.addFromList(story, c)
         c.save()

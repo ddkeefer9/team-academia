@@ -7,7 +7,6 @@ from nltk.tokenize import word_tokenize
 from django.utils.html import format_html
 from nltk.stem.wordnet import WordNetLemmatizer
 from nltk.corpus import wordnet as wn
-from .pdf_generation import PDFGenHelpers as pg
 from ...models import \
         MakereportsAssessmentdata, MakereportsAssessmentversion, MakereportsReport, MakereportsSloinreport, MakereportsDegreeprogram, MakereportsDepartment, MakereportsSlostatus
 

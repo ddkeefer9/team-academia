@@ -4,6 +4,7 @@ from django.db.models import Q
 import numpy as np
 
 from main.views.util.queries import CollegeQueries, DegreeQueries
+from main.views.util.smart_assistant import SmartAssistantHelper
 from ...models import (
     MakereportsAssessmentdata, MakereportsAssessmentversion, MakereportsCollege, MakereportsReport, MakereportsSlo, MakereportsSloinreport, 
     MakereportsDegreeprogram, MakereportsDepartment, MakereportsSlostatus, MakereportsAssessmentversion, MakereportsAssessmentaggregate
@@ -223,7 +224,7 @@ class DegreeComparisonPlotting:
         Plots the college comparisons graphs for a given college name.
 
         Returns:
-            - plot: "Successful" if sucessful or None if not.
+            - "Successful" if sucessful or None if not.
         """
         degreeProgramQS = CollegeQueries.getDegreesFromCollegeQS(collegeQS)
 
@@ -264,7 +265,7 @@ class DegreeComparisonPlotting:
         Plots the college comparisons graphs for a given college name.
 
         Returns:
-            - plot: "Successful" if sucessful or None if not.
+            - "Successful" if sucessful or None if not.
         """
         degree_programs = []
         numOfSLOs = []
@@ -298,7 +299,6 @@ class DegreeComparisonPlotting:
                 labels = [f'{(v.get_width()):.0f}' for v in c]
                 ax.bar_label(c, labels=labels, label_type='edge')
             #End putting numbers above bar plots*********************************
-
             plt.savefig(str(BASE_DIR) + "/main/static/slocomparisonfig.png")
             return "Successful"
         else:
@@ -309,7 +309,7 @@ class DegreeComparisonPlotting:
         Plots the Bloom Taxonomies heatmap for each program within the given college name.
 
         Returns:
-            - plot: "Successful" if sucessful or None if not.
+            - "Successful" if sucessful or None if not.
         """
         EV_INDEX = 0
         SN_INDEX = 1
@@ -347,11 +347,12 @@ class DegreeComparisonPlotting:
                 blooms.append(bloomTaxonmies)
         data = {
             'Programs' : degree_programs,
-            "Number of SLOs For Each Bloom's Taxonomy" : blooms,
+            "Bloom's Taxonomies" : blooms,
             'NumberOfUses': bloomValues,
         }
 
-        df = pd.DataFrame(data, columns=['Programs', "Number of SLOs For Each Bloom's Taxonomy", 'NumberOfUses'])
+        df = pd.DataFrame(data, columns=['Programs', "Bloom's Taxonomies", 'NumberOfUses'])
+
         df = df.set_index(['Programs']).apply(pd.Series.explode).reset_index()
         filepath = Path('main/static/out.csv')  
         filepath.parent.mkdir(parents=True, exist_ok=True)   
@@ -360,16 +361,66 @@ class DegreeComparisonPlotting:
         if (len(degree_programs) > 0):
             # blooms = sns.load_dataset(df)
             importlib.reload(matplotlib); importlib.reload(plt); importlib.reload(sns)
-            pivot = dataset.pivot(index=['Programs'], columns="Number of SLOs For Each Bloom's Taxonomy", values="NumberOfUses")
+            pivot = dataset.pivot(index=['Programs'], columns="Bloom's Taxonomies", values="NumberOfUses")
 
             if len(degree_programs) > 10:
                 sns.heatmap(pivot, annot=True, fmt="d", linewidths=.5,vmin=0, vmax=4, cmap="Reds", annot_kws = {'size':12})
             else:
                 sns.heatmap(pivot, annot=True, fmt="d", linewidths=.5,vmin=0, vmax=4, cmap="Reds", annot_kws = {'size':15})
-
             plt.savefig(str(BASE_DIR) + "/main/static/slobloomcomparisonfig.png", bbox_inches='tight')
             return "Successful"
         else:
             return None
     
-    
+    def pdfCollegeComparisonsCosineSimularityPlotting(collegeQS):
+        """
+        Plots the SLO Text Simularity heatmap for each program within the given college name.
+
+        Returns:
+            - "Successful" if sucessful or None if not.
+        """
+        
+        degree_programs = []
+        degree_programs2 = []
+
+        simularityValues=[]
+        bloomValues = []       
+
+        degreeProgramQS = CollegeQueries.getDegreesFromCollegeQS(collegeQS)
+
+        for degree in degreeProgramQS:
+            degree_programs.append(degree.name)
+            degreeSimularity = []
+            degrees = []
+            for degree2 in degreeProgramQS:
+                degrees.append(degree2.name)
+                sloSimularity = SmartAssistantHelper.cosine_similarity_degrees(degree.name,degree2.name)
+                degreeSimularity.append(sloSimularity)
+            simularityValues.append(degreeSimularity)
+            degree_programs2.append(degrees)
+        data = {
+            "Programs Y" : degree_programs2,
+            'Programs X' : degree_programs,
+            'SimularityValues': simularityValues,
+        }
+
+        df = pd.DataFrame(data, columns=['Programs X', 'Programs Y', 'SimularityValues'])
+        df = df.set_index(['Programs X']).apply(pd.Series.explode).reset_index()
+        filepath = Path('main/static/out1.csv')  
+        filepath.parent.mkdir(parents=True, exist_ok=True)   
+        df.to_csv(filepath)   
+        dataset = pd.read_csv(filepath)
+        if (len(degree_programs) > 0):
+            # blooms = sns.load_dataset(df)
+            importlib.reload(matplotlib); importlib.reload(plt); importlib.reload(sns)
+            pivot = dataset.pivot(index=['Programs Y'], columns="Programs X", values="SimularityValues")
+            if len(degree_programs) > 10:
+                sns.heatmap(pivot, annot=True, fmt=".3f", linewidths=.5,vmin=0, vmax=1, cmap="Reds", annot_kws = {'size':12})
+            else:
+                sns.heatmap(pivot, annot=True, fmt=".3f", linewidths=.5,vmin=0, vmax=1, cmap="Reds", annot_kws = {'size':12})
+
+            plt.xticks(rotation=45, horizontalalignment='right')
+            plt.savefig(str(BASE_DIR) + "/main/static/simularitycomparisonfig.png", bbox_inches='tight')
+            return "Successful"
+        else:
+            return None
