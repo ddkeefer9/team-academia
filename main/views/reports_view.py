@@ -134,7 +134,7 @@ class PDFPage():
         if plot3 == None:
             plot3HasData = False
         plot4HasData = True
-        plot4 = DegreeComparisonPlotting.pdfCollegeComparisonsCosineSimularityPlotting(collegeQS)
+        plot4 = DegreeComparisonPlotting.pdfCollegeComparisonsCosineSimilarityPlotting(collegeQS)
         if plot4 == None:
             plot4HasData = False
         PAGE_WIDTH, PAGE_HEIGHT = letter
@@ -210,15 +210,15 @@ class PDFPage():
             textobject.setFont('Times-Roman', 15)
             textobject.setTextOrigin(inch, inch+330)
 
-            textobject.textLine(text = "SLO Text Simularity When Programs X SLO(s) Are Compared to Programs Y SLO(s):")
+            textobject.textLine(text = "SLO Text Similarity When Programs X SLO(s) Are Compared to Programs Y SLO(s):")
             c.drawText(textobject)
-            c.drawImage(str(BASE_DIR) + "/main/static/simularitycomparisonfig.png", inch, inch-170, width=400, preserveAspectRatio=True)
+            c.drawImage(str(BASE_DIR) + "/main/static/similaritycomparisonfig.png", inch, inch-170, width=400, preserveAspectRatio=True)
         else:
             textobject = c.beginText()
             textobject.setFont('Times-Roman', 12)
             textobject.setTextOrigin(inch, inch+300)
 
-            textobject.textLine(text = 'No Data For SLO Simularity Comparison Graph')
+            textobject.textLine(text = 'No Data For SLO Similarity Comparison Graph')
             c.drawText(textobject)
         f.addFromList(story, c)
         c.save()

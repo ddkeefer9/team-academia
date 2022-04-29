@@ -372,9 +372,9 @@ class DegreeComparisonPlotting:
         else:
             return None
     
-    def pdfCollegeComparisonsCosineSimularityPlotting(collegeQS):
+    def pdfCollegeComparisonsCosineSimilarityPlotting(collegeQS):
         """
-        Plots the SLO Text Simularity heatmap for each program within the given college name.
+        Plots the SLO Text Similarity heatmap for each program within the given college name.
 
         Returns:
             - "Successful" if sucessful or None if not.
@@ -401,10 +401,10 @@ class DegreeComparisonPlotting:
         data = {
             "Programs Y" : degree_programs2,
             'Programs X' : degree_programs,
-            'SimularityValues': simularityValues,
+            'SimilarityValues': simularityValues,
         }
 
-        df = pd.DataFrame(data, columns=['Programs X', 'Programs Y', 'SimularityValues'])
+        df = pd.DataFrame(data, columns=['Programs X', 'Programs Y', 'SimilarityValues'])
         df = df.set_index(['Programs X']).apply(pd.Series.explode).reset_index()
         filepath = Path('main/static/out1.csv')  
         filepath.parent.mkdir(parents=True, exist_ok=True)   
@@ -413,14 +413,14 @@ class DegreeComparisonPlotting:
         if (len(degree_programs) > 0):
             # blooms = sns.load_dataset(df)
             importlib.reload(matplotlib); importlib.reload(plt); importlib.reload(sns)
-            pivot = dataset.pivot(index=['Programs Y'], columns="Programs X", values="SimularityValues")
+            pivot = dataset.pivot(index=['Programs Y'], columns="Programs X", values="SimilarityValues")
             if len(degree_programs) > 10:
                 sns.heatmap(pivot, annot=True, fmt=".3f", linewidths=.5,vmin=0, vmax=1, cmap="Reds", annot_kws = {'size':12})
             else:
                 sns.heatmap(pivot, annot=True, fmt=".3f", linewidths=.5,vmin=0, vmax=1, cmap="Reds", annot_kws = {'size':12})
 
             plt.xticks(rotation=45, horizontalalignment='right')
-            plt.savefig(str(BASE_DIR) + "/main/static/simularitycomparisonfig.png", bbox_inches='tight')
+            plt.savefig(str(BASE_DIR) + "/main/static/similaritycomparisonfig.png", bbox_inches='tight')
             return "Successful"
         else:
             return None
