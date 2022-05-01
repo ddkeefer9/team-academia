@@ -84,6 +84,8 @@ class SLOStatusPage:
             n_plots = slomet_freq.iloc[0].size
             report_descriptions = self.get_report_descriptions(SLOdata_bool_mask)
             if n_plots > 0:
+                slomet_freq_no_nan = np.nan_to_num(slomet_freq, nan=0.0)
+                max_met = slomet_freq_no_nan.max()
                 fig, ax = plt.subplots(self.plots_per_page, 1, sharex=False, sharey=True)
                 for i in range(self.plots_per_page):
                     if i in range(n_plots):
@@ -92,6 +94,7 @@ class SLOStatusPage:
                         ax[i].set_visible(False)
                 fig.set_size_inches(8.5, 9, forward=True)
                 fig.tight_layout()
+                plt.setp(ax, xlim=(0, max_met))
                 img_buf = io.BytesIO()
                 plt.savefig(img_buf)
                 plt_img = Image.open(img_buf)
