@@ -24,6 +24,12 @@ class PDFPage():
     """
 
     def finish_page(story, c, f):
+        """
+        A helper function for the 'draw_historical_report_body' function that finishes a page and resets the input parameters.
+        
+        Returns
+            - A cleared ReportLab 'story'.
+        """
         f.addFromList(story, c)
         f._reset()
         c.showPage()
@@ -31,6 +37,9 @@ class PDFPage():
         return story
 
     def draw_historical_report_body(story, canvas, frame, pages):
+        """
+        A helper function for the 'display_historical_pdfGen' function that handles the ReportLab logic for formatting the body of the requested pages.
+        """
         styles = getSampleStyleSheet()
         styleH1 = styles['Heading1']
         styleH3 = styles['Heading3']
@@ -54,6 +63,13 @@ class PDFPage():
             story = PDFPage.finish_page(story, canvas, frame)
 
     def display_historical_pdfGen(request):
+        """
+        The main function for handling a POST request to create a historical PDF for a given department or departments.
+
+        Returns
+            - A FileResponse with the generated PDF, OR
+            - A redirect to the page with a warning if no data is available.
+        """
         ## DB query to retrieve usable info for this generated PDF
         department = MakereportsDepartment.objects.filter(id=request.POST['department'])
         buf = io.BytesIO()
@@ -74,10 +90,10 @@ class PDFPage():
             story.append(Paragraph(f"Historical Data Report from {year_start} to {year_end} for All Programs in the {department[0]} Department", styleTitle))
             PDFPage.finish_page(story, c, f)
             for degree in degree_programs:
-                dprqs, sirqs, sirsqs, avirqs = pg.historicalPdfGenQuery(degree, request)
+                dprqs, sirqs = pg.historicalPdfGenQuery(degree, request)
                 ## Generate the plot
                 if any((dprqs, sirqs)):
-                    pages = pg.historicalPdfGenPlotting(dprqs, sirqs, sirsqs, avirqs, request)
+                    pages = pg.historicalPdfGenPlotting(dprqs, request)
 
                 # Instead of warning display, just continue to next degree program.   
                 if not any((dprqs, sirqs)):
@@ -89,11 +105,11 @@ class PDFPage():
                 c.setTitle(f"{department[0]}HistoricalReport")
                 PDFPage.draw_historical_report_body(story, c, f, pages)
         else:
-            dprqs, sirqs, sirsqs, avirqs = pg.historicalPdfGenQuery(request.POST['degree-program'], request)
+            dprqs, sirqs = pg.historicalPdfGenQuery(request.POST['degree-program'], request)
 
             ## Generate the plot
             if any((dprqs, sirqs)):
-                pages = pg.historicalPdfGenPlotting(dprqs, sirqs, sirsqs, avirqs, request) 
+                pages = pg.historicalPdfGenPlotting(dprqs, request) 
 
             if not any((dprqs, sirqs)):
                 buf.seek(0)

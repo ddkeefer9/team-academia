@@ -18,9 +18,6 @@ import pandas as pd, io, seaborn as sns, matplotlib.pyplot as plt
 from PIL import Image
 from AcademicAssessmentAssistant.settings import BASE_DIR
 
-def cleanhtml(raw_html):
-    return re.sub(re.compile('<.*?>'), '', raw_html)
-
 class SLOStatusPage:
         """
         Class to describe the SLO Status PDF Page.
@@ -146,9 +143,11 @@ class AssessmentStatisticsPage:
             styles.append("Normal")
             description.append(f"An assessment with an aggregate of {aggregate.aggregate_proficiency} percent proficient and a target of {assessment.target} percent, marked as {'met' if aggregate.met else 'unmet'}.")
             styles.append("Normal")
+            # Append aggregate data info to list.
             measures.append(aggregate.aggregate_proficiency)
             measure_descriptions.append("Actual")
             assessment_referred.append(assessment_num)
+            # Append assessment target info to list
             measures.append(assessment.target)
             measure_descriptions.append("Target")
             assessment_referred.append(assessment_num)
@@ -159,6 +158,7 @@ class AssessmentStatisticsPage:
             'Assessment Number' : assessment_referred
         })
         plt.clf()
+        # Creates a "grouped" barplot.
         plot = sns.barplot(data=slo_df, x="Assessment Number", y="Measures", hue="Measure Description")
         fig = plot.get_figure() 
         fig.set_size_inches(8.5, 6, forward=True)
@@ -170,7 +170,7 @@ class AssessmentStatisticsPage:
 
 class PDFGenHelpers:
 
-    def historicalPdfGenPlotting(dprqs, sirqs, sirsqs, avirqs, request, plots_per_page = 4):
+    def historicalPdfGenPlotting(dprqs, request, plots_per_page = 4):
         """
         Helper for plotting the resulting QuerySet from pdfGenQuery for our historical report.
 
@@ -224,12 +224,7 @@ class PDFGenHelpers:
             return (None,None,None,None)
         # SLOs in report queryset.
         sirqs = MakereportsSloinreport.objects.filter(report__in=dprqs)
-
-        # SLOs in report status queryset. 
-        sirsqs = MakereportsSlostatus.objects.filter(sloir__in=sirqs)
-        # Assessment version in report query set.
-        avirqs = MakereportsAssessmentversion.objects.filter(slo__in=sirqs)
-        return dprqs, sirqs, sirsqs, avirqs
+        return dprqs, sirqs
 
 class DegreeComparisonPlotting:
     def pdfCollegeComparisonsAssessmentPlotting(collegeQS):
