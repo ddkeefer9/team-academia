@@ -138,35 +138,54 @@ class AssessmentStatisticsPage:
         measure_descriptions = []
         assessment_referred = []
         for assessment in assessments:
-            aggregate = MakereportsAssessmentaggregate.objects.filter(assessmentversion=assessment)[0]
-            description.append(f"Assessment Version {assessment_num}, recorded on: {assessment.date}")
+            aggregate = MakereportsAssessmentaggregate.objects.filter(assessmentversion=assessment)
+            if len(aggregate) > 0:
+                aggregate = aggregate[0]
+                description.append(f"Assessment Version {assessment_num}, recorded on: {assessment.date}")
+                styles.append("Normal")
+                description.append(f"An assessment with an aggregate of {aggregate.aggregate_proficiency} percent proficient and a target of {assessment.target} percent, marked as {'met' if aggregate.met else 'unmet'}.")
+                styles.append("Normal")
+                # Append aggregate data info to list.
+                measures.append(aggregate.aggregate_proficiency)
+                measure_descriptions.append("Actual")
+                assessment_referred.append(assessment_num)
+                # Append assessment target info to list
+                measures.append(assessment.target)
+                measure_descriptions.append("Target")
+                assessment_referred.append(assessment_num)
+            else: # there is not a one-to-one assessmentversion to the aggregate, so skip.
+                description.append(f"Assessment Version {assessment_num}, recorded on: {assessment.date} (No Assessment Aggregate)")
+                styles.append("Normal")
+                assessment_num+=1
+                continue
+        if len(assessments) == 0:
+            description.append("No assessment data could be found for this SLO in the report.")
             styles.append("Normal")
-            description.append(f"An assessment with an aggregate of {aggregate.aggregate_proficiency} percent proficient and a target of {assessment.target} percent, marked as {'met' if aggregate.met else 'unmet'}.")
-            styles.append("Normal")
-            # Append aggregate data info to list.
-            measures.append(aggregate.aggregate_proficiency)
-            measure_descriptions.append("Actual")
-            assessment_referred.append(assessment_num)
-            # Append assessment target info to list
-            measures.append(assessment.target)
-            measure_descriptions.append("Target")
-            assessment_referred.append(assessment_num)
-            assessment_num+=1
-        slo_df = pd.DataFrame(data = {
-            'Measures' : measures,
-            'Measure Description' : measure_descriptions,
-            'Assessment Number' : assessment_referred
-        })
         plt.clf()
-        # Creates a "grouped" barplot.
-        plot = sns.barplot(data=slo_df, x="Assessment Number", y="Measures", hue="Measure Description")
-        fig = plot.get_figure() 
-        fig.set_size_inches(8.5, 6, forward=True)
-        fig.tight_layout()
-        img_buf = io.BytesIO()
-        plt.savefig(img_buf)
-        plt_img = Image.open(img_buf)
-        return (plt_img, [[description, styles]])
+        if any((measures, measure_descriptions, assessment_referred)):
+            slo_df = pd.DataFrame(data = {
+                'Measures' : measures,
+                'Measure Description' : measure_descriptions,
+                'Assessment Number' : assessment_referred
+            })
+            # Creates a "grouped" barplot.
+            plot = sns.barplot(data=slo_df, x="Assessment Number", y="Measures", hue="Measure Description")
+            fig = plot.get_figure() 
+            fig.set_size_inches(8.5, 6, forward=True)
+            fig.tight_layout()
+            img_buf = io.BytesIO()
+            plt.savefig(img_buf)
+            plt_img = Image.open(img_buf)
+            return (plt_img, [[description, styles]])
+        else:
+            fig = plt.figure()
+            fig.set_size_inches(8.5, 6, forward=True)
+            fig.tight_layout()
+            img_buf = io.BytesIO()
+            plt.savefig(img_buf)
+            plt_img = Image.open(img_buf)
+            return (plt_img, [[description, styles]])
+
 
 class PDFGenHelpers:
 
@@ -221,7 +240,7 @@ class PDFGenHelpers:
             Q(year__gte=request.POST['date_start'])
         )
         if len(dprqs) < 1:  # Degree program does not have a report associated with it.
-            return (None,None,None,None)
+            return (None, None)
         # SLOs in report queryset.
         sirqs = MakereportsSloinreport.objects.filter(report__in=dprqs)
         return dprqs, sirqs

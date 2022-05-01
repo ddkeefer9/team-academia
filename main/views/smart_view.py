@@ -44,7 +44,6 @@ class SmartAssistantPage():
 			(aggregateText, aggregateColor) = sa.aggregateFeedbackText(slo_list)
 			context['showAggregate'] = aggregateText
 			context['aggregateColor'] = aggregateColor
-
 		return render(
 			request, 
 			'smart_assistant/smart_assistant.html',
