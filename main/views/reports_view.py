@@ -212,7 +212,7 @@ class PDFPage():
 
             textobject.textLine(text = "SLO Text Similarity When Programs X SLO(s) Are Compared to Programs Y SLO(s):")
             c.drawText(textobject)
-            c.drawImage(str(BASE_DIR) + "/main/static/similaritycomparisonfig.png", inch, inch-170, width=400, preserveAspectRatio=True)
+            c.drawImage(str(BASE_DIR) + "/main/static/similaritycomparisonfig.png", inch, inch-90, height=415, width=520)
         else:
             textobject = c.beginText()
             textobject.setFont('Times-Roman', 12)

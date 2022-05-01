@@ -149,6 +149,10 @@ class SmartAssistantHelper():
     def cosine_similarity_degrees(degree1, degree2):
         (_,sloList1,_) = SmartAssistantHelper.sloQuerySet(degree1)
         (_,sloList2,_) = SmartAssistantHelper.sloQuerySet(degree2)
+        if (sloList1 is None):
+            return 1
+        if (sloList2 is None):
+            return 0
         cosine_slo_list_list = []
         for slo1 in sloList1:
             cosine_slo_list = []

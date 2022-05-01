@@ -415,12 +415,17 @@ class DegreeComparisonPlotting:
             importlib.reload(matplotlib); importlib.reload(plt); importlib.reload(sns)
             pivot = dataset.pivot(index=['Programs Y'], columns="Programs X", values="SimilarityValues")
             if len(degree_programs) > 10:
-                sns.heatmap(pivot, annot=True, fmt=".3f", linewidths=.5,vmin=0, vmax=1, cmap="Reds", annot_kws = {'size':12})
+                sns.set(font_scale = 0.5)
+                sns.heatmap(pivot, annot=True, fmt=".1f", linewidths=.5,vmin=0, vmax=1, cmap="Reds", annot_kws = {'size':6})
+            elif len(degree_programs) > 6:
+                sns.set(font_scale = 0.7)
+                sns.heatmap(pivot, annot=True, fmt=".2f", linewidths=.5,vmin=0, vmax=1, cmap="Reds", annot_kws = {'size':10})
             else:
+                sns.set(font_scale = 1)
                 sns.heatmap(pivot, annot=True, fmt=".3f", linewidths=.5,vmin=0, vmax=1, cmap="Reds", annot_kws = {'size':12})
 
             plt.xticks(rotation=45, horizontalalignment='right')
-            plt.savefig(str(BASE_DIR) + "/main/static/similaritycomparisonfig.png", bbox_inches='tight')
+            plt.savefig(str(BASE_DIR) + "/main/static/similaritycomparisonfig.png", bbox_inches='tight', dpi=1000)
             return "Successful"
         else:
             return None
