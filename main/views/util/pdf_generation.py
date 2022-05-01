@@ -1,5 +1,5 @@
 from pathlib import Path
-import time
+import time, re
 from django.db.models import Q
 import numpy as np
 
@@ -17,6 +17,9 @@ matplotlib.use('Agg')
 import pandas as pd, io, seaborn as sns, matplotlib.pyplot as plt
 from PIL import Image
 from AcademicAssessmentAssistant.settings import BASE_DIR
+
+def cleanhtml(raw_html):
+    return re.sub(re.compile('<.*?>'), '', raw_html)
 
 class SLOStatusPage:
         """
@@ -107,13 +110,12 @@ class AssessmentStatisticsPage:
     Class to describe the Assessment Statistics PDF Page.
     """
 
-    def __init__(self, dprqs, sirqs, avirqs, plots_per_page):
+    def __init__(self, degree_program_report, slo_in_report, plots_per_page):
         """
         Constructor
         """
-        self.dprqs = dprqs
-        self.sirqs = sirqs
-        self.avirqs = avirqs
+        self.degree_program_report = degree_program_report
+        self.slo_in_report = slo_in_report
         self.plots_per_page = plots_per_page
         self.description = "Assessment Statistics"
 
@@ -131,34 +133,40 @@ class AssessmentStatisticsPage:
             - A PIL image object with a bar plot of the assessment aggregated proficiency and the target proficiency.
             - A formatted description with specified styles that includes information about the assessment like its SLO, report, and proficiency.
         """
-        for report in self.dprqs:
-            slos = MakereportsSloinreport.objects.filter(report=report)
-            for slo in slos:
-                assessments = MakereportsAssessmentversion.objects.filter(slo=slo)
-                for assessment in assessments:
-                    aggregates = MakereportsAssessmentaggregate.objects.filter(assessmentversion=assessment)
-                    for aggregate in aggregates:
-                        description = [ 
-                            f"Report: {report}", 
-                            "SLO Goal:",
-                            f"{slo.goaltext}",
-                            f"An assessment with an aggregate of {aggregate.aggregate_proficiency} percent proficient and a target of {assessment.target} percent, marked as {'met' if aggregate.met else 'unmet'}."
-                        ] 
-                        styles = [
-                            "Heading3",
-                            "Heading4",
-                            "Normal",
-                            "Normal"
-                        ]
-                        plt.clf()
-                        plot = sns.barplot(x=["Actual", "Target"], y=[aggregate.aggregate_proficiency, assessment.target])
-                        fig = plot.get_figure() 
-                        fig.set_size_inches(8.5, 6, forward=True)
-                        fig.tight_layout()
-                        img_buf = io.BytesIO()
-                        plt.savefig(img_buf)
-                        plt_img = Image.open(img_buf)
-                        return (plt_img, [[description, styles]])                    
+        assessments = MakereportsAssessmentversion.objects.filter(slo=self.slo_in_report)
+        description = [f"Report: {self.degree_program_report}", "SLO Goal:", f"{self.slo_in_report.goaltext}"]
+        styles = ["Heading3", "Heading4", "Normal"]
+        assessment_num = 1
+        measures = []
+        measure_descriptions = []
+        assessment_referred = []
+        for assessment in assessments:
+            aggregate = MakereportsAssessmentaggregate.objects.filter(assessmentversion=assessment)[0]
+            description.append(f"Assessment Version {assessment_num}, recorded on: {assessment.date}")
+            styles.append("Normal")
+            description.append(f"An assessment with an aggregate of {aggregate.aggregate_proficiency} percent proficient and a target of {assessment.target} percent, marked as {'met' if aggregate.met else 'unmet'}.")
+            styles.append("Normal")
+            measures.append(aggregate.aggregate_proficiency)
+            measure_descriptions.append("Actual")
+            assessment_referred.append(assessment_num)
+            measures.append(assessment.target)
+            measure_descriptions.append("Target")
+            assessment_referred.append(assessment_num)
+            assessment_num+=1
+        slo_df = pd.DataFrame(data = {
+            'Measures' : measures,
+            'Measure Description' : measure_descriptions,
+            'Assessment Number' : assessment_referred
+        })
+        plt.clf()
+        plot = sns.barplot(data=slo_df, x="Assessment Number", y="Measures", hue="Measure Description")
+        fig = plot.get_figure() 
+        fig.set_size_inches(8.5, 6, forward=True)
+        fig.tight_layout()
+        img_buf = io.BytesIO()
+        plt.savefig(img_buf)
+        plt_img = Image.open(img_buf)
+        return (plt_img, [[description, styles]])
 
 class PDFGenHelpers:
 
@@ -180,12 +188,14 @@ class PDFGenHelpers:
             if slostatus_by_report:
                 # slostatus_by_report = (slostatus_by_report, )
                 pages.append((slostatus_by_report, f"SLO Status Breakdown by Report for {degree_program}"))
-    
         if 'assessmentStats' in request.POST:
-            assess_stats_page = AssessmentStatisticsPage(dprqs, sirqs, avirqs, plots_per_page=plots_per_page)
-            assess_stats_by_report = assess_stats_page.assessment_stats_for_each_slo()
-            if assess_stats_by_report:
-                pages.append((assess_stats_by_report, f"Assessment Statistics by Report for {degree_program}"))
+            for degree_report in dprqs:
+                slos_in_report = MakereportsSloinreport.objects.filter(report=degree_report)
+                for slo in slos_in_report:
+                    assess_stats_page = AssessmentStatisticsPage(degree_report, slo, plots_per_page=plots_per_page)
+                    assess_stats_by_report = assess_stats_page.assessment_stats_for_each_slo()
+                    if assess_stats_by_report:
+                        pages.append((assess_stats_by_report, f"Assessment Statistics by Report for {degree_program}"))
         return pages
 
     def historicalPdfGenQuery(degreeprogram_name, request):
