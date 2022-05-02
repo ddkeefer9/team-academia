@@ -7,7 +7,9 @@ from main.models import MakereportsDegreeprogram, MakereportsDepartment, Makerep
 from AcademicAssessmentAssistant.settings import BASE_DIR
 # Report Gen Imports
 from django.http import FileResponse
-from .util.pdf_generation import PDFGenHelpers as pg
+
+from main.views.util.queries import CollegeQueries
+from .util.pdf_generation import DegreeComparisonPlotting, PDFGenHelpers as pg
 import io
 from reportlab.pdfgen import canvas
 from reportlab.lib.styles import getSampleStyleSheet
@@ -22,6 +24,12 @@ class PDFPage():
     """
 
     def finish_page(story, c, f):
+        """
+        A helper function for the 'draw_historical_report_body' function that finishes a page and resets the input parameters.
+        
+        Returns
+            - A cleared ReportLab 'story'.
+        """
         f.addFromList(story, c)
         f._reset()
         c.showPage()
@@ -29,6 +37,9 @@ class PDFPage():
         return story
 
     def draw_historical_report_body(story, canvas, frame, pages):
+        """
+        A helper function for the 'display_historical_pdfGen' function that handles the ReportLab logic for formatting the body of the requested pages.
+        """
         styles = getSampleStyleSheet()
         styleH1 = styles['Heading1']
         styleH3 = styles['Heading3']
@@ -52,6 +63,13 @@ class PDFPage():
             story = PDFPage.finish_page(story, canvas, frame)
 
     def display_historical_pdfGen(request):
+        """
+        The main function for handling a POST request to create a historical PDF for a given department or departments.
+
+        Returns
+            - A FileResponse with the generated PDF, OR
+            - A redirect to the page with a warning if no data is available.
+        """
         ## DB query to retrieve usable info for this generated PDF
         department = MakereportsDepartment.objects.filter(id=request.POST['department'])
         buf = io.BytesIO()
@@ -72,10 +90,10 @@ class PDFPage():
             story.append(Paragraph(f"Historical Data Report from {year_start} to {year_end} for All Programs in the {department[0]} Department", styleTitle))
             PDFPage.finish_page(story, c, f)
             for degree in degree_programs:
-                dprqs, sirqs, sirsqs, avirqs = pg.historicalPdfGenQuery(degree, request)
+                dprqs, sirqs = pg.historicalPdfGenQuery(degree, request)
                 ## Generate the plot
                 if any((dprqs, sirqs)):
-                    pages = pg.historicalPdfGenPlotting(dprqs, sirqs, sirsqs, avirqs, request)
+                    pages = pg.historicalPdfGenPlotting(dprqs, request)
 
                 # Instead of warning display, just continue to next degree program.   
                 if not any((dprqs, sirqs)):
@@ -87,11 +105,11 @@ class PDFPage():
                 c.setTitle(f"{department[0]}HistoricalReport")
                 PDFPage.draw_historical_report_body(story, c, f, pages)
         else:
-            dprqs, sirqs, sirsqs, avirqs = pg.historicalPdfGenQuery(request.POST['degree-program'], request)
+            dprqs, sirqs = pg.historicalPdfGenQuery(request.POST['degree-program'], request)
 
             ## Generate the plot
             if any((dprqs, sirqs)):
-                pages = pg.historicalPdfGenPlotting(dprqs, sirqs, sirsqs, avirqs, request) 
+                pages = pg.historicalPdfGenPlotting(dprqs, request) 
 
             if not any((dprqs, sirqs)):
                 buf.seek(0)
@@ -116,21 +134,25 @@ class PDFPage():
 
     def display_degree_pdfGen(request):
         collegeID = request.POST['college']
-        collegeQS = pg.getCollegeQSFromID(collegeID)
+        collegeQS = CollegeQueries.getCollegeQSFromID(collegeID)
         collegeName = collegeQS[0].name
         ## Generate the plot
         plot1HasData = True
-        plot1 = pg.pdfCollegeComparisonsAssessmentPlotting(collegeQS)
+        plot1 = DegreeComparisonPlotting.pdfCollegeComparisonsAssessmentPlotting(collegeQS)
         if plot1 is None:
             plot1HasData = False
         plot2HasData = True
-        plot2 = pg.pdfCollegeComparisonsSLOPlotting(collegeQS)
+        plot2 = DegreeComparisonPlotting.pdfCollegeComparisonsSLOPlotting(collegeQS)
         if plot2 is None:
             plot2HasData = False
         plot3HasData = True
-        plot3 = pg.pdfCollegeComparisonsBloomPlotting(collegeQS)
+        plot3 = DegreeComparisonPlotting.pdfCollegeComparisonsBloomPlotting(collegeQS)
         if plot3 == None:
             plot3HasData = False
+        plot4HasData = True
+        plot4 = DegreeComparisonPlotting.pdfCollegeComparisonsCosineSimilarityPlotting(collegeQS)
+        if plot4 == None:
+            plot4HasData = False
         PAGE_WIDTH, PAGE_HEIGHT = letter
         buf = io.BytesIO()
         c = canvas.Canvas(buf, pagesize=letter)
@@ -153,7 +175,13 @@ class PDFPage():
         # story.clear()
         # story.append(Paragraph(f"Comparison of :  ", styleH1))
         if plot1HasData is True:
-            c.drawImage(str(BASE_DIR) + "/main/static/assessmentcomparisonfig.png", inch, inch, width=300, height=300)
+            textobject = c.beginText()
+            textobject.setFont('Times-Roman', 15)
+            textobject.setTextOrigin(inch, inch+243)
+
+            textobject.textLine(text = "Overall Proficiency For A Program:")
+            c.drawText(textobject)
+            c.drawImage(str(BASE_DIR) + "/main/static/assessmentcomparisonfig.png", inch, inch-60, width=300, height=300, preserveAspectRatio=True)
         else:
             textobject = c.beginText()
             textobject.setFont('Times-Roman', 12)
@@ -163,23 +191,50 @@ class PDFPage():
             c.drawText(textobject)
             # story.append((f"No Data For Assessment Comparison", styleH2))
         if plot2HasData is True:
-            c.drawImage(str(BASE_DIR) + "/main/static/slocomparisonfig.png", inch, inch+300, width=300, height=300)
+            textobject = c.beginText()
+            textobject.setFont('Times-Roman', 15)
+            textobject.setTextOrigin(inch, inch+565)
+
+            textobject.textLine(text = "Number Of SLOs For A Program:")
+            c.drawText(textobject)
+            c.drawImage(str(BASE_DIR) + "/main/static/slocomparisonfig.png", inch, inch+260, width=300, height=300, preserveAspectRatio=True)
         else:
             textobject = c.beginText()
             textobject.setFont('Times-Roman', 12)
-            textobject.setTextOrigin(inch, inch+150)
+            textobject.setTextOrigin(inch, inch+450)
 
             textobject.textLine(text = 'No Data For Number of SLOs Comparison Graph')
             c.drawText(textobject)
         c.showPage()
         if plot3HasData:
-            c.drawImage(str(BASE_DIR) + "/main/static/slobloomcomparisonfig.png", inch, inch+300, width=400, preserveAspectRatio=True)
+            textobject = c.beginText()
+            textobject.setFont('Times-Roman', 15)
+            textobject.setTextOrigin(inch, inch+600)
+
+            textobject.textLine(text = "Bloom Taxonomies Used For A Program:")
+            c.drawText(textobject)
+            c.drawImage(str(BASE_DIR) + "/main/static/slobloomcomparisonfig.png", inch, inch+250, width=400, preserveAspectRatio=True)
         else:
             textobject = c.beginText()
             textobject.setFont('Times-Roman', 12)
-            textobject.setTextOrigin(inch, inch+150)
+            textobject.setTextOrigin(inch, inch+600)
 
             textobject.textLine(text = 'No Data For Blooms Taxonomy Comparison Graph')
+            c.drawText(textobject)
+        if plot4HasData:
+            textobject = c.beginText()
+            textobject.setFont('Times-Roman', 15)
+            textobject.setTextOrigin(inch, inch+330)
+
+            textobject.textLine(text = "SLO Text Similarity When Programs X SLO(s) Are Compared to Programs Y SLO(s):")
+            c.drawText(textobject)
+            c.drawImage(str(BASE_DIR) + "/main/static/similaritycomparisonfig.png", inch, inch-90, height=415, width=520)
+        else:
+            textobject = c.beginText()
+            textobject.setFont('Times-Roman', 12)
+            textobject.setTextOrigin(inch, inch+300)
+
+            textobject.textLine(text = 'No Data For SLO Similarity Comparison Graph')
             c.drawText(textobject)
         f.addFromList(story, c)
         c.save()

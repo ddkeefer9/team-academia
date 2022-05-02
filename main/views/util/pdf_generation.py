@@ -1,7 +1,10 @@
 from pathlib import Path
-import time
+import time, re
 from django.db.models import Q
 import numpy as np
+
+from main.views.util.queries import CollegeQueries, DegreeQueries
+from main.views.util.smart_assistant import SmartAssistantHelper
 from ...models import (
     MakereportsAssessmentdata, MakereportsAssessmentversion, MakereportsCollege, MakereportsReport, MakereportsSlo, MakereportsSloinreport, 
     MakereportsDegreeprogram, MakereportsDepartment, MakereportsSlostatus, MakereportsAssessmentversion, MakereportsAssessmentaggregate
@@ -81,6 +84,8 @@ class SLOStatusPage:
             n_plots = slomet_freq.iloc[0].size
             report_descriptions = self.get_report_descriptions(SLOdata_bool_mask)
             if n_plots > 0:
+                slomet_freq_no_nan = np.nan_to_num(slomet_freq, nan=0.0)
+                max_met = slomet_freq_no_nan.max()
                 fig, ax = plt.subplots(self.plots_per_page, 1, sharex=False, sharey=True)
                 for i in range(self.plots_per_page):
                     if i in range(n_plots):
@@ -89,6 +94,7 @@ class SLOStatusPage:
                         ax[i].set_visible(False)
                 fig.set_size_inches(8.5, 9, forward=True)
                 fig.tight_layout()
+                plt.setp(ax, xlim=(0, max_met))
                 img_buf = io.BytesIO()
                 plt.savefig(img_buf)
                 plt_img = Image.open(img_buf)
@@ -101,13 +107,12 @@ class AssessmentStatisticsPage:
     Class to describe the Assessment Statistics PDF Page.
     """
 
-    def __init__(self, dprqs, sirqs, avirqs, plots_per_page):
+    def __init__(self, degree_program_report, slo_in_report, plots_per_page):
         """
         Constructor
         """
-        self.dprqs = dprqs
-        self.sirqs = sirqs
-        self.avirqs = avirqs
+        self.degree_program_report = degree_program_report
+        self.slo_in_report = slo_in_report
         self.plots_per_page = plots_per_page
         self.description = "Assessment Statistics"
 
@@ -125,38 +130,67 @@ class AssessmentStatisticsPage:
             - A PIL image object with a bar plot of the assessment aggregated proficiency and the target proficiency.
             - A formatted description with specified styles that includes information about the assessment like its SLO, report, and proficiency.
         """
-        for report in self.dprqs:
-            slos = MakereportsSloinreport.objects.filter(report=report)
-            for slo in slos:
-                assessments = MakereportsAssessmentversion.objects.filter(slo=slo)
-                for assessment in assessments:
-                    aggregates = MakereportsAssessmentaggregate.objects.filter(assessmentversion=assessment)
-                    for aggregate in aggregates:
-                        description = [ 
-                            f"Report: {report}", 
-                            "SLO Goal:",
-                            f"{slo.goaltext}",
-                            f"An assessment with an aggregate of {aggregate.aggregate_proficiency} percent proficient and a target of {assessment.target} percent, marked as {'met' if aggregate.met else 'unmet'}."
-                        ] 
-                        styles = [
-                            "Heading3",
-                            "Heading4",
-                            "Normal",
-                            "Normal"
-                        ]
-                        plt.clf()
-                        plot = sns.barplot(x=["Actual", "Target"], y=[aggregate.aggregate_proficiency, assessment.target])
-                        fig = plot.get_figure() 
-                        fig.set_size_inches(8.5, 6, forward=True)
-                        fig.tight_layout()
-                        img_buf = io.BytesIO()
-                        plt.savefig(img_buf)
-                        plt_img = Image.open(img_buf)
-                        return (plt_img, [[description, styles]])                    
+        assessments = MakereportsAssessmentversion.objects.filter(slo=self.slo_in_report)
+        description = [f"Report: {self.degree_program_report}", "SLO Goal:", f"{self.slo_in_report.goaltext}"]
+        styles = ["Heading3", "Heading4", "Normal"]
+        assessment_num = 1
+        measures = []
+        measure_descriptions = []
+        assessment_referred = []
+        for assessment in assessments:
+            aggregate = MakereportsAssessmentaggregate.objects.filter(assessmentversion=assessment)
+            if len(aggregate) > 0:
+                aggregate = aggregate[0]
+                description.append(f"Assessment Version {assessment_num}, recorded on: {assessment.date}")
+                styles.append("Normal")
+                description.append(f"An assessment with an aggregate of {aggregate.aggregate_proficiency} percent proficient and a target of {assessment.target} percent, marked as {'met' if aggregate.met else 'unmet'}.")
+                styles.append("Normal")
+                # Append aggregate data info to list.
+                measures.append(aggregate.aggregate_proficiency)
+                measure_descriptions.append("Actual")
+                assessment_referred.append(assessment_num)
+                # Append assessment target info to list
+                measures.append(assessment.target)
+                measure_descriptions.append("Target")
+                assessment_referred.append(assessment_num)
+                assessment_num+=1
+            else: # there is not a one-to-one assessmentversion to the aggregate, so skip.
+                description.append(f"Assessment Version {assessment_num}, recorded on: {assessment.date} (No Assessment Aggregate)")
+                styles.append("Normal")
+                assessment_num+=1
+                continue
+        if len(assessments) == 0:
+            description.append("No assessment data could be found for this SLO in the report.")
+            styles.append("Normal")
+        plt.clf()
+        if any((measures, measure_descriptions, assessment_referred)):
+            slo_df = pd.DataFrame(data = {
+                'Measures' : measures,
+                'Measure Description' : measure_descriptions,
+                'Assessment Number' : assessment_referred
+            })
+            # Creates a "grouped" barplot.
+            plot = sns.barplot(data=slo_df, x="Assessment Number", y="Measures", hue="Measure Description")
+            fig = plot.get_figure() 
+            fig.set_size_inches(8.5, 6, forward=True)
+            fig.tight_layout()
+            img_buf = io.BytesIO()
+            plt.savefig(img_buf)
+            plt_img = Image.open(img_buf)
+            return (plt_img, [[description, styles]])
+        else:
+            fig = plt.figure()
+            fig.set_size_inches(8.5, 6, forward=True)
+            fig.tight_layout()
+            img_buf = io.BytesIO()
+            plt.savefig(img_buf)
+            plt_img = Image.open(img_buf)
+            return (plt_img, [[description, styles]])
+
 
 class PDFGenHelpers:
 
-    def historicalPdfGenPlotting(dprqs, sirqs, sirsqs, avirqs, request, plots_per_page = 4):
+    def historicalPdfGenPlotting(dprqs, request, plots_per_page = 4):
         """
         Helper for plotting the resulting QuerySet from pdfGenQuery for our historical report.
 
@@ -174,12 +208,14 @@ class PDFGenHelpers:
             if slostatus_by_report:
                 # slostatus_by_report = (slostatus_by_report, )
                 pages.append((slostatus_by_report, f"SLO Status Breakdown by Report for {degree_program}"))
-    
         if 'assessmentStats' in request.POST:
-            assess_stats_page = AssessmentStatisticsPage(dprqs, sirqs, avirqs, plots_per_page=plots_per_page)
-            assess_stats_by_report = assess_stats_page.assessment_stats_for_each_slo()
-            if assess_stats_by_report:
-                pages.append((assess_stats_by_report, f"Assessment Statistics by Report for {degree_program}"))
+            for degree_report in dprqs:
+                slos_in_report = MakereportsSloinreport.objects.filter(report=degree_report)
+                for slo in slos_in_report:
+                    assess_stats_page = AssessmentStatisticsPage(degree_report, slo, plots_per_page=plots_per_page)
+                    assess_stats_by_report = assess_stats_page.assessment_stats_for_each_slo()
+                    if assess_stats_by_report:
+                        pages.append((assess_stats_by_report, f"Assessment Statistics by Report for {degree_program}"))
         return pages
 
     def historicalPdfGenQuery(degreeprogram_name, request):
@@ -205,52 +241,26 @@ class PDFGenHelpers:
             Q(year__gte=request.POST['date_start'])
         )
         if len(dprqs) < 1:  # Degree program does not have a report associated with it.
-            return (None,None,None,None)
+            return (None, None)
         # SLOs in report queryset.
         sirqs = MakereportsSloinreport.objects.filter(report__in=dprqs)
+        return dprqs, sirqs
 
-        # SLOs in report status queryset. 
-        sirsqs = MakereportsSlostatus.objects.filter(sloir__in=sirqs)
-        # Assessment version in report query set.
-        avirqs = MakereportsAssessmentversion.objects.filter(slo__in=sirqs)
-        return dprqs, sirqs, sirsqs, avirqs
-
-    def pdfDegreeAssessmentQuery(degree_id):
-        """
-        Queries to help with College Comparison Assessment Proficiency
-
-        Queries from the MakereportsReport table -> MakereportsAssessmentversion table -> MakereportsAssessmentdata table.
-
-        Returns:
-            assessmentDataQS - The assessment data for the given degree_id
-        """
-
-        makeReportQS = MakereportsReport.objects.filter(degreeprogram=degree_id)
-        if len(makeReportQS) < 1:  # Degree program does not have a report associated with it.
-            return None
-        
-        reportsAssessmentVersionQS = MakereportsAssessmentversion.objects.filter(report__in=makeReportQS)
-        
-        assessmentDataQS = MakereportsAssessmentdata.objects.filter(assessmentversion__in=reportsAssessmentVersionQS)
-        return assessmentDataQS
-
+class DegreeComparisonPlotting:
     def pdfCollegeComparisonsAssessmentPlotting(collegeQS):
         """
         Plots the college comparisons graphs for a given college name.
 
         Returns:
-            - plot: The plot utilizing the data.
+            - "Successful" if sucessful or None if not.
         """
-        
-        departmentQS = MakereportsDepartment.objects.filter(college__in=collegeQS)
-
-        degreeProgramQS = MakereportsDegreeprogram.objects.filter(department__in=departmentQS)
+        degreeProgramQS = CollegeQueries.getDegreesFromCollegeQS(collegeQS)
 
         degree_programs = []
         overallProficiency = []
 
         for degree in degreeProgramQS:
-            assessmentDataQS = PDFGenHelpers.pdfDegreeAssessmentQuery(degree)
+            assessmentDataQS = DegreeQueries.pdfDegreeAssessmentQuery(degree)
             if assessmentDataQS is not None and len(assessmentDataQS) > 0 :
                 degree_programs.append(degree.name)
                 overallProficiency.append(assessmentDataQS[0].overallproficient)
@@ -278,35 +288,21 @@ class PDFGenHelpers:
         else:
             return None
 
-    def pdfDegreeReportQuery(degree_id):
-        """
-        Queries to help with College Number of SLOs Comparison
-
-        Queries from the MakereportsReport table.
-
-        Returns:
-            numOfSLOsDataQS - The number of SLOs for the given degree_id
-        """
-        makeReportQS = MakereportsReport.objects.filter(degreeprogram=degree_id)
-        return makeReportQS
-        
     def pdfCollegeComparisonsSLOPlotting(collegeQS):
         """
         Plots the college comparisons graphs for a given college name.
 
         Returns:
-            - plot: The plot utilizing the data.
+            - "Successful" if sucessful or None if not.
         """
         degree_programs = []
         numOfSLOs = []
         largestSLO = 0
 
-        departmentQS = MakereportsDepartment.objects.filter(college__in=collegeQS)
-
-        degreeProgramQS = MakereportsDegreeprogram.objects.filter(department__in=departmentQS)
+        degreeProgramQS = CollegeQueries.getDegreesFromCollegeQS(collegeQS)
 
         for degree in degreeProgramQS:
-            reportDataQS = PDFGenHelpers.pdfDegreeReportQuery(degree)
+            reportDataQS = DegreeQueries.pdfDegreeReportQuery(degree)
             if reportDataQS is not None and len(reportDataQS) > 0 :
                 degree_programs.append(degree.name)
                 numOfSLOs.append(reportDataQS[0].numberofslos)
@@ -331,37 +327,17 @@ class PDFGenHelpers:
                 labels = [f'{(v.get_width()):.0f}' for v in c]
                 ax.bar_label(c, labels=labels, label_type='edge')
             #End putting numbers above bar plots*********************************
-
             plt.savefig(str(BASE_DIR) + "/main/static/slocomparisonfig.png")
             return "Successful"
         else:
             return None
 
-    def pdfDegreeBloomQuery(degree_id):
-        """
-        Queries to help with College Comparison Assessment Proficiency
-
-        Queries from the MakereportsReport table -> MakereportsAssessmentversion table -> MakereportsAssessmentdata table.
-
-        Returns:
-            assessmentDataQS - The assessment data for the given degree_id
-        """
-
-        makeReportQS = MakereportsReport.objects.filter(degreeprogram=degree_id)
-        if len(makeReportQS) < 1:  # Degree program does not have a report associated with it.
-            return None
-        
-        sloInReportQS = MakereportsSloinreport.objects.filter(report__in=makeReportQS)
-        
-        sloBloomQS = MakereportsSlo.objects.filter(makereportssloinreport__in = sloInReportQS)
-        return sloBloomQS
-
     def pdfCollegeComparisonsBloomPlotting(collegeQS):
         """
-        Plots the college comparisons graphs for a given college name.
+        Plots the Bloom Taxonomies heatmap for each program within the given college name.
 
         Returns:
-            - plot: The plot utilizing the data.
+            - "Successful" if sucessful or None if not.
         """
         EV_INDEX = 0
         SN_INDEX = 1
@@ -372,14 +348,12 @@ class PDFGenHelpers:
         degree_programs = []
         bloomTaxonmies = ['EV', 'SN', 'AN', 'AP', 'CO', 'KN']
         blooms=[]
-        bloomValues = []
-        
-        departmentQS = MakereportsDepartment.objects.filter(college__in=collegeQS)
+        bloomValues = []       
 
-        degreeProgramQS = MakereportsDegreeprogram.objects.filter(department__in=departmentQS)
+        degreeProgramQS = CollegeQueries.getDegreesFromCollegeQS(collegeQS)
 
         for degree in degreeProgramQS:
-            sloBloomDataQS = PDFGenHelpers.pdfDegreeBloomQuery(degree)
+            sloBloomDataQS = DegreeQueries.pdfDegreeBloomQuery(degree)
             if sloBloomDataQS is not None and len(sloBloomDataQS) > 0 :
                 degree_programs.append(degree.name)
                 bloomsForDegree = [0,0,0,0,0,0]
@@ -401,11 +375,12 @@ class PDFGenHelpers:
                 blooms.append(bloomTaxonmies)
         data = {
             'Programs' : degree_programs,
-            "Number of SLOs For Each Bloom's Taxonomy" : blooms,
+            "Bloom's Taxonomies" : blooms,
             'NumberOfUses': bloomValues,
         }
 
-        df = pd.DataFrame(data, columns=['Programs', "Number of SLOs For Each Bloom's Taxonomy", 'NumberOfUses'])
+        df = pd.DataFrame(data, columns=['Programs', "Bloom's Taxonomies", 'NumberOfUses'])
+
         df = df.set_index(['Programs']).apply(pd.Series.explode).reset_index()
         filepath = Path('main/static/out.csv')  
         filepath.parent.mkdir(parents=True, exist_ok=True)   
@@ -414,17 +389,71 @@ class PDFGenHelpers:
         if (len(degree_programs) > 0):
             # blooms = sns.load_dataset(df)
             importlib.reload(matplotlib); importlib.reload(plt); importlib.reload(sns)
-            pivot = dataset.pivot(index=['Programs'], columns="Number of SLOs For Each Bloom's Taxonomy", values="NumberOfUses")
+            pivot = dataset.pivot(index=['Programs'], columns="Bloom's Taxonomies", values="NumberOfUses")
 
             if len(degree_programs) > 10:
                 sns.heatmap(pivot, annot=True, fmt="d", linewidths=.5,vmin=0, vmax=4, cmap="Reds", annot_kws = {'size':12})
             else:
                 sns.heatmap(pivot, annot=True, fmt="d", linewidths=.5,vmin=0, vmax=4, cmap="Reds", annot_kws = {'size':15})
-
             plt.savefig(str(BASE_DIR) + "/main/static/slobloomcomparisonfig.png", bbox_inches='tight')
             return "Successful"
         else:
             return None
-    def getCollegeQSFromID(college_id):
-        collegeQS = MakereportsCollege.objects.filter(pk=college_id)
-        return collegeQS
+    
+    def pdfCollegeComparisonsCosineSimilarityPlotting(collegeQS):
+        """
+        Plots the SLO Text Similarity heatmap for each program within the given college name.
+
+        Returns:
+            - "Successful" if sucessful or None if not.
+        """
+        
+        degree_programs = []
+        degree_programs2 = []
+
+        simularityValues=[]
+        bloomValues = []       
+
+        degreeProgramQS = CollegeQueries.getDegreesFromCollegeQS(collegeQS)
+
+        for degree in degreeProgramQS:
+            degree_programs.append(degree.name)
+            degreeSimularity = []
+            degrees = []
+            for degree2 in degreeProgramQS:
+                degrees.append(degree2.name)
+                sloSimularity = SmartAssistantHelper.cosine_similarity_degrees(degree.name,degree2.name)
+                degreeSimularity.append(sloSimularity)
+            simularityValues.append(degreeSimularity)
+            degree_programs2.append(degrees)
+        data = {
+            "Programs Y" : degree_programs2,
+            'Programs X' : degree_programs,
+            'SimilarityValues': simularityValues,
+        }
+
+        df = pd.DataFrame(data, columns=['Programs X', 'Programs Y', 'SimilarityValues'])
+        df = df.set_index(['Programs X']).apply(pd.Series.explode).reset_index()
+        filepath = Path('main/static/out1.csv')  
+        filepath.parent.mkdir(parents=True, exist_ok=True)   
+        df.to_csv(filepath)   
+        dataset = pd.read_csv(filepath)
+        if (len(degree_programs) > 0):
+            # blooms = sns.load_dataset(df)
+            importlib.reload(matplotlib); importlib.reload(plt); importlib.reload(sns)
+            pivot = dataset.pivot(index=['Programs Y'], columns="Programs X", values="SimilarityValues")
+            if len(degree_programs) > 10:
+                sns.set(font_scale = 0.5)
+                sns.heatmap(pivot, annot=True, fmt=".1f", linewidths=.5,vmin=0, vmax=1, cmap="Reds", annot_kws = {'size':6})
+            elif len(degree_programs) > 6:
+                sns.set(font_scale = 0.7)
+                sns.heatmap(pivot, annot=True, fmt=".2f", linewidths=.5,vmin=0, vmax=1, cmap="Reds", annot_kws = {'size':10})
+            else:
+                sns.set(font_scale = 1)
+                sns.heatmap(pivot, annot=True, fmt=".3f", linewidths=.5,vmin=0, vmax=1, cmap="Reds", annot_kws = {'size':12})
+
+            plt.xticks(rotation=45, horizontalalignment='right')
+            plt.savefig(str(BASE_DIR) + "/main/static/similaritycomparisonfig.png", bbox_inches='tight', dpi=1000)
+            return "Successful"
+        else:
+            return None

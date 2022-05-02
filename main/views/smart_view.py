@@ -5,6 +5,8 @@ from main.models import \
         MakereportsReport, MakereportsSloinreport, MakereportsDegreeprogram, MakereportsDepartment, MakereportsSlostatus, \
         MakereportsSlostatus 
 from nltk.corpus import wordnet
+from django.contrib import messages
+from django.shortcuts import redirect
 from AcademicAssessmentAssistant.settings import BASE_DIR
 from .util.pdf_generation import PDFGenHelpers as pg
 from .util.smart_assistant import SmartAssistantHelper as sa
@@ -35,8 +37,13 @@ class SmartAssistantPage():
 			if sirqs is not None and len(sirqs) > 0:
 				for slo_ in sirqs:
 					slo_list.append(SLO_Object(slo_, degreeProgram))
-			context['showSLOs'] = slo_list    
-
+			else:
+				messages.warning(request, message=f'No SLO data found for {start_degree_program}')
+				return redirect('smartAssistant')
+			context['showSLOs'] = slo_list
+			(aggregateText, aggregateColor) = sa.aggregateFeedbackText(slo_list)
+			context['showAggregate'] = aggregateText
+			context['aggregateColor'] = aggregateColor
 		return render(
 			request, 
 			'smart_assistant/smart_assistant.html',
