@@ -153,6 +153,7 @@ class AssessmentStatisticsPage:
                 measures.append(assessment.target)
                 measure_descriptions.append("Target")
                 assessment_referred.append(assessment_num)
+                assessment_num+=1
             else: # there is not a one-to-one assessmentversion to the aggregate, so skip.
                 description.append(f"Assessment Version {assessment_num}, recorded on: {assessment.date} (No Assessment Aggregate)")
                 styles.append("Normal")
