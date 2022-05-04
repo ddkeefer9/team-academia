@@ -29,7 +29,7 @@ class Degree_Object():
         self.keys = SmartAssistantHelper.keys_from_keywords(self.keywords)
         self.level = degree.level
         self.levelText = "undergraduate" if degree.level == "UG" else "graduate"
-        self.bloom_level = 3 if degree.level == "UG" else 5
+        self.bloom_level = 2 if degree.level == "UG" else 4
         self.bloom_level_text = "Application" if degree.level == "UG" else "Synthesis"
 
 
@@ -45,12 +45,12 @@ class SmartAssistantHelper():
     Blooms_Abbrev['CO'] = "Comprehension"
     Blooms_Abbrev['KN'] = "Knowledge"
     Blooms_Score = dict()
-    Blooms_Score['Evaluation'] = 6
-    Blooms_Score['Synthesis'] = 5
-    Blooms_Score['Analysis'] = 4
-    Blooms_Score['Application'] = 3
-    Blooms_Score['Comprehension'] = 2
-    Blooms_Score['Knowledge'] = 1
+    Blooms_Score['Evaluation'] = 5
+    Blooms_Score['Synthesis'] = 4
+    Blooms_Score['Analysis'] = 3
+    Blooms_Score['Application'] = 2
+    Blooms_Score['Comprehension'] = 1
+    Blooms_Score['Knowledge'] = 0
     """
             A 3-tuple of the form: (dpqs, sirqs, sirsqs) where:
                 - dpqs: is the Degree program queryset.
@@ -120,8 +120,9 @@ class SmartAssistantHelper():
                 bloom_count += 1
             if SLO.count > 0:
                 numSLO += 1
-            bloom_list[SLO.bloom_score] += 1
-        return (numSLO, bloom_count, bloom_list)
+            if SLO.bloom_score is not None:
+                bloom_list[SLO.bloom_score] += 1
+        return (numSLO, bloom_count, reversed(bloom_list))
             
             
     def aggregateFeedbackText(SLOList):
