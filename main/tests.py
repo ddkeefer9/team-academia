@@ -1,18 +1,25 @@
+from asyncio.windows_events import NULL
 from fileinput import filename
 from operator import contains
 from unicodedata import name
 from django.test import TestCase
 from django.test import LiveServerTestCase
-from numpy import equal
+from numpy import equal, number
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
+<<<<<<< HEAD
+from .models import MakereportsDepartment, MakereportsAnnouncement, MakereportsReport
+from main.views.util.smart_assistant import SLO_Object, SmartAssistantHelper
+=======
 
 from main.views.util.queries import CollegeQueries, DegreeQueries
 from .models import MakereportsDepartment, MakereportsAnnouncement, MakereportsAssessment, DjangoSummernoteAttachment
+>>>>>>> cbba92c31e51fb28721f911d11efdf975d7f9867
 from main.views.util.pdf_generation import AssessmentStatisticsPage, PDFGenHelpers as pg, SLOStatusPage
 import time
+
 
 import pytest
 # Create your tests here.
@@ -87,6 +94,41 @@ class BasicTests(TestCase):
 				self.assertTrue(currentURL.__contains__(".pdf"))
 				selenium.quit()
 
+	def testFeedbackAssistantTableNotEmpty(self):
+			selenium = webdriver.Chrome('C:/bin/chromedriver.exe')
+			selenium.get("http://127.0.0.1:8000/")
+			selenium.find_element_by_link_text("Feedback Smart Assistant").click()
+			selenium.get("http://127.0.0.1:8000/smart_assistant")
+			selenium.find_element_by_id("id_department").click()
+			Select(selenium.find_element_by_id("id_department")).select_by_visible_text("Computer Science")
+			time.sleep(1)
+			selenium.find_element_by_id("id_degree-program").click()
+			Select(selenium.find_element_by_id("id_degree-program")).select_by_visible_text("Computer Science")
+			selenium.find_element_by_name("smart_woptions").click()
+			MakereportsReport.objects.filter()
+			self.assertTrue(MakereportsReport.numberofslos != 0)
+			#response = self.client.post('/smart_assistant/')
+			#self.assertTrue(True if 'showSLOs' in response.context else False)
+			selenium.quit()
+
+	def testFeedbackAssistantTableEmpty(self):
+			selenium = webdriver.Chrome('C:/bin/chromedriver.exe')
+			selenium.get("http://127.0.0.1:8000/")
+			selenium.find_element_by_link_text("Feedback Smart Assistant").click()
+			selenium.get("http://127.0.0.1:8000/smart_assistant")
+			selenium.find_element_by_id("id_department").click()
+			Select(selenium.find_element_by_id("id_department")).select_by_visible_text("Psychology")
+			time.sleep(1)
+			selenium.find_element_by_id("id_degree-program").click()
+			Select(selenium.find_element_by_id("id_degree-program")).select_by_visible_text("BA Psychology")
+			selenium.find_element_by_name("smart_woptions").click()
+			MakereportsReport.objects.filter()
+			response = self.client.post('/smart_assistant/')
+			self.assertTrue(True if 'showSLOs' not in response.context else False)
+			selenium.quit()
+	
+    
+
 class UnitTests(TestCase):
 
 	def test_department_length(self):
@@ -119,6 +161,9 @@ class UnitTests(TestCase):
 		page = SLOStatusPage(0 , 4)
 		assert page.plots_per_page == 4
 
+<<<<<<< HEAD
+		
+=======
 @pytest.mark.django_db
 class DegreeComparisonQueriesTests(TestCase):
 	pytestmark = pytest.mark.django_db
@@ -143,3 +188,4 @@ class DegreeComparisonQueriesTests(TestCase):
 	def test_pdfDegreeBloomQuery(self):
 		sloBloomQS = DegreeQueries.pdfDegreeBloomQuery(1)
 		assert len(sloBloomQS) > 0
+>>>>>>> cbba92c31e51fb28721f911d11efdf975d7f9867
