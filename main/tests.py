@@ -9,14 +9,11 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
-<<<<<<< HEAD
 from .models import MakereportsDepartment, MakereportsAnnouncement, MakereportsReport
 from main.views.util.smart_assistant import SLO_Object, SmartAssistantHelper
-=======
 
 from main.views.util.queries import CollegeQueries, DegreeQueries
 from .models import MakereportsDepartment, MakereportsAnnouncement, MakereportsAssessment, DjangoSummernoteAttachment
->>>>>>> cbba92c31e51fb28721f911d11efdf975d7f9867
 from main.views.util.pdf_generation import AssessmentStatisticsPage, PDFGenHelpers as pg, SLOStatusPage
 import time
 
@@ -150,7 +147,7 @@ class UnitTests(TestCase):
 		assert page.plots_per_page == 4
 
 	def test_AssessmentStats(self):
-		page = AssessmentStatisticsPage(0,4,0,0)
+		page = AssessmentStatisticsPage(0,4,0)
 		assert page.description == "Assessment Statistics"
 	
 	def test_AssessmentStats_dprqs(self):
@@ -161,9 +158,6 @@ class UnitTests(TestCase):
 		page = SLOStatusPage(0 , 4)
 		assert page.plots_per_page == 4
 
-<<<<<<< HEAD
-		
-=======
 @pytest.mark.django_db
 class DegreeComparisonQueriesTests(TestCase):
 	pytestmark = pytest.mark.django_db
@@ -188,4 +182,3 @@ class DegreeComparisonQueriesTests(TestCase):
 	def test_pdfDegreeBloomQuery(self):
 		sloBloomQS = DegreeQueries.pdfDegreeBloomQuery(1)
 		assert len(sloBloomQS) > 0
->>>>>>> cbba92c31e51fb28721f911d11efdf975d7f9867
