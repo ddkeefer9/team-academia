@@ -33,7 +33,6 @@
       {% else %}
         <option value="" selected >Choose degree program</option>
       {% endif %}
-      <option value="All Programs">All Programs</option>
       {% for degreePrograms in showDegrees %}
         <option value="" >{{ degreePrograms.name }}</option>
       {% endfor %}
@@ -89,7 +88,7 @@
      // var degreeName = dept[0].options[dept[0].selectedIndex].text;
       var degreeName = dept.val()
       $.ajax({
-        url: "/degreeDropdown",
+        url: "/degreeDropdownWithoutAllPrograms",
         data: {
           'department': degreeName
         },

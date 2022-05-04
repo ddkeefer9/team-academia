@@ -6,6 +6,7 @@ urlpatterns = [
     path("pdfGen", reports_view.PDFPage.display_historical_pdfGen, name="pdfGen"),
     path("pdfDegreeGen", reports_view.PDFPage.display_degree_pdfGen, name="pdfDegreeGen"),
     path("degreeDropdown", basic_views.HomePage.display_sendDegrees, name="degreeDropdown"),
+    path("degreeDropdownWithoutAllPrograms", basic_views.HomePage.display_sendDegreesWithoutAllDegreesOption, name="degreeDropdownWithoutAllPrograms"),
     path("degree_comparison", degree_comparison_view.DegreeCompPage.display_degree_comp, name="degreecomparison"),
     path("historical", historical_view.HistoricalPage.display_historical, name="historical"),
     path("assistant", basic_views.HomePage.page_traversal, name="traverse")

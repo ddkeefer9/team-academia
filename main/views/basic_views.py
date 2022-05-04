@@ -40,6 +40,18 @@ class HomePage():
             'home/degreeDropdown.html',
             {'degrees':degreePrograms},
         )
+    def display_sendDegreesWithoutAllDegreesOption(request):
+        """
+        Display Send Degrees
+            Notes:
+                This view handles passing data that is filtered by department to be shown in the degree programs drop down.
+        """
+        degreePrograms = MakereportsDegreeprogram.objects.filter(department=request.GET.get("department"))
+        return render(
+            request,
+            'home/degreeDropdownWithoutAllPrograms.html',
+            {'degrees':degreePrograms},
+        )
     
     def page_traversal(request):
         """
