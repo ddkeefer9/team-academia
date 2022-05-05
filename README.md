@@ -47,3 +47,21 @@ pytest --reuse-db
 ```
 pytest
 ```
+## 04-20-2022 (Milestone 4)
+- Updated degree comparison page to filter by college
+- Added heatmap to display blooms taxonomies used by each program
+- Added assessment statistic plots to Historical pdf generattion
+- Added more Selenium Tests
+- Expanded on Smart Assistant and added Natural Language Processing for each SLO
+```
+pytest
+```
+## 05-07-2022 (Milestone 5)
+- Added cosine similarity heatmap for programs SLOs
+- Added coloring to smart assistant based on if they met or exceeded requirements
+- Added more Selenium Tests
+- Added more unit tests
+- Cleaned up both pdf generations
+```
+pytest
+```

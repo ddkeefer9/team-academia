@@ -133,6 +133,12 @@ class PDFPage():
         return FileResponse(buf, as_attachment=True, filename=f"{department[0]}-{degree_program}HistoricalReport.pdf")
 
     def display_degree_pdfGen(request):
+        """
+        The main function for handling a POST request to create a degree comparison PDF for a given college.
+
+        Returns
+            - A FileResponse with the generated PDF
+        """
         collegeID = request.POST['college']
         collegeQS = CollegeQueries.getCollegeQSFromID(collegeID)
         collegeName = collegeQS[0].name
