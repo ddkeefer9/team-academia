@@ -1,8 +1,6 @@
 var searchData=
 [
-  ['page_5ftraversal_0',['page_traversal',['../classbasic__views_1_1_home_page.html#a7122891411ea5aafe933238c70ef341c',1,'basic_views::HomePage']]],
-  ['pdfdegreegenplotting_1',['pdfDegreeGenPlotting',['../classpdfgenhelpers_1_1_p_d_f_gen_helpers.html#a8b4480cf8a9145d61efc9685faae6ae4',1,'pdfgenhelpers::PDFGenHelpers']]],
-  ['pdfdegreegenquery_2',['pdfDegreeGenQuery',['../classpdfgenhelpers_1_1_p_d_f_gen_helpers.html#a1affe1c710d4530a8740490a0f5f624f',1,'pdfgenhelpers::PDFGenHelpers']]],
-  ['pdfgenplotting_3',['pdfGenPlotting',['../classpdfgenhelpers_1_1_p_d_f_gen_helpers.html#ae6e0da27433fb7e4cfc85bf302346921',1,'pdfgenhelpers::PDFGenHelpers']]],
-  ['pdfgenquery_4',['pdfGenQuery',['../classpdfgenhelpers_1_1_p_d_f_gen_helpers.html#a6b4f5224f3c9b7ffc4c2b42817543faf',1,'pdfgenhelpers::PDFGenHelpers']]]
+  ['aggregatefeedbackmetrics_0',['aggregateFeedbackMetrics',['../classsmart__assistant_1_1_smart_assistant_helper.html#a79475c6aa2241c14bc21cb3dfcf23689',1,'smart_assistant::SmartAssistantHelper']]],
+  ['aggregatefeedbacktext_1',['aggregateFeedbackText',['../classsmart__assistant_1_1_smart_assistant_helper.html#a69c41ce413f232015cfa2c3d256833eb',1,'smart_assistant::SmartAssistantHelper']]],
+  ['assessment_5fstats_5ffor_5feach_5fslo_2',['assessment_stats_for_each_slo',['../classpdf__generation_1_1_assessment_statistics_page.html#a7818e8afbe4309c0be5bf02fbdd62ea6',1,'pdf_generation::AssessmentStatisticsPage']]]
 ];

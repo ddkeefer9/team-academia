@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.3"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>team-academia: main.models.MakereportsProfile Class Reference</title>
+<title>Academic Smart Assistant: main.models.MakereportsProfile Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,8 +25,9 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">team-academia
+   <div id="projectname">Academic Smart Assistant
    </div>
+   <div id="projectbrief">A Capstone Project for the Academic Assessment Committee</div>
   </td>
  </tr>
  </tbody>
@@ -103,25 +104,89 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
-<tr class="memitem:ae21163533828cb39f066f1820b3f1ad3"><td class="memItemLeft" align="right" valign="top"><a id="ae21163533828cb39f066f1820b3f1ad3" name="ae21163533828cb39f066f1820b3f1ad3"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>aac</b> = models.BooleanField(blank=True, null=True)</td></tr>
+<tr class="memitem:ae21163533828cb39f066f1820b3f1ad3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmain_1_1models_1_1_makereports_profile.html#ae21163533828cb39f066f1820b3f1ad3">aac</a> = models.BooleanField(blank=True, null=True)</td></tr>
 <tr class="separator:ae21163533828cb39f066f1820b3f1ad3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa50ce3fe5afad766b0da7e4bd945173a"><td class="memItemLeft" align="right" valign="top"><a id="aa50ce3fe5afad766b0da7e4bd945173a" name="aa50ce3fe5afad766b0da7e4bd945173a"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>department</b> = models.ForeignKey(<a class="el" href="classmain_1_1models_1_1_makereports_department.html">MakereportsDepartment</a>, models.DO_NOTHING, blank=True, null=True)</td></tr>
+<tr class="memitem:aa50ce3fe5afad766b0da7e4bd945173a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmain_1_1models_1_1_makereports_profile.html#aa50ce3fe5afad766b0da7e4bd945173a">department</a> = models.ForeignKey(<a class="el" href="classmain_1_1models_1_1_makereports_department.html">MakereportsDepartment</a>, models.DO_NOTHING, blank=True, null=True)</td></tr>
 <tr class="separator:aa50ce3fe5afad766b0da7e4bd945173a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8e8025a55d91253aac97d0c5264939bc"><td class="memItemLeft" align="right" valign="top"><a id="a8e8025a55d91253aac97d0c5264939bc" name="a8e8025a55d91253aac97d0c5264939bc"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>user</b> = models.OneToOneField(<a class="el" href="classmain_1_1models_1_1_auth_user.html">AuthUser</a>, models.DO_NOTHING)</td></tr>
+<tr class="memitem:a8e8025a55d91253aac97d0c5264939bc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmain_1_1models_1_1_makereports_profile.html#a8e8025a55d91253aac97d0c5264939bc">user</a> = models.OneToOneField(<a class="el" href="classmain_1_1models_1_1_auth_user.html">AuthUser</a>, models.DO_NOTHING)</td></tr>
 <tr class="separator:a8e8025a55d91253aac97d0c5264939bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="ae21163533828cb39f066f1820b3f1ad3" name="ae21163533828cb39f066f1820b3f1ad3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae21163533828cb39f066f1820b3f1ad3">&#9670;&nbsp;</a></span>aac</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">main.models.MakereportsProfile.aac = models.BooleanField(blank=True, null=True)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa50ce3fe5afad766b0da7e4bd945173a" name="aa50ce3fe5afad766b0da7e4bd945173a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa50ce3fe5afad766b0da7e4bd945173a">&#9670;&nbsp;</a></span>department</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">main.models.MakereportsProfile.department = models.ForeignKey(<a class="el" href="classmain_1_1models_1_1_makereports_department.html">MakereportsDepartment</a>, models.DO_NOTHING, blank=True, null=True)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8e8025a55d91253aac97d0c5264939bc" name="a8e8025a55d91253aac97d0c5264939bc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8e8025a55d91253aac97d0c5264939bc">&#9670;&nbsp;</a></span>user</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">main.models.MakereportsProfile.user = models.OneToOneField(<a class="el" href="classmain_1_1models_1_1_auth_user.html">AuthUser</a>, models.DO_NOTHING)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>main/models.py</li>
+<li>main/<a class="el" href="models_8py.html">models.py</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>main</b></li><li class="navelem"><b>models</b></li><li class="navelem"><a class="el" href="classmain_1_1models_1_1_makereports_profile.html">MakereportsProfile</a></li>
+    <li class="navelem"><a class="el" href="namespacemain.html">main</a></li><li class="navelem"><a class="el" href="namespacemain_1_1models.html">models</a></li><li class="navelem"><a class="el" href="classmain_1_1models_1_1_makereports_profile.html">MakereportsProfile</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
   </ul>
 </div>

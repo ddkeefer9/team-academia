@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.3"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>team-academia: reports_view.PDFPage Class Reference</title>
+<title>Academic Smart Assistant: reports_view.PDFPage Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,8 +25,9 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">team-academia
+   <div id="projectname">Academic Smart Assistant
    </div>
+   <div id="projectbrief">A Capstone Project for the Academic Assessment Committee</div>
   </td>
  </tr>
  </tbody>
@@ -91,24 +92,151 @@ $(document).ready(function(){initNavTree('classreports__view_1_1_p_d_f_page.html
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ab06fa5cecebe918747784e16b1da6b6f"><td class="memItemLeft" align="right" valign="top"><a id="ab06fa5cecebe918747784e16b1da6b6f" name="ab06fa5cecebe918747784e16b1da6b6f"></a>
-def&#160;</td><td class="memItemRight" valign="bottom"><b>display_pdfGen</b> (request)</td></tr>
-<tr class="separator:ab06fa5cecebe918747784e16b1da6b6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a068f455bd685ff9e0432b3f8ae151598"><td class="memItemLeft" align="right" valign="top"><a id="a068f455bd685ff9e0432b3f8ae151598" name="a068f455bd685ff9e0432b3f8ae151598"></a>
-def&#160;</td><td class="memItemRight" valign="bottom"><b>display_degree_pdfGen</b> (request)</td></tr>
+<tr class="memitem:a7ac7fd76618cf94594775b6959c72915"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classreports__view_1_1_p_d_f_page.html#a7ac7fd76618cf94594775b6959c72915">finish_page</a> (story, c, f)</td></tr>
+<tr class="separator:a7ac7fd76618cf94594775b6959c72915"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a751e9c187b6895f69e82410f88ef81dc"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classreports__view_1_1_p_d_f_page.html#a751e9c187b6895f69e82410f88ef81dc">draw_historical_report_body</a> (story, canvas, frame, pages)</td></tr>
+<tr class="separator:a751e9c187b6895f69e82410f88ef81dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a55a2f6ed695a5c8681c7c04387d80e72"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classreports__view_1_1_p_d_f_page.html#a55a2f6ed695a5c8681c7c04387d80e72">display_historical_pdfGen</a> (request)</td></tr>
+<tr class="separator:a55a2f6ed695a5c8681c7c04387d80e72"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a068f455bd685ff9e0432b3f8ae151598"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classreports__view_1_1_p_d_f_page.html#a068f455bd685ff9e0432b3f8ae151598">display_degree_pdfGen</a> (request)</td></tr>
 <tr class="separator:a068f455bd685ff9e0432b3f8ae151598"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><pre class="fragment">PDF Generation View
-</pre> </div><hr/>The documentation for this class was generated from the following file:<ul>
-<li>main/views/reports_view.py</li>
+</pre> </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a068f455bd685ff9e0432b3f8ae151598" name="a068f455bd685ff9e0432b3f8ae151598"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a068f455bd685ff9e0432b3f8ae151598">&#9670;&nbsp;</a></span>display_degree_pdfGen()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def reports_view.PDFPage.display_degree_pdfGen </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>request</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<pre class="fragment">The main function for handling a POST request to create a degree comparison PDF for a given college.
+
+Returns
+    - A FileResponse with the generated PDF
+</pre> 
+</div>
+</div>
+<a id="a55a2f6ed695a5c8681c7c04387d80e72" name="a55a2f6ed695a5c8681c7c04387d80e72"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a55a2f6ed695a5c8681c7c04387d80e72">&#9670;&nbsp;</a></span>display_historical_pdfGen()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def reports_view.PDFPage.display_historical_pdfGen </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>request</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<pre class="fragment">The main function for handling a POST request to create a historical PDF for a given department or departments.
+
+Returns
+    - A FileResponse with the generated PDF, OR
+    - A redirect to the page with a warning if no data is available.
+</pre> 
+</div>
+</div>
+<a id="a751e9c187b6895f69e82410f88ef81dc" name="a751e9c187b6895f69e82410f88ef81dc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a751e9c187b6895f69e82410f88ef81dc">&#9670;&nbsp;</a></span>draw_historical_report_body()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def reports_view.PDFPage.draw_historical_report_body </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>story</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>canvas</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>frame</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>pages</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<pre class="fragment">A helper function for the 'display_historical_pdfGen' function that handles the ReportLab logic for formatting the body of the requested pages.
+</pre> 
+</div>
+</div>
+<a id="a7ac7fd76618cf94594775b6959c72915" name="a7ac7fd76618cf94594775b6959c72915"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7ac7fd76618cf94594775b6959c72915">&#9670;&nbsp;</a></span>finish_page()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def reports_view.PDFPage.finish_page </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>story</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>c</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>f</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<pre class="fragment">A helper function for the 'draw_historical_report_body' function that finishes a page and resets the input parameters.
+
+Returns
+    - A cleared ReportLab 'story'.
+</pre> 
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
+<li>main/views/<a class="el" href="reports__view_8py.html">reports_view.py</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>reports_view</b></li><li class="navelem"><a class="el" href="classreports__view_1_1_p_d_f_page.html">PDFPage</a></li>
+    <li class="navelem"><a class="el" href="namespacereports__view.html">reports_view</a></li><li class="navelem"><a class="el" href="classreports__view_1_1_p_d_f_page.html">PDFPage</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
   </ul>
 </div>

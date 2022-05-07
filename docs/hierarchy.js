@@ -1,6 +1,11 @@
 var hierarchy =
 [
+    [ "pdf_generation.AssessmentStatisticsPage", "classpdf__generation_1_1_assessment_statistics_page.html", null ],
+    [ "queries.CollegeQueries", "classqueries_1_1_college_queries.html", null ],
+    [ "smart_assistant.Degree_Object", "classsmart__assistant_1_1_degree___object.html", null ],
+    [ "pdf_generation.DegreeComparisonPlotting", "classpdf__generation_1_1_degree_comparison_plotting.html", null ],
     [ "degree_comparison_view.DegreeCompPage", "classdegree__comparison__view_1_1_degree_comp_page.html", null ],
+    [ "queries.DegreeQueries", "classqueries_1_1_degree_queries.html", null ],
     [ "forms.Form", null, [
       [ "main.forms.PdfForm", "classmain_1_1forms_1_1_pdf_form.html", null ]
     ] ],
@@ -45,6 +50,9 @@ var hierarchy =
     [ "main.models.MakereportsSloinreport.Meta", "classmain_1_1models_1_1_makereports_sloinreport_1_1_meta.html", null ],
     [ "main.models.MakereportsSlostatus.Meta", "classmain_1_1models_1_1_makereports_slostatus_1_1_meta.html", null ],
     [ "main.models.MakereportsSlostostakeholder.Meta", "classmain_1_1models_1_1_makereports_slostostakeholder_1_1_meta.html", null ],
+    [ "migrations.Migration", null, [
+      [ "0001_initial.Migration", "class0001__initial_1_1_migration.html", null ]
+    ] ],
     [ "models.Model", null, [
       [ "main.models.AuthGroup", "classmain_1_1models_1_1_auth_group.html", null ],
       [ "main.models.AuthGroupPermissions", "classmain_1_1models_1_1_auth_group_permissions.html", null ],
@@ -86,14 +94,18 @@ var hierarchy =
       [ "main.models.MakereportsSlostatus", "classmain_1_1models_1_1_makereports_slostatus.html", null ],
       [ "main.models.MakereportsSlostostakeholder", "classmain_1_1models_1_1_makereports_slostostakeholder.html", null ]
     ] ],
-    [ "pdfgenhelpers.PDFGenHelpers", "classpdfgenhelpers_1_1_p_d_f_gen_helpers.html", null ],
+    [ "pdf_generation.PDFGenHelpers", "classpdf__generation_1_1_p_d_f_gen_helpers.html", null ],
     [ "reports_view.PDFPage", "classreports__view_1_1_p_d_f_page.html", null ],
-    [ "smartAssistantHelper.SmartAssistantHelper", "classsmart_assistant_helper_1_1_smart_assistant_helper.html", null ],
+    [ "smart_assistant.SLO_Object", "classsmart__assistant_1_1_s_l_o___object.html", null ],
+    [ "pdf_generation.SLOStatusPage", "classpdf__generation_1_1_s_l_o_status_page.html", null ],
+    [ "smart_assistant.SmartAssistantHelper", "classsmart__assistant_1_1_smart_assistant_helper.html", null ],
     [ "smart_view.SmartAssistantPage", "classsmart__view_1_1_smart_assistant_page.html", null ],
     [ "AppConfig", null, [
       [ "main.apps.HomeConfig", "classmain_1_1apps_1_1_home_config.html", null ]
     ] ],
     [ "TestCase", null, [
-      [ "main.tests.BasicTests", "classmain_1_1tests_1_1_basic_tests.html", null ]
+      [ "main.tests.BasicTests", "classmain_1_1tests_1_1_basic_tests.html", null ],
+      [ "main.tests.DegreeComparisonQueriesTests", "classmain_1_1tests_1_1_degree_comparison_queries_tests.html", null ],
+      [ "main.tests.UnitTests", "classmain_1_1tests_1_1_unit_tests.html", null ]
     ] ]
 ];

@@ -24,22 +24,46 @@
 */
 var NAVTREE =
 [
-  [ "team-academia", "index.html", [
+  [ "Academic Smart Assistant", "index.html", [
+    [ "README", "md__r_e_a_d_m_e.html", [
+      [ "Project Information", "md__r_e_a_d_m_e.html#autotoc_md0", null ],
+      [ "Release Notes", "md__r_e_a_d_m_e.html#autotoc_md1", [
+        [ "02-28-2022 (Milestone 1)", "md__r_e_a_d_m_e.html#autotoc_md2", null ],
+        [ "03-21-2022 (Milestone 2)", "md__r_e_a_d_m_e.html#autotoc_md3", null ],
+        [ "04-06-2022 (Milestone 3)", "md__r_e_a_d_m_e.html#autotoc_md4", null ],
+        [ "04-20-2022 (Milestone 4)", "md__r_e_a_d_m_e.html#autotoc_md5", null ],
+        [ "05-07-2022 (Milestone 5)", "md__r_e_a_d_m_e.html#autotoc_md6", null ]
+      ] ]
+    ] ],
+    [ "Namespaces", "namespaces.html", [
+      [ "Namespace List", "namespaces.html", "namespaces_dup" ],
+      [ "Namespace Members", "namespacemembers.html", [
+        [ "All", "namespacemembers.html", null ],
+        [ "Functions", "namespacemembers_func.html", null ],
+        [ "Variables", "namespacemembers_vars.html", null ]
+      ] ]
+    ] ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],
       [ "Class Hierarchy", "hierarchy.html", "hierarchy" ],
       [ "Class Members", "functions.html", [
-        [ "All", "functions.html", null ],
-        [ "Functions", "functions_func.html", null ]
+        [ "All", "functions.html", "functions_dup" ],
+        [ "Functions", "functions_func.html", null ],
+        [ "Variables", "functions_vars.html", "functions_vars" ]
       ] ]
+    ] ],
+    [ "Files", "files.html", [
+      [ "File List", "files.html", "files_dup" ]
     ] ]
   ] ]
 ];
 
 var NAVTREEINDEX =
 [
-"annotated.html"
+"0001__initial_8py.html",
+"classmain_1_1tests_1_1_unit_tests.html#aefc39f430ca7602eef8feb9fc4d1c5f6",
+"namespacehistorical__view.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

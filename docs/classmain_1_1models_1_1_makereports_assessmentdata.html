@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.3"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>team-academia: main.models.MakereportsAssessmentdata Class Reference</title>
+<title>Academic Smart Assistant: main.models.MakereportsAssessmentdata Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,8 +25,9 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">team-academia
+   <div id="projectname">Academic Smart Assistant
    </div>
+   <div id="projectbrief">A Capstone Project for the Academic Assessment Committee</div>
   </td>
  </tr>
  </tbody>
@@ -103,17 +104,13 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
-<tr class="memitem:aac2ec85ce9f76cee3424e0f94636505a"><td class="memItemLeft" align="right" valign="top"><a id="aac2ec85ce9f76cee3424e0f94636505a" name="aac2ec85ce9f76cee3424e0f94636505a"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>numberstudents</b> = models.IntegerField(db_column='numberStudents')</td></tr>
+<tr class="memitem:aac2ec85ce9f76cee3424e0f94636505a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmain_1_1models_1_1_makereports_assessmentdata.html#aac2ec85ce9f76cee3424e0f94636505a">numberstudents</a> = models.IntegerField(db_column='numberStudents')</td></tr>
 <tr class="separator:aac2ec85ce9f76cee3424e0f94636505a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1c47f2dea5eca6a83e8f65a70f28fdcd"><td class="memItemLeft" align="right" valign="top"><a id="a1c47f2dea5eca6a83e8f65a70f28fdcd" name="a1c47f2dea5eca6a83e8f65a70f28fdcd"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>overallproficient</b> = models.IntegerField(db_column='overallProficient')</td></tr>
+<tr class="memitem:a1c47f2dea5eca6a83e8f65a70f28fdcd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmain_1_1models_1_1_makereports_assessmentdata.html#a1c47f2dea5eca6a83e8f65a70f28fdcd">overallproficient</a> = models.IntegerField(db_column='overallProficient')</td></tr>
 <tr class="separator:a1c47f2dea5eca6a83e8f65a70f28fdcd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6218c298a149d27bf551c69c14a37c49"><td class="memItemLeft" align="right" valign="top"><a id="a6218c298a149d27bf551c69c14a37c49" name="a6218c298a149d27bf551c69c14a37c49"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>assessmentversion</b> = models.ForeignKey('<a class="el" href="classmain_1_1models_1_1_makereports_assessmentversion.html">MakereportsAssessmentversion</a>', models.DO_NOTHING, db_column='assessmentVersion_id')</td></tr>
+<tr class="memitem:a6218c298a149d27bf551c69c14a37c49"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmain_1_1models_1_1_makereports_assessmentdata.html#a6218c298a149d27bf551c69c14a37c49">assessmentversion</a> = models.ForeignKey('<a class="el" href="classmain_1_1models_1_1_makereports_assessmentversion.html">MakereportsAssessmentversion</a>', models.DO_NOTHING, db_column='assessmentVersion_id')</td></tr>
 <tr class="separator:a6218c298a149d27bf551c69c14a37c49"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6ec3c9e333ec4c8bfeed48b5dc2182a1"><td class="memItemLeft" align="right" valign="top"><a id="a6ec3c9e333ec4c8bfeed48b5dc2182a1" name="a6ec3c9e333ec4c8bfeed48b5dc2182a1"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>datarange</b> = models.CharField(db_column='dataRange', max_length=500)</td></tr>
+<tr class="memitem:a6ec3c9e333ec4c8bfeed48b5dc2182a1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmain_1_1models_1_1_makereports_assessmentdata.html#a6ec3c9e333ec4c8bfeed48b5dc2182a1">datarange</a> = models.CharField(db_column='dataRange', max_length=500)</td></tr>
 <tr class="separator:a6ec3c9e333ec4c8bfeed48b5dc2182a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -125,15 +122,104 @@ Static Public Attributes</h2></td></tr>
     datarange (CharField): A data range for the collection period of this assessment version.
 Additional Remarks:
     datarange is not standard across programs/departments. 
-</pre> </div><hr/>The documentation for this class was generated from the following file:<ul>
-<li>main/models.py</li>
+</pre> </div><h2 class="groupheader">Member Data Documentation</h2>
+<a id="a6218c298a149d27bf551c69c14a37c49" name="a6218c298a149d27bf551c69c14a37c49"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6218c298a149d27bf551c69c14a37c49">&#9670;&nbsp;</a></span>assessmentversion</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">main.models.MakereportsAssessmentdata.assessmentversion = models.ForeignKey('<a class="el" href="classmain_1_1models_1_1_makereports_assessmentversion.html">MakereportsAssessmentversion</a>', models.DO_NOTHING, db_column='assessmentVersion_id')</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6ec3c9e333ec4c8bfeed48b5dc2182a1" name="a6ec3c9e333ec4c8bfeed48b5dc2182a1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ec3c9e333ec4c8bfeed48b5dc2182a1">&#9670;&nbsp;</a></span>datarange</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">main.models.MakereportsAssessmentdata.datarange = models.CharField(db_column='dataRange', max_length=500)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aac2ec85ce9f76cee3424e0f94636505a" name="aac2ec85ce9f76cee3424e0f94636505a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aac2ec85ce9f76cee3424e0f94636505a">&#9670;&nbsp;</a></span>numberstudents</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">main.models.MakereportsAssessmentdata.numberstudents = models.IntegerField(db_column='numberStudents')</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1c47f2dea5eca6a83e8f65a70f28fdcd" name="a1c47f2dea5eca6a83e8f65a70f28fdcd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1c47f2dea5eca6a83e8f65a70f28fdcd">&#9670;&nbsp;</a></span>overallproficient</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">main.models.MakereportsAssessmentdata.overallproficient = models.IntegerField(db_column='overallProficient')</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
+<li>main/<a class="el" href="models_8py.html">models.py</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>main</b></li><li class="navelem"><b>models</b></li><li class="navelem"><a class="el" href="classmain_1_1models_1_1_makereports_assessmentdata.html">MakereportsAssessmentdata</a></li>
+    <li class="navelem"><a class="el" href="namespacemain.html">main</a></li><li class="navelem"><a class="el" href="namespacemain_1_1models.html">models</a></li><li class="navelem"><a class="el" href="classmain_1_1models_1_1_makereports_assessmentdata.html">MakereportsAssessmentdata</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
   </ul>
 </div>

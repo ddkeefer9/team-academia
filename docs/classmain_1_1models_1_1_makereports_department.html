@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.3"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>team-academia: main.models.MakereportsDepartment Class Reference</title>
+<title>Academic Smart Assistant: main.models.MakereportsDepartment Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,8 +25,9 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">team-academia
+   <div id="projectname">Academic Smart Assistant
    </div>
+   <div id="projectbrief">A Capstone Project for the Academic Assessment Committee</div>
   </td>
  </tr>
  </tbody>
@@ -104,20 +105,16 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a82c5d60e87f1bea5b3cf209911d19bc7"><td class="memItemLeft" align="right" valign="top"><a id="a82c5d60e87f1bea5b3cf209911d19bc7" name="a82c5d60e87f1bea5b3cf209911d19bc7"></a>
-def&#160;</td><td class="memItemRight" valign="bottom"><b>__str__</b> (self)</td></tr>
+<tr class="memitem:a82c5d60e87f1bea5b3cf209911d19bc7"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmain_1_1models_1_1_makereports_department.html#a82c5d60e87f1bea5b3cf209911d19bc7">__str__</a> (self)</td></tr>
 <tr class="separator:a82c5d60e87f1bea5b3cf209911d19bc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
-<tr class="memitem:a8eb4eee8427723c46f56733580237b29"><td class="memItemLeft" align="right" valign="top"><a id="a8eb4eee8427723c46f56733580237b29" name="a8eb4eee8427723c46f56733580237b29"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>name</b> = models.CharField(max_length=100)</td></tr>
+<tr class="memitem:a8eb4eee8427723c46f56733580237b29"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmain_1_1models_1_1_makereports_department.html#a8eb4eee8427723c46f56733580237b29">name</a> = models.CharField(max_length=100)</td></tr>
 <tr class="separator:a8eb4eee8427723c46f56733580237b29"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a950d72b04b0152d297acb83ca187d573"><td class="memItemLeft" align="right" valign="top"><a id="a950d72b04b0152d297acb83ca187d573" name="a950d72b04b0152d297acb83ca187d573"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>college</b> = models.ForeignKey(<a class="el" href="classmain_1_1models_1_1_makereports_college.html">MakereportsCollege</a>, models.DO_NOTHING)</td></tr>
+<tr class="memitem:a950d72b04b0152d297acb83ca187d573"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmain_1_1models_1_1_makereports_department.html#a950d72b04b0152d297acb83ca187d573">college</a> = models.ForeignKey(<a class="el" href="classmain_1_1models_1_1_makereports_college.html">MakereportsCollege</a>, models.DO_NOTHING)</td></tr>
 <tr class="separator:a950d72b04b0152d297acb83ca187d573"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a113c5e79e3bab659eab02f12256f33bd"><td class="memItemLeft" align="right" valign="top"><a id="a113c5e79e3bab659eab02f12256f33bd" name="a113c5e79e3bab659eab02f12256f33bd"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>active</b> = models.BooleanField()</td></tr>
+<tr class="memitem:a113c5e79e3bab659eab02f12256f33bd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmain_1_1models_1_1_makereports_department.html#a113c5e79e3bab659eab02f12256f33bd">active</a> = models.BooleanField()</td></tr>
 <tr class="separator:a113c5e79e3bab659eab02f12256f33bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -126,15 +123,105 @@ Static Public Attributes</h2></td></tr>
     name (CharField): The department name.
     college (ForeignKey): A foreign key to the MakereportsCollege table.
     active (BooleanField): Boolean for if department active or not.
-</pre> </div><hr/>The documentation for this class was generated from the following file:<ul>
-<li>main/models.py</li>
+</pre> </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a82c5d60e87f1bea5b3cf209911d19bc7" name="a82c5d60e87f1bea5b3cf209911d19bc7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a82c5d60e87f1bea5b3cf209911d19bc7">&#9670;&nbsp;</a></span>__str__()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def main.models.MakereportsDepartment.__str__ </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>self</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="reference">References <a class="el" href="classmain_1_1apps_1_1_home_config.html#a1ae32316ba57fa75ad634a281a5a601a">main.apps.HomeConfig.name</a>, <a class="el" href="classmain_1_1models_1_1_auth_group.html#a4e3f78084919ca57c4c9f86ed7dd749d">main.models.AuthGroup.name</a>, <a class="el" href="classmain_1_1models_1_1_auth_permission.html#a85964464e003d184c5216084f8a2f6ba">main.models.AuthPermission.name</a>, <a class="el" href="classmain_1_1models_1_1_django_migrations.html#ab1d38419cf28ca5e7d66a9a8754cd548">main.models.DjangoMigrations.name</a>, <a class="el" href="classmain_1_1models_1_1_django_summernote_attachment.html#aa091e02aa00575b3be0763fa574f495a">main.models.DjangoSummernoteAttachment.name</a>, <a class="el" href="classmain_1_1models_1_1_makereports_college.html#a695dc1477150ccd118680923208ef268">main.models.MakereportsCollege.name</a>, <a class="el" href="classmain_1_1models_1_1_makereports_degreeprogram.html#a51e61c1617c48a4a7a75e4667f3194de">main.models.MakereportsDegreeprogram.name</a>, <a class="el" href="classmain_1_1models_1_1_makereports_department.html#a8eb4eee8427723c46f56733580237b29">main.models.MakereportsDepartment.name</a>, <a class="el" href="classmain_1_1models_1_1_makereports_requiredfieldsetting.html#a4b42c694c89cf4c780b8f7825a438bf4">main.models.MakereportsRequiredfieldsetting.name</a>, and <a class="el" href="classmain_1_1models_1_1_makereports_rubric.html#aeb5cef316355824becd633339d79b8f7">main.models.MakereportsRubric.name</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a113c5e79e3bab659eab02f12256f33bd" name="a113c5e79e3bab659eab02f12256f33bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a113c5e79e3bab659eab02f12256f33bd">&#9670;&nbsp;</a></span>active</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">main.models.MakereportsDepartment.active = models.BooleanField()</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a950d72b04b0152d297acb83ca187d573" name="a950d72b04b0152d297acb83ca187d573"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a950d72b04b0152d297acb83ca187d573">&#9670;&nbsp;</a></span>college</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">main.models.MakereportsDepartment.college = models.ForeignKey(<a class="el" href="classmain_1_1models_1_1_makereports_college.html">MakereportsCollege</a>, models.DO_NOTHING)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8eb4eee8427723c46f56733580237b29" name="a8eb4eee8427723c46f56733580237b29"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8eb4eee8427723c46f56733580237b29">&#9670;&nbsp;</a></span>name</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">main.models.MakereportsDepartment.name = models.CharField(max_length=100)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="reference">Referenced by <a class="el" href="classmain_1_1models_1_1_makereports_college.html#ac3df97d8f55767e99331dd133a16ccfe">main.models.MakereportsCollege.__str__()</a>, <a class="el" href="classmain_1_1models_1_1_makereports_degreeprogram.html#ad7f437f7af7cfdb7d612db2797e1ada7">main.models.MakereportsDegreeprogram.__str__()</a>, and <a class="el" href="classmain_1_1models_1_1_makereports_department.html#a82c5d60e87f1bea5b3cf209911d19bc7">main.models.MakereportsDepartment.__str__()</a>.</p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
+<li>main/<a class="el" href="models_8py.html">models.py</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>main</b></li><li class="navelem"><b>models</b></li><li class="navelem"><a class="el" href="classmain_1_1models_1_1_makereports_department.html">MakereportsDepartment</a></li>
+    <li class="navelem"><a class="el" href="namespacemain.html">main</a></li><li class="navelem"><a class="el" href="namespacemain_1_1models.html">models</a></li><li class="navelem"><a class="el" href="classmain_1_1models_1_1_makereports_department.html">MakereportsDepartment</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
   </ul>
 </div>

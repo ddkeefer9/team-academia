@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.3"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>team-academia: main.models.MakereportsAssessmentaggregate Class Reference</title>
+<title>Academic Smart Assistant: main.models.MakereportsAssessmentaggregate Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,8 +25,9 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">team-academia
+   <div id="projectname">Academic Smart Assistant
    </div>
+   <div id="projectbrief">A Capstone Project for the Academic Assessment Committee</div>
   </td>
  </tr>
  </tbody>
@@ -103,28 +104,120 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
-<tr class="memitem:aac0db693debd4c057e945a107587b1bf"><td class="memItemLeft" align="right" valign="top"><a id="aac0db693debd4c057e945a107587b1bf" name="aac0db693debd4c057e945a107587b1bf"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>aggregate_proficiency</b> = models.IntegerField()</td></tr>
+<tr class="memitem:aac0db693debd4c057e945a107587b1bf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmain_1_1models_1_1_makereports_assessmentaggregate.html#aac0db693debd4c057e945a107587b1bf">aggregate_proficiency</a> = models.IntegerField()</td></tr>
 <tr class="separator:aac0db693debd4c057e945a107587b1bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4123807d85a0cd598907bc3988191eec"><td class="memItemLeft" align="right" valign="top"><a id="a4123807d85a0cd598907bc3988191eec" name="a4123807d85a0cd598907bc3988191eec"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>met</b> = models.BooleanField()</td></tr>
+<tr class="memitem:a4123807d85a0cd598907bc3988191eec"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmain_1_1models_1_1_makereports_assessmentaggregate.html#a4123807d85a0cd598907bc3988191eec">met</a> = models.BooleanField()</td></tr>
 <tr class="separator:a4123807d85a0cd598907bc3988191eec"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77c2541fbada382c5da8c903be72545b"><td class="memItemLeft" align="right" valign="top"><a id="a77c2541fbada382c5da8c903be72545b" name="a77c2541fbada382c5da8c903be72545b"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>assessmentversion</b> = models.OneToOneField('<a class="el" href="classmain_1_1models_1_1_makereports_assessmentversion.html">MakereportsAssessmentversion</a>', models.DO_NOTHING, db_column='assessmentVersion_id')</td></tr>
+<tr class="memitem:a77c2541fbada382c5da8c903be72545b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmain_1_1models_1_1_makereports_assessmentaggregate.html#a77c2541fbada382c5da8c903be72545b">assessmentversion</a> = models.OneToOneField('<a class="el" href="classmain_1_1models_1_1_makereports_assessmentversion.html">MakereportsAssessmentversion</a>', models.DO_NOTHING, db_column='assessmentVersion_id')</td></tr>
 <tr class="separator:a77c2541fbada382c5da8c903be72545b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac8f23fa9cf0493b59827da3c08e0ac40"><td class="memItemLeft" align="right" valign="top"><a id="ac8f23fa9cf0493b59827da3c08e0ac40" name="ac8f23fa9cf0493b59827da3c08e0ac40"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>override</b> = models.BooleanField()</td></tr>
+<tr class="memitem:ac8f23fa9cf0493b59827da3c08e0ac40"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmain_1_1models_1_1_makereports_assessmentaggregate.html#ac8f23fa9cf0493b59827da3c08e0ac40">override</a> = models.BooleanField()</td></tr>
 <tr class="separator:ac8f23fa9cf0493b59827da3c08e0ac40"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><pre class="fragment">Notes on the usage of this table
+    This table contains information regarding the aggregate proficiency of an assessment.
+    aggregate_proficiency (IntegerField): A percentage of proficiency.
+    met (BooleanField): A boolean of whether the target was met or not.
+    assessmentversion (OneToOneField): A one-to-one relation between the aggregate and the assessmentversion it is within.
+    override (BooleanField): A boolean field to allow for overriding of the met status.
+</pre> </div><h2 class="groupheader">Member Data Documentation</h2>
+<a id="aac0db693debd4c057e945a107587b1bf" name="aac0db693debd4c057e945a107587b1bf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aac0db693debd4c057e945a107587b1bf">&#9670;&nbsp;</a></span>aggregate_proficiency</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">main.models.MakereportsAssessmentaggregate.aggregate_proficiency = models.IntegerField()</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a77c2541fbada382c5da8c903be72545b" name="a77c2541fbada382c5da8c903be72545b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a77c2541fbada382c5da8c903be72545b">&#9670;&nbsp;</a></span>assessmentversion</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">main.models.MakereportsAssessmentaggregate.assessmentversion = models.OneToOneField('<a class="el" href="classmain_1_1models_1_1_makereports_assessmentversion.html">MakereportsAssessmentversion</a>', models.DO_NOTHING, db_column='assessmentVersion_id')</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4123807d85a0cd598907bc3988191eec" name="a4123807d85a0cd598907bc3988191eec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4123807d85a0cd598907bc3988191eec">&#9670;&nbsp;</a></span>met</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">main.models.MakereportsAssessmentaggregate.met = models.BooleanField()</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac8f23fa9cf0493b59827da3c08e0ac40" name="ac8f23fa9cf0493b59827da3c08e0ac40"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac8f23fa9cf0493b59827da3c08e0ac40">&#9670;&nbsp;</a></span>override</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">main.models.MakereportsAssessmentaggregate.override = models.BooleanField()</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>main/models.py</li>
+<li>main/<a class="el" href="models_8py.html">models.py</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>main</b></li><li class="navelem"><b>models</b></li><li class="navelem"><a class="el" href="classmain_1_1models_1_1_makereports_assessmentaggregate.html">MakereportsAssessmentaggregate</a></li>
+    <li class="navelem"><a class="el" href="namespacemain.html">main</a></li><li class="navelem"><a class="el" href="namespacemain_1_1models.html">models</a></li><li class="navelem"><a class="el" href="classmain_1_1models_1_1_makereports_assessmentaggregate.html">MakereportsAssessmentaggregate</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
   </ul>
 </div>

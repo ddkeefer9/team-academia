@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.3"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>team-academia: main.models.MakereportsSloGradgoals Class Reference</title>
+<title>Academic Smart Assistant: main.models.MakereportsSloGradgoals Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,8 +25,9 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">team-academia
+   <div id="projectname">Academic Smart Assistant
    </div>
+   <div id="projectbrief">A Capstone Project for the Academic Assessment Committee</div>
   </td>
  </tr>
  </tbody>
@@ -103,11 +104,9 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
-<tr class="memitem:a466d7d2ae0988ca6c00cf9bb43a9d5dd"><td class="memItemLeft" align="right" valign="top"><a id="a466d7d2ae0988ca6c00cf9bb43a9d5dd" name="a466d7d2ae0988ca6c00cf9bb43a9d5dd"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>slo</b> = models.ForeignKey(<a class="el" href="classmain_1_1models_1_1_makereports_slo.html">MakereportsSlo</a>, models.DO_NOTHING)</td></tr>
+<tr class="memitem:a466d7d2ae0988ca6c00cf9bb43a9d5dd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmain_1_1models_1_1_makereports_slo_gradgoals.html#a466d7d2ae0988ca6c00cf9bb43a9d5dd">slo</a> = models.ForeignKey(<a class="el" href="classmain_1_1models_1_1_makereports_slo.html">MakereportsSlo</a>, models.DO_NOTHING)</td></tr>
 <tr class="separator:a466d7d2ae0988ca6c00cf9bb43a9d5dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac29dd3c73f3de5de286d8471b116df8d"><td class="memItemLeft" align="right" valign="top"><a id="ac29dd3c73f3de5de286d8471b116df8d" name="ac29dd3c73f3de5de286d8471b116df8d"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>gradgoal</b> = models.ForeignKey(<a class="el" href="classmain_1_1models_1_1_makereports_gradgoal.html">MakereportsGradgoal</a>, models.DO_NOTHING)</td></tr>
+<tr class="memitem:ac29dd3c73f3de5de286d8471b116df8d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmain_1_1models_1_1_makereports_slo_gradgoals.html#ac29dd3c73f3de5de286d8471b116df8d">gradgoal</a> = models.ForeignKey(<a class="el" href="classmain_1_1models_1_1_makereports_gradgoal.html">MakereportsGradgoal</a>, models.DO_NOTHING)</td></tr>
 <tr class="separator:ac29dd3c73f3de5de286d8471b116df8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -115,15 +114,60 @@ Static Public Attributes</h2></td></tr>
     Contains foreign keys relating to goals for graduation.
     slo (ForeignKey): A foreign key to the SLO used for the grad goal.
     gradgoal (ForeignKey): A foreign key to a table containing the raw HTML describing the grad goal.
-</pre> </div><hr/>The documentation for this class was generated from the following file:<ul>
-<li>main/models.py</li>
+</pre> </div><h2 class="groupheader">Member Data Documentation</h2>
+<a id="ac29dd3c73f3de5de286d8471b116df8d" name="ac29dd3c73f3de5de286d8471b116df8d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac29dd3c73f3de5de286d8471b116df8d">&#9670;&nbsp;</a></span>gradgoal</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">main.models.MakereportsSloGradgoals.gradgoal = models.ForeignKey(<a class="el" href="classmain_1_1models_1_1_makereports_gradgoal.html">MakereportsGradgoal</a>, models.DO_NOTHING)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a466d7d2ae0988ca6c00cf9bb43a9d5dd" name="a466d7d2ae0988ca6c00cf9bb43a9d5dd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a466d7d2ae0988ca6c00cf9bb43a9d5dd">&#9670;&nbsp;</a></span>slo</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">main.models.MakereportsSloGradgoals.slo = models.ForeignKey(<a class="el" href="classmain_1_1models_1_1_makereports_slo.html">MakereportsSlo</a>, models.DO_NOTHING)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
+<li>main/<a class="el" href="models_8py.html">models.py</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>main</b></li><li class="navelem"><b>models</b></li><li class="navelem"><a class="el" href="classmain_1_1models_1_1_makereports_slo_gradgoals.html">MakereportsSloGradgoals</a></li>
+    <li class="navelem"><a class="el" href="namespacemain.html">main</a></li><li class="navelem"><a class="el" href="namespacemain_1_1models.html">models</a></li><li class="navelem"><a class="el" href="classmain_1_1models_1_1_makereports_slo_gradgoals.html">MakereportsSloGradgoals</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
   </ul>
 </div>

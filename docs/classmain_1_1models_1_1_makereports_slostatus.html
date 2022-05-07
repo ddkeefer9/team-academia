@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.3"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>team-academia: main.models.MakereportsSlostatus Class Reference</title>
+<title>Academic Smart Assistant: main.models.MakereportsSlostatus Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,8 +25,9 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">team-academia
+   <div id="projectname">Academic Smart Assistant
    </div>
+   <div id="projectbrief">A Capstone Project for the Academic Assessment Committee</div>
   </td>
  </tr>
  </tbody>
@@ -103,14 +104,11 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
-<tr class="memitem:a3713efe750345f3ccbeb44d54c4b2b68"><td class="memItemLeft" align="right" valign="top"><a id="a3713efe750345f3ccbeb44d54c4b2b68" name="a3713efe750345f3ccbeb44d54c4b2b68"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>status</b> = models.CharField(max_length=50)</td></tr>
+<tr class="memitem:a3713efe750345f3ccbeb44d54c4b2b68"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmain_1_1models_1_1_makereports_slostatus.html#a3713efe750345f3ccbeb44d54c4b2b68">status</a> = models.CharField(max_length=50)</td></tr>
 <tr class="separator:a3713efe750345f3ccbeb44d54c4b2b68"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a083c444d462dd4f6cc417c035c97218c"><td class="memItemLeft" align="right" valign="top"><a id="a083c444d462dd4f6cc417c035c97218c" name="a083c444d462dd4f6cc417c035c97218c"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>sloir</b> = models.OneToOneField(<a class="el" href="classmain_1_1models_1_1_makereports_sloinreport.html">MakereportsSloinreport</a>, models.DO_NOTHING, db_column='sloIR_id')</td></tr>
+<tr class="memitem:a083c444d462dd4f6cc417c035c97218c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmain_1_1models_1_1_makereports_slostatus.html#a083c444d462dd4f6cc417c035c97218c">sloir</a> = models.OneToOneField(<a class="el" href="classmain_1_1models_1_1_makereports_sloinreport.html">MakereportsSloinreport</a>, models.DO_NOTHING, db_column='sloIR_id')</td></tr>
 <tr class="separator:a083c444d462dd4f6cc417c035c97218c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a45ec240f31903f9e549abb10638b78c3"><td class="memItemLeft" align="right" valign="top"><a id="a45ec240f31903f9e549abb10638b78c3" name="a45ec240f31903f9e549abb10638b78c3"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>override</b> = models.BooleanField()</td></tr>
+<tr class="memitem:a45ec240f31903f9e549abb10638b78c3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmain_1_1models_1_1_makereports_slostatus.html#a45ec240f31903f9e549abb10638b78c3">override</a> = models.BooleanField()</td></tr>
 <tr class="separator:a45ec240f31903f9e549abb10638b78c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -119,15 +117,82 @@ Static Public Attributes</h2></td></tr>
     status (CharField): The status of the SLO, this can be Met, Partially Met, Not Met, or Unknown.
     sloir (OneToOneField): This is a one-to-one foreign key to the SLO in report that this status is referring to.
     override (BooleanField): This is a mechanism to allow the overriding of the Slostatus if needed.
-</pre> </div><hr/>The documentation for this class was generated from the following file:<ul>
-<li>main/models.py</li>
+</pre> </div><h2 class="groupheader">Member Data Documentation</h2>
+<a id="a45ec240f31903f9e549abb10638b78c3" name="a45ec240f31903f9e549abb10638b78c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a45ec240f31903f9e549abb10638b78c3">&#9670;&nbsp;</a></span>override</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">main.models.MakereportsSlostatus.override = models.BooleanField()</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a083c444d462dd4f6cc417c035c97218c" name="a083c444d462dd4f6cc417c035c97218c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a083c444d462dd4f6cc417c035c97218c">&#9670;&nbsp;</a></span>sloir</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">main.models.MakereportsSlostatus.sloir = models.OneToOneField(<a class="el" href="classmain_1_1models_1_1_makereports_sloinreport.html">MakereportsSloinreport</a>, models.DO_NOTHING, db_column='sloIR_id')</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3713efe750345f3ccbeb44d54c4b2b68" name="a3713efe750345f3ccbeb44d54c4b2b68"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3713efe750345f3ccbeb44d54c4b2b68">&#9670;&nbsp;</a></span>status</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">main.models.MakereportsSlostatus.status = models.CharField(max_length=50)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
+<li>main/<a class="el" href="models_8py.html">models.py</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>main</b></li><li class="navelem"><b>models</b></li><li class="navelem"><a class="el" href="classmain_1_1models_1_1_makereports_slostatus.html">MakereportsSlostatus</a></li>
+    <li class="navelem"><a class="el" href="namespacemain.html">main</a></li><li class="navelem"><a class="el" href="namespacemain_1_1models.html">models</a></li><li class="navelem"><a class="el" href="classmain_1_1models_1_1_makereports_slostatus.html">MakereportsSlostatus</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
   </ul>
 </div>
